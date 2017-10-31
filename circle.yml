@@ -2,7 +2,7 @@ machine:
   services:
     - docker
   timezone:
-    Europe/Vienna
+    Europe/Berlin
   environment:
     MAKEFLAGS: "j4"
     BUILD__: "x86_64"
