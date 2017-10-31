@@ -37,7 +37,7 @@
 #   which might be what causes this. Further research needed.
 
 
-set -euo pipefail
+# set -euo pipefail
 
 
 # Common directory paths
@@ -271,7 +271,7 @@ then
 
   wget $QT_MIRROR/official_releases/qt/$QT_MAJOR.$QT_MINOR/$QT_VERSION/single/qt-everywhere-opensource-src-$QT_VERSION.tar.xz
   check_sha256 "$QT_HASH" "qt-everywhere-opensource-src-$QT_VERSION.tar.xz"
-  bsdtar -x --no-acls -f qt*.tar.xz
+  bsdtar -x -f qt*.tar.xz
   rm qt*.tar.xz
   cd qt*
 
@@ -893,7 +893,9 @@ then
 
   wget https://github.com/TokTok/c-toxcore/releases/download/v$TOXCORE_VERSION/c-toxcore-$TOXCORE_VERSION.tar.gz
   check_sha256 "$TOXCORE_HASH" "c-toxcore-$TOXCORE_VERSION.tar.gz"
+  
   bsdtar -xf c-toxcore*.tar.gz
+  
   rm c-toxcore*.tar.gz
   cd c-toxcore*
 
