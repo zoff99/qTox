@@ -16,6 +16,7 @@ compile:
   override:
     - mkdir -p ~/workspace
     - mkdir -p ~/script
+    - cp -av ./windows/cross-compile/build.sh ~/script/
 
     - docker run --rm
       -v /home/ubuntu/workspace:/workspace
