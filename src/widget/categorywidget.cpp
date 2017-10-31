@@ -30,13 +30,15 @@
 
 void CategoryWidget::emitChatroomWidget(QLayout* layout, int index)
 {
-    GenericChatroomWidget* chatWidget = qobject_cast<GenericChatroomWidget*>(layout->itemAt(index)->widget());
-    if (chatWidget != nullptr)
+    QWidget* widget = layout->itemAt(index)->widget();
+    GenericChatroomWidget* chatWidget = qobject_cast<GenericChatroomWidget*>(widget);
+    if (chatWidget != nullptr) {
         emit chatWidget->chatroomWidgetClicked(chatWidget);
+    }
 }
 
-CategoryWidget::CategoryWidget(QWidget* parent)
-    : GenericChatItemWidget(parent)
+CategoryWidget::CategoryWidget(bool compact, QWidget* parent)
+    : GenericChatItemWidget(compact, parent)
 {
     container = new QWidget(this);
     container->setObjectName("circleWidgetContainer");
@@ -99,12 +101,12 @@ void CategoryWidget::setExpanded(bool isExpanded, bool save)
         onExpand();
 }
 
-void CategoryWidget::leaveEvent(QEvent *event)
+void CategoryWidget::leaveEvent(QEvent* event)
 {
     event->ignore();
 }
 
-void CategoryWidget::setName(const QString &name, bool save)
+void CategoryWidget::setName(const QString& name, bool save)
 {
     nameLabel->setText(name);
 
@@ -148,10 +150,10 @@ bool CategoryWidget::hasChatrooms() const
     return listLayout->hasChatrooms();
 }
 
-void CategoryWidget::search(const QString &searchString, bool updateAll, bool hideOnline, bool hideOffline)
+void CategoryWidget::search(const QString& searchString, bool updateAll, bool hideOnline,
+                            bool hideOffline)
 {
-    if (updateAll)
-    {
+    if (updateAll) {
         listLayout->searchChatrooms(searchString, hideOnline, hideOffline);
     }
     bool inCategory = searchString.isEmpty() && !(hideOnline && hideOffline);
@@ -160,37 +162,29 @@ void CategoryWidget::search(const QString &searchString, bool updateAll, bool hi
 
 bool CategoryWidget::cycleContacts(bool forward)
 {
-    if (listLayout->friendTotalCount() == 0)
-    {
+    if (listLayout->friendTotalCount() == 0) {
         return false;
     }
-    if (forward)
-    {
-        if (!listLayout->getLayoutOnline()->isEmpty())
-        {
+    if (forward) {
+        if (!listLayout->getLayoutOnline()->isEmpty()) {
             setExpanded(true);
             emitChatroomWidget(listLayout->getLayoutOnline(), 0);
             return true;
-        }
-        else if (!listLayout->getLayoutOffline()->isEmpty())
-        {
+        } else if (!listLayout->getLayoutOffline()->isEmpty()) {
             setExpanded(true);
             emitChatroomWidget(listLayout->getLayoutOffline(), 0);
             return true;
         }
-    }
-    else
-    {
-        if (!listLayout->getLayoutOffline()->isEmpty())
-        {
+    } else {
+        if (!listLayout->getLayoutOffline()->isEmpty()) {
             setExpanded(true);
-            emitChatroomWidget(listLayout->getLayoutOffline(), listLayout->getLayoutOffline()->count() - 1);
+            emitChatroomWidget(listLayout->getLayoutOffline(),
+                               listLayout->getLayoutOffline()->count() - 1);
             return true;
-        }
-        else if (!listLayout->getLayoutOnline()->isEmpty())
-        {
+        } else if (!listLayout->getLayoutOnline()->isEmpty()) {
             setExpanded(true);
-            emitChatroomWidget(listLayout->getLayoutOnline(), listLayout->getLayoutOnline()->count() - 1);
+            emitChatroomWidget(listLayout->getLayoutOnline(),
+                               listLayout->getLayoutOnline()->count() - 1);
             return true;
         }
     }
@@ -208,18 +202,15 @@ bool CategoryWidget::cycleContacts(FriendWidget* activeChatroomWidget, bool forw
 
     currentLayout = listLayout->getLayoutOnline();
     index = listLayout->indexOfFriendWidget(friendWidget, true);
-    if (index == -1)
-    {
+    if (index == -1) {
         currentLayout = listLayout->getLayoutOffline();
         index = listLayout->indexOfFriendWidget(friendWidget, false);
     }
 
     index += forward ? 1 : -1;
-    for (;;)
-    {
+    for (;;) {
         // Bounds checking.
-        if (index < 0)
-        {
+        if (index < 0) {
             if (currentLayout == listLayout->getLayoutOffline())
                 currentLayout = listLayout->getLayoutOnline();
             else
@@ -227,9 +218,7 @@ bool CategoryWidget::cycleContacts(FriendWidget* activeChatroomWidget, bool forw
 
             index = currentLayout->count() - 1;
             continue;
-        }
-        else if (index >= currentLayout->count())
-        {
+        } else if (index >= currentLayout->count()) {
             if (currentLayout == listLayout->getLayoutOnline())
                 currentLayout = listLayout->getLayoutOffline();
             else
@@ -239,7 +228,8 @@ bool CategoryWidget::cycleContacts(FriendWidget* activeChatroomWidget, bool forw
             continue;
         }
 
-        GenericChatroomWidget* chatWidget = qobject_cast<GenericChatroomWidget*>(currentLayout->itemAt(index)->widget());
+        GenericChatroomWidget* chatWidget =
+            qobject_cast<GenericChatroomWidget*>(currentLayout->itemAt(index)->widget());
         if (chatWidget != nullptr)
             emit chatWidget->chatroomWidgetClicked(chatWidget);
         return true;

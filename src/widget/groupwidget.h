@@ -26,35 +26,35 @@ class GroupWidget final : public GenericChatroomWidget
 {
     Q_OBJECT
 public:
-    GroupWidget(int GroupId, QString Name);
+    GroupWidget(int GroupId, const QString& Name, bool compact);
     ~GroupWidget();
     void setAsInactiveChatroom() final override;
     void setAsActiveChatroom() final override;
     void updateStatusLight() final override;
-    bool chatFormIsSet(bool focus) const final override;
     void setChatForm(ContentLayout* contentLayout) final override;
     void resetEventFlags() final override;
     QString getStatusString() const final override;
     Group* getGroup() const final override;
     void setName(const QString& name);
-    void onUserListChanged();
     void editName();
 
 signals:
     void groupWidgetClicked(GroupWidget* widget);
-    void renameRequested(GroupWidget* widget, const QString& newName);
     void removeGroup(int groupId);
 
 protected:
-    void contextMenuEvent(QContextMenuEvent * event) final override;
+    void contextMenuEvent(QContextMenuEvent* event) final override;
     void mousePressEvent(QMouseEvent* event) final override;
     void mouseMoveEvent(QMouseEvent* event) final override;
     void dragEnterEvent(QDragEnterEvent* ev) override;
     void dragLeaveEvent(QDragLeaveEvent* ev) override;
     void dropEvent(QDropEvent* ev) override;
 
-private:
+private slots:
     void retranslateUi();
+    void setTitle(const QString& newName);
+    void updateTitle(uint32_t groupId, const QString& newName);
+    void updateUserCount();
 
 public:
     int groupId;

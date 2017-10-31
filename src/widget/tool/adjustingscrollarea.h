@@ -26,11 +26,11 @@ class AdjustingScrollArea : public QScrollArea
 {
     Q_OBJECT
 public:
-    explicit AdjustingScrollArea(QWidget *parent = 0);
+    explicit AdjustingScrollArea(QWidget* parent = 0);
     virtual ~AdjustingScrollArea() = default;
 
 protected:
-    virtual void resizeEvent(QResizeEvent *ev) override;
+    virtual void resizeEvent(QResizeEvent* ev) override;
     virtual QSize sizeHint() const final override;
 };
 

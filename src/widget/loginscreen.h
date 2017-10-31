@@ -21,9 +21,9 @@
 #ifndef LOGINSCREEN_H
 #define LOGINSCREEN_H
 
-#include <QWidget>
 #include <QShortcut>
 #include <QToolButton>
+#include <QWidget>
 
 namespace Ui {
 class LoginScreen;
@@ -34,16 +34,18 @@ class LoginScreen : public QWidget
     Q_OBJECT
 
 public:
-    explicit LoginScreen(QWidget *parent = 0);
+    explicit LoginScreen(QWidget* parent = 0);
     ~LoginScreen();
     void reset();
 
     bool event(QEvent* event) final override;
 
-#ifdef Q_OS_MAC
 signals:
     void windowStateChanged(Qt::WindowStates states);
-#endif
+    void closed();
+
+protected:
+    virtual void closeEvent(QCloseEvent* event) final override;
 
 private slots:
     void onAutoLoginToggled(int state);
@@ -64,7 +66,7 @@ private:
     void checkCapsLock();
 
 private:
-    Ui::LoginScreen *ui;
+    Ui::LoginScreen* ui;
     QShortcut quitShortcut;
 };
 

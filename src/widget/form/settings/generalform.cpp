@@ -35,83 +35,58 @@
 #include "src/widget/translator.h"
 #include "src/widget/widget.h"
 
-static QStringList locales = {"ar",
-                              "be",
-                              "bg",
-                              "cs",
-                              "da",
-                              "de",
-                              "et",
-                              "el",
-                              "en",
-                              "es",
-                              "eo",
-                              "fr",
-                              "ko",
-                              "he",
-                              "hr",
-                              "it",
-                              "sw",
-                              "lt",
-                              "jbo",
-                              "hu",
-                              "nl",
-                              "ja",
-                              "no_nb",
-                              "pr",
-                              "pl",
-                              "pt",
-                              "ru",
-                              "sk",
-                              "sl",
-                              "fi",
-                              "sv",
-                              "tr",
-                              "ug",
-                              "uk",
-                              "zh"};
-static QStringList langs = {"Arabic",
-                            "Беларуская",
-                            "Български",
-                            "Čeština",
-                            "Dansk",
-                            "Deutsch",
-                            "Eesti",
-                            "Ελληνικά",
-                            "English",
-                            "Español",
-                            "Esperanto",
-                            "Français",
-                            "한국어",
-                            "עברית",
-                            "Hrvatski",
-                            "Italiano",
-                            "Kiswahili",
-                            "Lietuvių",
-                            "Lojban",
-                            "Magyar",
-                            "Nederlands",
-                            "日本語",
-                            "Norsk Bokmål",
-                            "Pirate",
-                            "Polski",
-                            "Português",
-                            "Русский",
-                            "Slovenčina",
-                            "Slovenščina",
-                            "Suomi",
-                            "Svenska",
-                            "Türkçe",
-                            "ئۇيغۇرچە",
-                            "Українська",
-                            "简体中文"};
+// clang-format off
+static QStringList locales = {
+    "ar",
+    "be",
+    "bg",
+    "cs",
+    "da",
+    "de",
+    "et",
+    "el",
+    "en",
+    "es",
+    "eo",
+    "fa",
+    "fr",
+    "ko",
+    "he",
+    "hr",
+    "it",
+    "sw",
+    "lt",
+    "jbo",
+    "hu",
+    "nl",
+    "ja",
+    "no_nb",
+    "pr",
+    "pl",
+    "pt",
+    "ro",
+    "ru",
+    "sk",
+    "sl",
+    "sr",
+    "sr_Latn",
+    "fi",
+    "sv",
+    "ta",
+    "tr",
+    "ug",
+    "uk",
+    "zh_CN",
+    "zh_TW"
+};
+// clang-format on
 
 /**
  * @class GeneralForm
  *
  * This form contains all settings that are not suited to other forms
  */
-GeneralForm::GeneralForm(SettingsWidget *myParent)
+GeneralForm::GeneralForm(SettingsWidget* myParent)
     : GenericForm(QPixmap(":/img/settings/general.png"))
     , bodyUI(new Ui::GeneralSettings)
 {
@@ -127,8 +102,20 @@ GeneralForm::GeneralForm(SettingsWidget *myParent)
     bodyUI->checkUpdates->setVisible(AUTOUPDATE_ENABLED);
     bodyUI->checkUpdates->setChecked(s.getCheckUpdates());
 
-    for (int i = 0; i < langs.size(); ++i)
-        bodyUI->transComboBox->insertItem(i, langs[i]);
+    for (int i = 0; i < locales.size(); ++i) {
+        QString langName;
+
+        if (locales[i].startsWith(QLatin1String("eo"))) // QTBUG-57802
+            langName = QLocale::languageToString(QLocale::Esperanto);
+        else if (locales[i].startsWith(QLatin1String("jbo")))
+            langName = QLatin1String("Lojban");
+        else if (locales[i].startsWith(QLatin1String("pr")))
+            langName = QLatin1String("Pirate");
+        else
+            langName = QLocale(locales[i]).nativeLanguageName();
+
+        bodyUI->transComboBox->insertItem(i, langName);
+    }
 
     bodyUI->transComboBox->setCurrentIndex(locales.indexOf(s.getTranslation()));
 
@@ -157,7 +144,8 @@ GeneralForm::GeneralForm(SettingsWidget *myParent)
     bodyUI->autoacceptFiles->setChecked(s.getAutoSaveEnabled());
 
 #ifndef QTOX_PLATFORM_EXT
-    bodyUI->autoAwayLabel->setEnabled(false);   // these don't seem to change the appearance of the widgets,
+    bodyUI->autoAwayLabel->setEnabled(
+        false); // these don't seem to change the appearance of the widgets,
     bodyUI->autoAwaySpinBox->setEnabled(false); // though they are unusable
 #endif
 
@@ -173,8 +161,9 @@ GeneralForm::~GeneralForm()
 
 void GeneralForm::on_transComboBox_currentIndexChanged(int index)
 {
-    Settings::getInstance().setTranslation(locales[index]);
-    Translator::translate();
+    const QString& locale = locales[index];
+    Settings::getInstance().setTranslation(locale);
+    Translator::translate(locale);
 }
 
 void GeneralForm::on_cbAutorun_stateChanged()
@@ -245,11 +234,11 @@ void GeneralForm::on_autoacceptFiles_stateChanged()
 void GeneralForm::on_autoSaveFilesDir_clicked()
 {
     QString previousDir = Settings::getInstance().getGlobalAutoAcceptDir();
-    QString directory = QFileDialog::getExistingDirectory(0,
-                                                          tr("Choose an auto accept directory", "popup title"),  //opens in home directory
-                                                          QDir::homePath(),
-                                                          QFileDialog::DontUseNativeDialog);
-    if (directory.isEmpty())  // cancel was pressed
+    QString directory =
+        QFileDialog::getExistingDirectory(Q_NULLPTR,
+                                          tr("Choose an auto accept directory", "popup title"),
+                                          QDir::homePath());
+    if (directory.isEmpty()) // cancel was pressed
         directory = previousDir;
 
     Settings::getInstance().setGlobalAutoAcceptDir(directory);

@@ -18,6 +18,7 @@ build-*-Profile
 build-*-Debug
 
 # Folders
+_[Bb]uild*/
 _obj
 _test
 libs
@@ -39,7 +40,7 @@ _testmain.go
 /qtox.app
 
 # Qt
-*.pro.user*
+*.user
 moc_*
 ui_*
 qrc_*
@@ -50,3 +51,6 @@ Makefile
 # Rust
 target/
 .cargo/
+
+# Tarballs
+*.tar.*

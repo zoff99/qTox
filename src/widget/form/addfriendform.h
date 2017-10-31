@@ -20,12 +20,16 @@
 #ifndef ADDFRIENDFORM_H
 #define ADDFRIENDFORM_H
 
+#include "src/core/toxid.h"
+
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QTextEdit>
 #include <QPushButton>
 #include <QSet>
+#include <QTextEdit>
+#include <QVBoxLayout>
 
 class QTabWidget;
 
@@ -38,8 +42,8 @@ public:
     enum Mode
     {
         AddFriend = 0,
-        FriendRequest = 1,
-        GroupInvite = 2
+        ImportContacts = 1,
+        FriendRequest = 2
     };
 
     AddFriendForm();
@@ -49,14 +53,13 @@ public:
 
     bool isShown() const;
     void show(ContentLayout* contentLayout);
-    QString getMessage() const;
     void setMode(Mode mode);
 
     bool addFriendRequest(const QString& friendAddress, const QString& message);
 
 signals:
-    void friendRequested(const QString& friendAddress, const QString& message);
-    void friendRequestAccepted(const QString& friendAddress);
+    void friendRequested(const ToxId& friendAddress, const QString& message);
+    void friendRequestAccepted(const ToxPk& friendAddress);
     void friendRequestsSeen();
 
 public slots:
@@ -64,32 +67,51 @@ public slots:
 
 private slots:
     void onSendTriggered();
-    void onIdChanged(const QString &id);
+    void onIdChanged(const QString& id);
+    void onImportSendClicked();
+    void onImportOpenClicked();
     void onFriendRequestAccepted();
     void onFriendRequestRejected();
     void onCurrentChanged(int index);
 
 private:
+    void addFriend(const QString& idText);
     void retranslateUi();
     void addFriendRequestWidget(const QString& friendAddress, const QString& message);
-    void removeFriendRequestWidget(QWidget *friendWidget);
+    void removeFriendRequestWidget(QWidget* friendWidget);
     void retranslateAcceptButton(QPushButton* acceptButton);
     void retranslateRejectButton(QPushButton* rejectButton);
-    void deleteFriendRequest(const QString &toxId);
+    void deleteFriendRequest(const ToxId& toxId);
     void setIdFromClipboard();
+    QString getMessage() const;
+    QString getImportMessage() const;
 
 private:
-    QLabel headLabel, toxIdLabel, messageLabel;
+    QLabel headLabel;
+    QLabel toxIdLabel;
+    QLabel messageLabel;
+    QLabel importFileLabel;
+    QLabel importMessageLabel;
+
     QPushButton sendButton;
+    QPushButton importFileButton;
+    QPushButton importSendButton;
     QLineEdit toxId;
     QTextEdit message;
-    QVBoxLayout layout, headLayout;
-    QWidget *head, *main;
+    QTextEdit importMessage;
+    QVBoxLayout layout;
+    QVBoxLayout headLayout;
+    QVBoxLayout importContactsLayout;
+    QHBoxLayout importFileLine;
+    QWidget* head;
+    QWidget* main;
+    QWidget* importContacts;
     QString lastUsername;
     QTabWidget* tabWidget;
     QVBoxLayout* requestsLayout;
     QList<QPushButton*> acceptButtons;
     QList<QPushButton*> rejectButtons;
+    QList<QString> contactsToImport;
 };
 
 #endif // ADDFRIENDFORM_H

@@ -34,19 +34,24 @@ class GenericChatroomWidget : public GenericChatItemWidget
 {
     Q_OBJECT
 public:
-    explicit GenericChatroomWidget(QWidget *parent = 0);
+    explicit GenericChatroomWidget(bool compact, QWidget* parent = 0);
 
     virtual void setAsActiveChatroom() = 0;
     virtual void setAsInactiveChatroom() = 0;
     virtual void updateStatusLight() = 0;
-    virtual bool chatFormIsSet(bool focus) const = 0;
     virtual void setChatForm(ContentLayout* contentLayout) = 0;
     virtual void resetEventFlags() = 0;
     virtual QString getStatusString() const = 0;
-    virtual Friend* getFriend() const{return nullptr;}
-    virtual Group* getGroup() const{return nullptr;}
+    virtual const Friend* getFriend() const
+    {
+        return nullptr;
+    }
+    virtual Group* getGroup() const
+    {
+        return nullptr;
+    }
 
-    virtual bool eventFilter(QObject *, QEvent *) final override;
+    virtual bool eventFilter(QObject*, QEvent*) final override;
 
     bool isActive();
     void setActive(bool active);
@@ -56,13 +61,14 @@ public:
     QString getStatusMsg() const;
     QString getTitle() const;
 
-	void reloadTheme();
+    void reloadTheme();
 
 public slots:
-	void compactChange(bool compact);
+    void compactChange(bool compact);
 
 signals:
-    void chatroomWidgetClicked(GenericChatroomWidget* widget, bool group = false);
+    void chatroomWidgetClicked(GenericChatroomWidget* widget);
+    void newWindowOpened(GenericChatroomWidget* widget);
 
 protected:
     virtual void mouseReleaseEvent(QMouseEvent* event) override;
@@ -77,7 +83,7 @@ protected:
     QVBoxLayout* textLayout = nullptr;
     MaskablePixmapWidget* avatar;
     CroppingLabel* statusMessageLabel;
-	bool active;
+    bool active;
 };
 
 #endif // GENERICCHATROOMWIDGET_H

@@ -21,10 +21,9 @@
 #include "activatedialog.h"
 #include <QEvent>
 
-ActivateDialog::ActivateDialog(QWidget *parent, Qt::WindowFlags f)
+ActivateDialog::ActivateDialog(QWidget* parent, Qt::WindowFlags f)
     : QDialog(parent, f)
 {
-
 }
 
 bool ActivateDialog::event(QEvent* event)

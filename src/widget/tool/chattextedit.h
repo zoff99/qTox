@@ -26,21 +26,23 @@ class ChatTextEdit final : public QTextEdit
 {
     Q_OBJECT
 public:
-    explicit ChatTextEdit(QWidget *parent = 0);
+    explicit ChatTextEdit(QWidget* parent = 0);
     ~ChatTextEdit();
     void setLastMessage(QString lm);
-    void sendKeyEvent(QKeyEvent * event);
+    void sendKeyEvent(QKeyEvent* event);
 
 signals:
     void enterPressed();
     void tabPressed();
     void keyPressed();
+    void pasteImage(const QPixmap& pixmap);
 
 protected:
-    virtual void keyPressEvent(QKeyEvent * event) final override;
+    virtual void keyPressEvent(QKeyEvent* event) final override;
 
 private:
     void retranslateUi();
+    bool pasteIfImage(QKeyEvent* event);
 
 private:
     QString lastMessage;

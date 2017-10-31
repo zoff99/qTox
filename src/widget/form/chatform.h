@@ -20,13 +20,14 @@
 #ifndef CHATFORM_H
 #define CHATFORM_H
 
-#include <QSet>
-#include <QLabel>
-#include <QTimer>
 #include <QElapsedTimer>
+#include <QLabel>
+#include <QSet>
+#include <QTimer>
 
 #include "genericchatform.h"
-#include "src/core/corestructs.h"
+#include "src/core/core.h"
+#include "src/persistence/history.h"
 #include "src/widget/tool/screenshotgrabber.h"
 
 class Friend;
@@ -44,8 +45,8 @@ class ChatForm : public GenericChatForm
 public:
     explicit ChatForm(Friend* chatFriend);
     ~ChatForm();
-    void setStatusMessage(QString newMessage);
-    void loadHistory(QDateTime since, bool processUndelivered = false);
+    void setStatusMessage(const QString& newMessage);
+    void loadHistory(const QDateTime& since, bool processUndelivered = false);
 
     void dischargeReceipt(int receipt);
     void setFriendTyping(bool isTyping);
@@ -57,13 +58,17 @@ public:
 
 signals:
     void aliasChanged(const QString& alias);
+    void incomingNotification(uint32_t friendId);
+    void outgoingNotification();
+    void rejectCall(uint32_t friendId);
+    void acceptCall(uint32_t friendId);
 
 public slots:
     void startFileSend(ToxFile file);
     void onFileRecvRequest(ToxFile file);
     void onAvInvite(uint32_t friendId, bool video);
     void onAvStart(uint32_t friendId, bool video);
-    void onAvEnd(uint32_t friendId);
+    void onAvEnd(uint32_t friendId, bool error);
     void onAvatarChange(uint32_t friendId, const QPixmap& pic);
     void onAvatarRemoved(uint32_t friendId);
 
@@ -77,25 +82,25 @@ private slots:
     void onAttachClicked();
     void onCallTriggered();
     void onVideoCallTriggered();
-    void onAnswerCallTriggered();
+    void onAnswerCallTriggered(bool video);
     void onRejectCallTriggered();
     void onMicMuteToggle();
     void onVolMuteToggle();
 
-    void onFileSendFailed(uint32_t friendId, const QString &fname);
+    void onFileSendFailed(uint32_t friendId, const QString& fname);
     void onFriendStatusChanged(quint32 friendId, Status status);
     void onFriendTypingChanged(quint32 friendId, bool isTyping);
     void onFriendNameChanged(const QString& name);
-    void onFriendMessageReceived(quint32 friendId, const QString& message,
-                                 bool isAction);
+    void onFriendMessageReceived(quint32 friendId, const QString& message, bool isAction);
     void onStatusMessage(const QString& message);
     void onReceiptReceived(quint32 friendId, int receipt);
     void onLoadHistory();
     void onUpdateTime();
     void onScreenshotClicked();
-    void onScreenshotTaken(const QPixmap &pixmap);
+    void sendImage(const QPixmap& pixmap);
     void doScreenshot();
     void onCopyStatusMessage();
+    void onExportChat();
 
 private:
     void updateMuteMicButton();
@@ -103,8 +108,7 @@ private:
     void retranslateUi();
     void showOutgoingCall(bool video);
     void startCounter();
-    void stopCounter();
-    QString secondsToDHMS(quint32 duration);
+    void stopCounter(bool error = false);
     void updateCallButtons();
     void SendMessageStr(QString msg);
 
@@ -117,17 +121,17 @@ protected:
     void showEvent(QShowEvent* event) final override;
 
 private:
-
     Friend* f;
-    CroppingLabel *statusMessageLabel;
+    CroppingLabel* statusMessageLabel;
     QMenu statusMessageMenu;
-    QLabel *callDuration;
-    QTimer *callDurationTimer;
+    QLabel* callDuration;
+    QTimer* callDurationTimer;
     QTimer typingTimer;
     QElapsedTimer timeElapsed;
-    OfflineMsgEngine *offlineEngine;
+    OfflineMsgEngine* offlineEngine;
     QAction* loadHistoryAction;
     QAction* copyStatusAction;
+    QAction* exportChatAction;
 
     QHash<uint, FileTransferInstance*> ftransWidgets;
     QPointer<CallConfirmWidget> callConfirm;

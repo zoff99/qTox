@@ -20,10 +20,10 @@
 #ifndef SELFCAMVIEW_H
 #define SELFCAMVIEW_H
 
-#include <QWidget>
-#include <memory>
-#include <atomic>
 #include "src/video/videosource.h"
+#include <QWidget>
+#include <atomic>
+#include <memory>
 
 class VideoSurface : public QWidget
 {
@@ -54,7 +54,7 @@ protected:
     virtual void showEvent(QShowEvent* event) final override;
 
 private slots:
-    void onNewFrameAvailable(std::shared_ptr<VideoFrame> newFrame);
+    void onNewFrameAvailable(const std::shared_ptr<VideoFrame>& newFrame);
     void onSourceStopped();
 
 private:

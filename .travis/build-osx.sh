@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#    Copyright © 2016 by The qTox Project Contributors
+#    Copyright © 2016-2017 by The qTox Project Contributors
 #
 #    This program is libre software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,6 +18,12 @@
 
 # Fail out on error
 set -e -o pipefail
+
+# accelerate builds with ccache
+install_ccache() {
+    echo "Installing ccache ..."
+    brew install ccache
+}
 
 # Build OSX
 build() {
@@ -37,7 +43,17 @@ check() {
     fi
 }
 
+# The system ruby in Travis CI is too old, use latest stable
+get_ruby_version() {
+    rvm get stable
+    [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+    rvm use ruby --install --default
+    echo rvm_auto_reload_flag=1 >> ~/.rvmrc
+}
+
 main() {
+    get_ruby_version
+    install_ccache
     build
     check
 }

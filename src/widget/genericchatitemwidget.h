@@ -36,14 +36,14 @@ public:
         FriendOnlineItem
     };
 
-    explicit GenericChatItemWidget(QWidget *parent = 0);
+    explicit GenericChatItemWidget(bool compact, QWidget* parent = nullptr);
 
     bool isCompact() const;
     void setCompact(bool compact);
 
     QString getName() const;
 
-    void searchName(const QString &searchString, bool hideAll);
+    void searchName(const QString& searchString, bool hideAll);
 
     Q_PROPERTY(bool compact READ isCompact WRITE setCompact)
 

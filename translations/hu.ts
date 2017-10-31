@@ -87,6 +87,38 @@ ami a videóhívások problémáihoz vezethet.</translation>
         <source>Test Sound</source>
         <translation>Teszt hang</translation>
     </message>
+    <message>
+        <source>Enables the experimental audio backend with echo cancelling support, needs qTox restart to take effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable experimental audio backend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio quality</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transmitted audio quality. Lower this setting if your bandwidth is not high enough or if you want to lower the internet usage.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>High (64 kbps)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Medium (32 kbps)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Low (16 kbps)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Very low (8 kbps)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AboutForm</name>
@@ -155,6 +187,102 @@ ami a videóhívások problémáihoz vezethet.</translation>
     </message>
 </context>
 <context>
+    <name>AboutFriendForm</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Dialógusablak</translation>
+    </message>
+    <message>
+        <source>username</source>
+        <translation type="unfinished">felhasználónév</translation>
+    </message>
+    <message>
+        <source>status message</source>
+        <translation type="unfinished">állapotüzenet</translation>
+    </message>
+    <message>
+        <source>Public key:</source>
+        <translation type="unfinished">Nyilvános kulcs:</translation>
+    </message>
+    <message>
+        <source>Used aliases:</source>
+        <translation type="unfinished">Használt nevek:</translation>
+    </message>
+    <message>
+        <source>HISTORY OF ALIASES</source>
+        <translation type="unfinished">NÉV ELŐZMÉNYEK</translation>
+    </message>
+    <message>
+        <source>Automatically accept files from contact if set</source>
+        <translation type="unfinished">Automatikusan elfogad fájlokat a partnertől ha be van állítva</translation>
+    </message>
+    <message>
+        <source>Auto accept files</source>
+        <translation type="unfinished">Automatikus fájl fogadás</translation>
+    </message>
+    <message>
+        <source>Default directory to save files:</source>
+        <translation type="unfinished">Alapértelmezett mappa a fájlok mentéséhez:</translation>
+    </message>
+    <message>
+        <source>Auto accept for this contact is disabled</source>
+        <translation type="unfinished">Automatikus fájl fogadás kikapcsolva a partnernél</translation>
+    </message>
+    <message>
+        <source>Auto accept call:</source>
+        <translation type="unfinished">Automatikus hívásfogadás:</translation>
+    </message>
+    <message>
+        <source>Manual</source>
+        <translation type="unfinished">Kézi</translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <translation type="unfinished">Hang</translation>
+    </message>
+    <message>
+        <source>Audio + Video</source>
+        <translation type="unfinished">Hang + Videó</translation>
+    </message>
+    <message>
+        <source>Automatically accept group chat invitations from this contact if set.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto accept group invites</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove history (operation can not be undone!)</source>
+        <translation type="unfinished">Előzmények törlése (ez a művelet nem visszavonható!)</translation>
+    </message>
+    <message>
+        <source>Notes</source>
+        <translation type="unfinished">Jegyzetek</translation>
+    </message>
+    <message>
+        <source>Input field for notes about the contact</source>
+        <translation type="unfinished">Beviteli mező a partnerről való jegyzetek készítéséhez</translation>
+    </message>
+    <message>
+        <source>You can save comment about this contact here.</source>
+        <translation type="unfinished">Itt elmenthet egy megjegyzést ehhez a partnerhez.</translation>
+    </message>
+    <message>
+        <source>Choose an auto accept directory</source>
+        <comment>popup title</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History removed</source>
+        <translation type="unfinished">Előzmények eltávolítva</translation>
+    </message>
+    <message>
+        <source>Chat history with %1 removed!</source>
+        <translation type="unfinished">Előzmények %1 partnerrel törölve!</translation>
+    </message>
+</context>
+<context>
     <name>AboutSettings</name>
     <message>
         <source>Version</source>
@@ -178,131 +306,18 @@ ami a videóhívások problémáihoz vezethet.</translation>
     </message>
 </context>
 <context>
-    <name>AboutUser</name>
-    <message>
-        <source>Dialog</source>
-        <translation>Dialógusablak</translation>
-    </message>
-    <message>
-        <source>username</source>
-        <translation>felhasználónév</translation>
-    </message>
-    <message>
-        <source>status message</source>
-        <translation>állapotüzenet</translation>
-    </message>
-    <message>
-        <source>Public key:</source>
-        <translation>Nyilvános kulcs:</translation>
-    </message>
-    <message>
-        <source>Used aliases:</source>
-        <translation>Használt nevek:</translation>
-    </message>
-    <message>
-        <source>HISTORY OF ALIASES</source>
-        <translation>NÉV ELŐZMÉNYEK</translation>
-    </message>
-    <message>
-        <source>Default directory to save files:</source>
-        <translation>Alapértelmezett mappa a fájlok mentéséhez:</translation>
-    </message>
-    <message>
-        <source>Auto accept for this contact is disabled</source>
-        <translation>Automatikus fájl fogadás kikapcsolva a partnernél</translation>
-    </message>
-    <message>
-        <source>Auto accept files</source>
-        <translation>Automatikus fájl fogadás</translation>
-    </message>
-    <message>
-        <source>Remove history (operation can not be undone!)</source>
-        <translation>Előzmények törlése (ez a művelet nem visszavonható!)</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation>Jegyzetek</translation>
-    </message>
-    <message>
-        <source>You can save comment about this contact here.</source>
-        <translation>Itt elmenthet egy megjegyzést ehhez a partnerhez.</translation>
-    </message>
-    <message>
-        <source>Choose an auto accept directory</source>
-        <comment>popup title</comment>
-        <translation>Válasszon egy mappát az automatikus fájlmentéshez</translation>
-    </message>
-    <message>
-        <source>History removed</source>
-        <translation>Előzmények eltávolítva</translation>
-    </message>
-    <message>
-        <source>Chat history with %1 removed!</source>
-        <translation>Előzmények %1 partnerrel törölve!</translation>
-    </message>
-    <message>
-        <source>Auto accept call:</source>
-        <translation>Automatikus hívásfogadás:</translation>
-    </message>
-    <message>
-        <source>Manual</source>
-        <translation>Kézi</translation>
-    </message>
-    <message>
-        <source>Audio</source>
-        <translation>Hang</translation>
-    </message>
-    <message>
-        <source>Audio + Video</source>
-        <translation>Hang + Videó</translation>
-    </message>
-    <message>
-        <source>Automatically accept files from contact if set</source>
-        <translation>Automatikusan elfogad fájlokat a partnertől ha be van állítva</translation>
-    </message>
-    <message>
-        <source>Input field for notes about the contact</source>
-        <translation>Beviteli mező a partnerről való jegyzetek készítéséhez</translation>
-    </message>
-</context>
-<context>
     <name>AddFriendForm</name>
     <message>
         <source>Add Friends</source>
         <translation>Partner hozzáadása</translation>
     </message>
     <message>
-        <source>Tox ID</source>
-        <comment>Tox ID of the person you&apos;re sending a friend request to</comment>
-        <translation>Tox azonosító</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <comment>The message you send in friend requests</comment>
-        <translation>Üzenet</translation>
-    </message>
-    <message>
         <source>Send friend request</source>
         <translation>Partnerkérelem küldése</translation>
     </message>
     <message>
-        <source>%1 here! Tox me maybe?</source>
-        <comment>Default message in friend requests if the field is left blank. Write something appropriate!</comment>
-        <translation>%1 vagyok. Beszélünk Toxon?</translation>
-    </message>
-    <message>
-        <source>You can&apos;t add yourself as a friend!</source>
-        <comment>When trying to add your own Tox ID as friend</comment>
-        <translation>Nem tudja hozzáadni önmagát partnerként!</translation>
-    </message>
-    <message>
         <source>Couldn&apos;t add friend</source>
         <translation>Partner hozzáadása sikertelen</translation>
-    </message>
-    <message>
-        <source>either 76 hexadecimal characters or name@example.com</source>
-        <comment>Tox ID format description</comment>
-        <translation>76 hexadecimális karakter, vagy nev@pelda.com</translation>
     </message>
     <message>
         <source>Invalid Tox ID format</source>
@@ -325,11 +340,6 @@ ami a videóhívások problémáihoz vezethet.</translation>
         <translation>Elutasítás</translation>
     </message>
     <message>
-        <source>This Tox ID does not exist</source>
-        <comment>Toxme error</comment>
-        <translation>Ez a Tox ID nem létezik</translation>
-    </message>
-    <message>
         <source>Tox ID, either 76 hexadecimal characters or name@example.com</source>
         <translation>Tox azonosító, 76 hexadecimális karakter, vagy nev@pelda.com</translation>
     </message>
@@ -344,6 +354,81 @@ ami a videóhívások problémáihoz vezethet.</translation>
     <message>
         <source>Type message to send with the friend request or leave empty to send a default message</source>
         <translation>Írja be az üzenetét a partnerkérelemhez, vagy hagyja üresen az alapértelmezett üzenet küldéséhez</translation>
+    </message>
+    <message>
+        <source>%1 Tox ID is invalid or does not exist</source>
+        <comment>Toxme error</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can&apos;t add yourself as a friend!</source>
+        <extracomment>When trying to add your own Tox ID as friend</extracomment>
+        <translation type="unfinished">Nem tudja hozzáadni önmagát partnerként!</translation>
+    </message>
+    <message>
+        <source>Open contact list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t open file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t open the contact file</source>
+        <extracomment>Error message when trying to open a contact list file to import</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>We couldn&apos;t find any contacts to import in this file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tox ID</source>
+        <extracomment>Tox ID of the person you&apos;re sending a friend request to</extracomment>
+        <translation type="unfinished">Tox azonosító</translation>
+    </message>
+    <message>
+        <source>either 76 hexadecimal characters or name@example.com</source>
+        <extracomment>Tox ID format description</extracomment>
+        <translation type="unfinished">76 hexadecimális karakter, vagy nev@pelda.com</translation>
+    </message>
+    <message>
+        <source>Message</source>
+        <extracomment>The message you send in friend requests</extracomment>
+        <translation type="unfinished">Üzenet</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <extracomment>Button to choose a file with a list of contacts to import</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send friend requests</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 here! Tox me maybe?</source>
+        <extracomment>Default message in friend requests if the field is left blank. Write something appropriate!</extracomment>
+        <translation type="unfinished">%1 vagyok! Beszélünk Toxon?</translation>
+    </message>
+    <message>
+        <source>Import a list of contacts, one Tox ID per line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Ready to import %n contact(s), click send to confirm</source>
+        <extracomment>Shows the number of contacts we&apos;re about to import from a file (at least one)</extracomment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Import contacts</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -613,6 +698,34 @@ ami a videóhívások problémáihoz vezethet.</translation>
         <comment>e.g. &quot;Dubslow is now online&quot;</comment>
         <translation>%1 most %2</translation>
     </message>
+    <message>
+        <source>Can&apos;t start video call</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t start audio call</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Microphone can be muted only during a call</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sound can be disabled only during a call</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save chat log</source>
+        <translation type="unfinished">Chat naplófájl mentése</translation>
+    </message>
+    <message>
+        <source>Call with %1 ended unexpectedly. %2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ChatLog</name>
@@ -660,60 +773,28 @@ ami a videóhívások problémáihoz vezethet.</translation>
         <translation>A qTox klienst használom</translation>
     </message>
     <message>
-        <source>Friend is already added</source>
-        <translation>A partner már hozzáadva</translation>
-    </message>
-    <message>
-        <source>/me offers friendship.</source>
-        <translation>/me partnerséget ajánl.</translation>
-    </message>
-    <message>
         <source>/me offers friendship, &quot;%1&quot;</source>
         <translation>/me partnerséget ajánl, &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>The previous password is incorrect; please try again:</source>
-        <comment>used on retries in load()</comment>
-        <translation>Az előző jelszó hibás; kérem, próbálja újra:</translation>
-    </message>
-    <message>
-        <source>Encrypted chat history</source>
-        <translation>Titkosított chat előzmény</translation>
-    </message>
-    <message>
-        <source>No encrypted chat history file found, or it was corrupted.
-History will be disabled!</source>
-        <translation>Nem található titkosított chat előzmény, vagy hibás lett.
-Az előzmény le lett tiltva!</translation>
-    </message>
-    <message>
-        <source>
-Disabling chat history now will leave the encrypted history intact (but not usable); if you later remember the password, you may re-enable encryption from the Privacy tab with the correct password to use the history.</source>
-        <comment>part of history password dialog</comment>
-        <translation>
-A chat előzmény letiltása sértetlenül hagyja a titkosított előzményeket (de nem lesz használható). Ha később emlékszik a jelszóra, újraengedélyezheti a titkosítást az Adatvédelem fülön a helyes jelszó használatával.</translation>
-    </message>
-    <message>
-        <source>The chat history password failed. Please try another?</source>
-        <comment>used only when pw set before load() doesn&apos;t work</comment>
-        <translation>A chat előzmény jelszava hibás. Megpróbál egy másikat?</translation>
-    </message>
-    <message>
-        <source>Disable chat history</source>
-        <translation>Chat előzmény letiltás</translation>
+        <source>Invalid Tox ID</source>
+        <comment>Error while sending friendship request</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>You need to write a message with your request</source>
-        <translation>Írjon egy üzenetet a kérelméhez</translation>
+        <comment>Error while sending friendship request</comment>
+        <translation type="unfinished">Írjon egy üzenetet a kérelméhez</translation>
     </message>
     <message>
         <source>Your message is too long!</source>
-        <translation>Az üzenet túl hosszú!</translation>
+        <comment>Error while sending friendship request</comment>
+        <translation type="unfinished">Az üzenet túl hosszú!</translation>
     </message>
     <message>
-        <source>Please enter the password for the chat history for the profile &quot;%1&quot;.</source>
-        <comment>used in load() when no hist pw set</comment>
-        <translation>Kérem adja meg a &quot;%1&quot; profil csevegési előzményeinek jelszavát.</translation>
+        <source>Friend is already added</source>
+        <comment>Error while sending friendship request</comment>
+        <translation type="unfinished">A partner már hozzáadva</translation>
     </message>
 </context>
 <context>
@@ -818,33 +899,27 @@ A chat előzmény letiltása sértetlenül hagyja a titkosított előzményeket 
     <name>FriendListWidget</name>
     <message>
         <source>Today</source>
-        <comment>Category for sorting friends by activity</comment>
-        <translation>Ma</translation>
+        <translation type="unfinished">Ma</translation>
     </message>
     <message>
         <source>Yesterday</source>
-        <comment>Category for sorting friends by activity</comment>
-        <translation>Tegnap</translation>
+        <translation type="unfinished">Tegnap</translation>
     </message>
     <message>
         <source>Last 7 days</source>
-        <comment>Category for sorting friends by activity</comment>
-        <translation>Az utolsó 7 nap</translation>
+        <translation type="unfinished">Az utolsó 7 nap</translation>
     </message>
     <message>
         <source>This month</source>
-        <comment>Category for sorting friends by activity</comment>
-        <translation>Ebben a hónapban</translation>
+        <translation type="unfinished">Ebben a hónapban</translation>
     </message>
     <message>
         <source>Older than 6 Months</source>
-        <comment>Category for sorting friends by activity</comment>
-        <translation>6 hónapnál régebbi</translation>
+        <translation type="unfinished">6 hónapnál régebbi</translation>
     </message>
     <message>
-        <source>Unknown</source>
-        <comment>Category for sorting friends by activity</comment>
-        <translation>Ismeretlen</translation>
+        <source>Never</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1249,17 +1324,20 @@ a rendszertálca helyett.</translation>
         <source>Group invites</source>
         <translation>Csoport meghívások</translation>
     </message>
+</context>
+<context>
+    <name>GroupInviteWidget</name>
+    <message>
+        <source>Invited by %1 on %2 at %3.</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Join</source>
-        <translation>Csatlakozás</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Decline</source>
-        <translation>Elutasít</translation>
-    </message>
-    <message>
-        <source>Invited by %1 on %2 at %3.</source>
-        <translation>Meghívta %1. Meghívás dátuma: %2, ideje: %3.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1418,7 +1496,7 @@ A profil nem tartalmazza az Ön előzményeit.</translation>
     </message>
     <message>
         <source>ToxMe service to register on.</source>
-        <translation>ToxMe szolgáltatáshoz regisztráció.</translation>
+        <translation type="unfinished">ToxMe szolgáltatáshoz regisztráció.</translation>
     </message>
     <message>
         <source>If not set, ToxMe entries are publicly visible.</source>
@@ -1504,19 +1582,23 @@ A profil nem tartalmazza az Ön előzményeit.</translation>
     </message>
     <message>
         <source>My name:</source>
-        <translation>Név:</translation>
+        <translation type="unfinished">Nevem:</translation>
     </message>
     <message>
         <source>My status:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Állapotom:</translation>
     </message>
     <message>
         <source>My username</source>
-        <translation>Felhasználónév</translation>
+        <translation type="unfinished">Felhasználónevem</translation>
     </message>
     <message>
         <source>My biography</source>
-        <translation>Biográfia</translation>
+        <translation type="unfinished">Rólam</translation>
+    </message>
+    <message>
+        <source>My profile</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1528,6 +1610,10 @@ A profil nem tartalmazza az Ön előzményeit.</translation>
     <message>
         <source>Load history from:</source>
         <translation>Előzmény betöltése ettől:</translation>
+    </message>
+    <message>
+        <source>%1 messages</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1904,6 +1990,25 @@ Ha kéretlen partnerfelkérésekkel bombázzák, változtassa meg a NoSpam-ot.</
         <source>Privacy</source>
         <translation>Adatvédelem</translation>
     </message>
+    <message>
+        <source>BlackList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter group message by group member&apos;s public key. Put public key here, one per line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Profile</name>
+    <message>
+        <source>Failed to derive key from password, the profile won&apos;t use the new password.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t change password on the database, it might be corrupted or use the old password.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ProfileForm</name>
@@ -1943,33 +2048,8 @@ Válasszon egy másik képet.</translation>
         <translation>&quot;%1&quot; átnevezése</translation>
     </message>
     <message>
-        <source>Profile already exists</source>
-        <comment>rename failure title</comment>
-        <translation>A profil már létezik</translation>
-    </message>
-    <message>
-        <source>A profile named &quot;%1&quot; already exists.</source>
-        <comment>rename confirm text</comment>
-        <translation>&quot;%1&quot; nevű profil már létezik.</translation>
-    </message>
-    <message>
-        <source>Failed to rename</source>
-        <comment>rename failed title</comment>
-        <translation>Nem sikerült átnevezni</translation>
-    </message>
-    <message>
         <source>Couldn&apos;t rename the profile to &quot;%1&quot;</source>
         <translation>A profilt nem sikerült &quot;%1&quot;-ra/-re átnevezni</translation>
-    </message>
-    <message>
-        <source>Export profile</source>
-        <comment>save dialog title</comment>
-        <translation>Profil exportálása</translation>
-    </message>
-    <message>
-        <source>Tox save file (*.tox)</source>
-        <comment>save dialog filter</comment>
-        <translation>Tox mentésfájl (*.tox)</translation>
     </message>
     <message>
         <source>Location not writable</source>
@@ -2000,16 +2080,6 @@ Válasszon egy másik képet.</translation>
         <translation>Valóban törölni szeretné ezt a profilt?</translation>
     </message>
     <message>
-        <source>The following files could not be deleted:</source>
-        <comment>deletion failed text part 1</comment>
-        <translation>Nem sikerült törölni a következő fájlokat:</translation>
-    </message>
-    <message>
-        <source>Please manually remove them.</source>
-        <comment>deletion failed text part 2</comment>
-        <translation>Kérjük, távolítsa el őket.</translation>
-    </message>
-    <message>
         <source>Files could not be deleted!</source>
         <comment>deletion failed title</comment>
         <translation>A fájlokat nem sikerült törölni!</translation>
@@ -2038,23 +2108,8 @@ Válasszon egy másik képet.</translation>
         <translation>Tényleg törli a jelszót?</translation>
     </message>
     <message>
-        <source>Are you sure you want to delete your password?</source>
-        <comment>deletion confirmation text</comment>
-        <translation>Biztosan törli a jelszavát?</translation>
-    </message>
-    <message>
         <source>Please enter a new password.</source>
         <translation>Adjon meg egy új jelszót.</translation>
-    </message>
-    <message>
-        <source>User Profile</source>
-        <translation>Felhasználói profil</translation>
-    </message>
-    <message>
-        <source>This bunch of characters tells other Tox clients how to contact you.
-Share it with your friends to communicate.</source>
-        <translation>Ez a csomó karakter megmondja más Tox kliensnek, hogyan találják meg.
-Ossza ezt meg a partnerével a kommunikációhoz.</translation>
     </message>
     <message>
         <source>Register (processing)</source>
@@ -2101,6 +2156,73 @@ Ossza ezt meg a partnerével a kommunikációhoz.</translation>
     <message>
         <source>Current profile location: %1</source>
         <translation>Jelenlegi profil helye: %1</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t change password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This bunch of characters tells other Tox clients how to contact you.
+Share it with your friends to communicate.
+
+This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty path is unavaliable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to rename</source>
+        <translation type="unfinished">Nem sikerült átnevezni</translation>
+    </message>
+    <message>
+        <source>Profile already exists</source>
+        <translation type="unfinished">A profil már létezik</translation>
+    </message>
+    <message>
+        <source>A profile named &quot;%1&quot; already exists.</source>
+        <translation type="unfinished">&quot;%1&quot; nevű profil már létezik.</translation>
+    </message>
+    <message>
+        <source>Empty name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty name is unavaliable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t change password on the database, it might be corrupted or use the old password.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export profile</source>
+        <translation type="unfinished">Profil exportálása</translation>
+    </message>
+    <message>
+        <source>Tox save file (*.tox)</source>
+        <extracomment>save dialog filter</extracomment>
+        <translation type="unfinished">Tox mentésfájl (*.tox)</translation>
+    </message>
+    <message>
+        <source>The following files could not be deleted:</source>
+        <extracomment>deletion failed text part 1</extracomment>
+        <translation type="unfinished">Nem sikerült törölni a következő fájlokat:</translation>
+    </message>
+    <message>
+        <source>Please manually remove them.</source>
+        <extracomment>deletion failed text part 2</extracomment>
+        <translation type="unfinished">Kérjük, távolítsa el őket.</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete your password?</source>
+        <extracomment>deletion confirmation text</extracomment>
+        <translation type="unfinished">Biztosan törli a jelszavát?</translation>
     </message>
 </context>
 <context>
@@ -2177,6 +2299,22 @@ Ossza ezt meg a partnerével a kommunikációhoz.</translation>
     </message>
 </context>
 <context>
+    <name>QMessageBox</name>
+    <message>
+        <source>Couldn&apos;t add friend</source>
+        <translation type="unfinished">Partner hozzáadása sikertelen</translation>
+    </message>
+    <message>
+        <source>%1 is not a valid Toxme address.</source>
+        <translation type="unfinished">Helytelen Toxme cím: %1.</translation>
+    </message>
+    <message>
+        <source>You can&apos;t add yourself as a friend!</source>
+        <comment>When trying to add your own Tox ID as friend</comment>
+        <translation type="unfinished">Nem tudja hozzáadni önmagát partnerként!</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Update</source>
@@ -2229,10 +2367,6 @@ A frissítés a qTox újraindítása után fog települni.</translation>
         <source>%1 here! Tox me maybe?</source>
         <comment>Default message in Tox URI friend requests. Write something appropriate!</comment>
         <translation>%1 vagyok! Beszélünk Toxon?</translation>
-    </message>
-    <message>
-        <source>Resizing</source>
-        <translation>Átméretezés</translation>
     </message>
     <message>
         <source>Version %1, %2</source>
@@ -2303,6 +2437,14 @@ A frissítés a qTox újraindítása után fog települni.</translation>
     <message>
         <source>Internal ToxMe error</source>
         <translation>Belső ToxMe hiba</translation>
+    </message>
+    <message>
+        <source>Reformatting text in progress..</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starts new instance and opens the login screen.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2434,10 +2576,6 @@ A frissítés a qTox újraindítása után fog települni.</translation>
         <source>Cancel</source>
         <comment>Don&apos;t send a friend request</comment>
         <translation>Mégsem</translation>
-    </message>
-    <message>
-        <source>%1 is not a valid Toxme address.</source>
-        <translation>Helytelen Toxme cím: %1.</translation>
     </message>
 </context>
 <context>
@@ -2619,14 +2757,6 @@ A frissítés a qTox újraindítása után fog települni.</translation>
         <translation>A Tox nem indult el ezekkel a proxy beállításokkal. A qTox nem fut; módosítsa a beállításait, és indítsa újra.</translation>
     </message>
     <message>
-        <source>Add friend</source>
-        <translation>Partner hozzáadása</translation>
-    </message>
-    <message>
-        <source>File transfers</source>
-        <translation>Fájl átvitelek</translation>
-    </message>
-    <message>
         <source>Executable file</source>
         <comment>popup title</comment>
         <translation>Futtatható fájl</translation>
@@ -2637,37 +2767,8 @@ A frissítés a qTox újraindítása után fog települni.</translation>
         <translation>Meg akart nyitni egy futtatható fájlt. Ezek a fájlok potenciálisan veszélyeztethetik a számítógépét. Valóban meg szeretné nyitni ezt a fájlt?</translation>
     </message>
     <message>
-        <source>Settings</source>
-        <translation>Beállítások</translation>
-    </message>
-    <message>
         <source>Couldn&apos;t request friendship</source>
         <translation>Partnerkérelem nem lehetséges</translation>
-    </message>
-    <message>
-        <source>away</source>
-        <comment>contact status</comment>
-        <translation>távol</translation>
-    </message>
-    <message>
-        <source>busy</source>
-        <comment>contact status</comment>
-        <translation>elfoglalt</translation>
-    </message>
-    <message>
-        <source>offline</source>
-        <comment>contact status</comment>
-        <translation>nem elérhető</translation>
-    </message>
-    <message>
-        <source>online</source>
-        <comment>contact status</comment>
-        <translation>elérhető</translation>
-    </message>
-    <message>
-        <source>%1 is now %2</source>
-        <comment>e.g. &quot;Dubslow is now online&quot;</comment>
-        <translation>%1 már %2</translation>
     </message>
     <message>
         <source>%1 has set the title to %2</source>
@@ -2692,14 +2793,6 @@ A frissítés a qTox újraindítása után fog települni.</translation>
     <message>
         <source>Your status</source>
         <translation>Állapotüzenet</translation>
-    </message>
-    <message>
-        <source>Group invites</source>
-        <translation>Csoport meghívások</translation>
-    </message>
-    <message>
-        <source>Profile</source>
-        <translation>Profil</translation>
     </message>
     <message>
         <source>&lt;Empty&gt;</source>
@@ -2816,6 +2909,31 @@ A frissítés a qTox újraindítása után fog települni.</translation>
         <source>Show</source>
         <comment>Tray action menu to show qTox window</comment>
         <translation>Mutat</translation>
+    </message>
+    <message>
+        <source>Add friend</source>
+        <comment>title of the window</comment>
+        <translation type="unfinished">Partner hozzáadása</translation>
+    </message>
+    <message>
+        <source>Group invites</source>
+        <comment>title of the window</comment>
+        <translation type="unfinished">Csoport meghívások</translation>
+    </message>
+    <message>
+        <source>File transfers</source>
+        <comment>title of the window</comment>
+        <translation type="unfinished">Fájl átvitelek</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <comment>title of the window</comment>
+        <translation type="unfinished">Beállítások</translation>
+    </message>
+    <message>
+        <source>My profile</source>
+        <comment>title of the window</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

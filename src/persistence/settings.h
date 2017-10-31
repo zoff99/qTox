@@ -21,125 +21,113 @@
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
 
+#include "src/core/icoresettings.h"
+#include "src/core/toxencrypt.h"
+#include "src/core/toxfile.h"
+
+#include <QDate>
+#include <QFlags>
 #include <QFont>
 #include <QHash>
+#include <QMutex>
+#include <QNetworkProxy>
 #include <QObject>
 #include <QPixmap>
-#include <QMutex>
-#include <QDate>
-#include <QNetworkProxy>
-#include <QFlags>
-#include "src/core/corestructs.h"
 
-class ToxId;
+class ToxPk;
 class Profile;
 
 namespace Db {
 enum class syncType;
 }
 
-class Settings : public QObject
+class Settings : public QObject, public ICoreSettings
 {
     Q_OBJECT
 
-    Q_ENUMS(ProxyType)
     Q_ENUMS(StyleType)
 
     // general
-    Q_PROPERTY(bool compactLayout READ getCompactLayout WRITE setCompactLayout
-               NOTIFY compactLayoutChanged FINAL)
-    Q_PROPERTY(bool autorun READ getAutorun WRITE setAutorun
-               NOTIFY autorunChanged FINAL)
+    Q_PROPERTY(bool compactLayout READ getCompactLayout WRITE setCompactLayout NOTIFY compactLayoutChanged FINAL)
+    Q_PROPERTY(bool autorun READ getAutorun WRITE setAutorun NOTIFY autorunChanged FINAL)
 
     // GUI
-    Q_PROPERTY(bool separateWindow READ getSeparateWindow
-               WRITE setSeparateWindow NOTIFY separateWindowChanged FINAL)
-    Q_PROPERTY(QString smileyPack READ getSmileyPack WRITE setSmileyPack
-               NOTIFY smileyPackChanged FINAL)
-    Q_PROPERTY(int emojiFontPointSize READ getEmojiFontPointSize
-               WRITE setEmojiFontPointSize NOTIFY emojiFontPointSizeChanged
-               FINAL)
-    Q_PROPERTY(bool minimizeOnClose READ getMinimizeOnClose
-               WRITE setMinimizeOnClose NOTIFY minimizeOnCloseChanged FINAL)
-    Q_PROPERTY(QByteArray windowGeometry READ getWindowGeometry
-               WRITE setWindowGeometry NOTIFY windowGeometryChanged FINAL)
-    Q_PROPERTY(QByteArray windowState READ getWindowState WRITE setWindowState
-               NOTIFY windowStateChanged FINAL)
-    Q_PROPERTY(QByteArray splitterState READ getSplitterState
-               WRITE setSplitterState NOTIFY splitterStateChanged FINAL)
-    Q_PROPERTY(QByteArray dialogGeometry READ getDialogGeometry
-               WRITE setDialogGeometry NOTIFY dialogGeometryChanged FINAL)
-    Q_PROPERTY(QByteArray dialogSplitterState READ getDialogSplitterState
-               WRITE setDialogSplitterState NOTIFY dialogSplitterStateChanged
-               FINAL)
-    Q_PROPERTY(QByteArray dialogSettingsGeometry READ getDialogSettingsGeometry
-               WRITE setDialogSettingsGeometry
-               NOTIFY dialogSettingsGeometryChanged FINAL)
-    Q_PROPERTY(QString style READ getStyle WRITE setStyle NOTIFY styleChanged
-               FINAL)
-    Q_PROPERTY(bool showSystemTray READ getShowSystemTray
-               WRITE setShowSystemTray NOTIFY showSystemTrayChanged FINAL)
+    Q_PROPERTY(bool separateWindow READ getSeparateWindow WRITE setSeparateWindow NOTIFY
+                   separateWindowChanged FINAL)
+    Q_PROPERTY(QString smileyPack READ getSmileyPack WRITE setSmileyPack NOTIFY smileyPackChanged FINAL)
+    Q_PROPERTY(int emojiFontPointSize READ getEmojiFontPointSize WRITE setEmojiFontPointSize NOTIFY
+                   emojiFontPointSizeChanged FINAL)
+    Q_PROPERTY(bool minimizeOnClose READ getMinimizeOnClose WRITE setMinimizeOnClose NOTIFY
+                   minimizeOnCloseChanged FINAL)
+    Q_PROPERTY(QByteArray windowGeometry READ getWindowGeometry WRITE setWindowGeometry NOTIFY
+                   windowGeometryChanged FINAL)
+    Q_PROPERTY(QByteArray windowState READ getWindowState WRITE setWindowState NOTIFY windowStateChanged FINAL)
+    Q_PROPERTY(QByteArray splitterState READ getSplitterState WRITE setSplitterState NOTIFY
+                   splitterStateChanged FINAL)
+    Q_PROPERTY(QByteArray dialogGeometry READ getDialogGeometry WRITE setDialogGeometry NOTIFY
+                   dialogGeometryChanged FINAL)
+    Q_PROPERTY(QByteArray dialogSplitterState READ getDialogSplitterState WRITE
+                   setDialogSplitterState NOTIFY dialogSplitterStateChanged FINAL)
+    Q_PROPERTY(QByteArray dialogSettingsGeometry READ getDialogSettingsGeometry WRITE
+                   setDialogSettingsGeometry NOTIFY dialogSettingsGeometryChanged FINAL)
+    Q_PROPERTY(QString style READ getStyle WRITE setStyle NOTIFY styleChanged FINAL)
+    Q_PROPERTY(bool showSystemTray READ getShowSystemTray WRITE setShowSystemTray NOTIFY
+                   showSystemTrayChanged FINAL)
 
     // ChatView
-    Q_PROPERTY(bool groupchatPosition READ getGroupchatPosition
-               WRITE setGroupchatPosition NOTIFY groupchatPositionChanged FINAL)
-    Q_PROPERTY(QFont chatMessageFont READ getChatMessageFont
-               WRITE setChatMessageFont NOTIFY chatMessageFontChanged FINAL)
-    Q_PROPERTY(StyleType stylePreference READ getStylePreference
-               WRITE setStylePreference NOTIFY stylePreferenceChanged FINAL)
-    Q_PROPERTY(QString timestampFormat READ getTimestampFormat
-               WRITE setTimestampFormat NOTIFY timestampFormatChanged FINAL)
-    Q_PROPERTY(QString dateFormat READ getDateFormat WRITE setDateFormat
-               NOTIFY dateFormatChanged FINAL)
-    Q_PROPERTY(bool statusChangeNotificationEnabled
-               READ getStatusChangeNotificationEnabled
-               WRITE setStatusChangeNotificationEnabled
-               NOTIFY statusChangeNotificationEnabledChanged FINAL)
+    Q_PROPERTY(bool groupchatPosition READ getGroupchatPosition WRITE setGroupchatPosition NOTIFY
+                   groupchatPositionChanged FINAL)
+    Q_PROPERTY(QFont chatMessageFont READ getChatMessageFont WRITE setChatMessageFont NOTIFY
+                   chatMessageFontChanged FINAL)
+    Q_PROPERTY(StyleType stylePreference READ getStylePreference WRITE setStylePreference NOTIFY
+                   stylePreferenceChanged FINAL)
+    Q_PROPERTY(QString timestampFormat READ getTimestampFormat WRITE setTimestampFormat NOTIFY
+                   timestampFormatChanged FINAL)
+    Q_PROPERTY(QString dateFormat READ getDateFormat WRITE setDateFormat NOTIFY dateFormatChanged FINAL)
+    Q_PROPERTY(bool statusChangeNotificationEnabled READ getStatusChangeNotificationEnabled WRITE
+                   setStatusChangeNotificationEnabled NOTIFY statusChangeNotificationEnabledChanged FINAL)
 
     // Privacy
-    Q_PROPERTY(bool typingNotification READ getTypingNotification
-               WRITE setTypingNotification NOTIFY typingNotificationChanged
-               FINAL)
+    Q_PROPERTY(bool typingNotification READ getTypingNotification WRITE setTypingNotification NOTIFY
+                   typingNotificationChanged FINAL)
+    Q_PROPERTY(QStringList blackList READ getBlackList WRITE setBlackList NOTIFY blackListChanged FINAL)
 
     // Audio
-    Q_PROPERTY(QString inDev READ getInDev WRITE setInDev
-               NOTIFY inDevChanged FINAL)
-    Q_PROPERTY(bool audioInDevEnabled READ getAudioInDevEnabled
-               WRITE setAudioInDevEnabled NOTIFY audioInDevEnabledChanged FINAL)
-    Q_PROPERTY(qreal audioInGainDecibel READ getAudioInGainDecibel
-               WRITE setAudioInGainDecibel NOTIFY audioInGainDecibelChanged
-               FINAL)
-    Q_PROPERTY(QString outDev READ getOutDev WRITE setOutDev
-               NOTIFY outDevChanged FINAL)
-    Q_PROPERTY(bool audioOutDevEnabled READ getAudioOutDevEnabled
-               WRITE setAudioOutDevEnabled NOTIFY audioOutDevEnabledChanged
-               FINAL)
-    Q_PROPERTY(int outVolume READ getOutVolume WRITE setOutVolume
-               NOTIFY outVolumeChanged FINAL)
+    Q_PROPERTY(QString inDev READ getInDev WRITE setInDev NOTIFY inDevChanged FINAL)
+    Q_PROPERTY(bool audioInDevEnabled READ getAudioInDevEnabled WRITE setAudioInDevEnabled NOTIFY
+                   audioInDevEnabledChanged FINAL)
+    Q_PROPERTY(qreal audioInGainDecibel READ getAudioInGainDecibel WRITE setAudioInGainDecibel
+                   NOTIFY audioInGainDecibelChanged FINAL)
+    Q_PROPERTY(QString outDev READ getOutDev WRITE setOutDev NOTIFY outDevChanged FINAL)
+    Q_PROPERTY(bool audioOutDevEnabled READ getAudioOutDevEnabled WRITE setAudioOutDevEnabled NOTIFY
+                   audioOutDevEnabledChanged FINAL)
+    Q_PROPERTY(int outVolume READ getOutVolume WRITE setOutVolume NOTIFY outVolumeChanged FINAL)
+    Q_PROPERTY(int audioBitrate READ getAudioBitrate WRITE setAudioBitrate NOTIFY audioBitrateChanged FINAL)
+    Q_PROPERTY(bool enableBackend2 READ getEnableBackend2 WRITE setEnableBackend2 NOTIFY
+                   enableBackend2Changed FINAL)
 
     // Video
-    Q_PROPERTY(QString videoDev READ getVideoDev WRITE setVideoDev
-               NOTIFY videoDevChanged FINAL)
-    Q_PROPERTY(QRect camVideoRes READ getCamVideoRes WRITE setCamVideoRes
-               NOTIFY camVideoResChanged FINAL)
-    Q_PROPERTY(QRect screenRegion READ getScreenRegion WRITE setScreenRegion
-               NOTIFY screenRegionChanged FINAL)
-    Q_PROPERTY(bool screenGrabbed READ getScreenGrabbed WRITE setScreenGrabbed
-               NOTIFY screenGrabbedChanged FINAL)
-    Q_PROPERTY(quint16 camVideoFPS READ getCamVideoFPS
-               WRITE setCamVideoFPS NOTIFY camVideoFPSChanged FINAL)
+    Q_PROPERTY(QString videoDev READ getVideoDev WRITE setVideoDev NOTIFY videoDevChanged FINAL)
+    Q_PROPERTY(QRect camVideoRes READ getCamVideoRes WRITE setCamVideoRes NOTIFY camVideoResChanged FINAL)
+    Q_PROPERTY(QRect screenRegion READ getScreenRegion WRITE setScreenRegion NOTIFY screenRegionChanged FINAL)
+    Q_PROPERTY(bool screenGrabbed READ getScreenGrabbed WRITE setScreenGrabbed NOTIFY screenGrabbedChanged FINAL)
+    Q_PROPERTY(quint16 camVideoFPS READ getCamVideoFPS WRITE setCamVideoFPS NOTIFY camVideoFPSChanged FINAL)
 
 public:
-    enum class ProxyType {ptNone = 0, ptSOCKS5 = 1, ptHTTP = 2};
-    enum class StyleType {NONE = 0, WITH_CHARS = 1, WITHOUT_CHARS = 2};
+    enum class StyleType
+    {
+        NONE = 0,
+        WITH_CHARS = 1,
+        WITHOUT_CHARS = 2
+    };
     enum class AutoAcceptCall
-        {
-            None     = 0x00,
-            Audio    = 0x01,
-            Video    = 0x02,
-            AV       = Audio | Video
-        };
-        Q_DECLARE_FLAGS(AutoAcceptCallFlags, AutoAcceptCall)
+    {
+        None = 0x00,
+        Audio = 0x01,
+        Video = 0x02,
+        AV = Audio | Video
+    };
+    Q_DECLARE_FLAGS(AutoAcceptCallFlags, AutoAcceptCall)
 
 public:
     static Settings& getInstance();
@@ -152,11 +140,10 @@ public:
     void createPersonal(QString basename);
 
     void savePersonal();
-    void savePersonal(Profile *profile);
 
     void loadGlobal();
     void loadPersonal();
-    void loadPersonal(Profile *profile);
+    void loadPersonal(Profile* profile);
 
     void resetToDefault();
 
@@ -173,12 +160,6 @@ public slots:
 
 signals:
     // General
-    void enableIPv6Changed(bool enabled);
-    void forceTCPChanged(bool enabled);
-    void proxyTypeChanged(ProxyType type);
-    void proxyAddressChanged(const QString& address);
-    void proxyPortChanged(quint16 port);
-    void dhtServerListChanged(const QList<DhtServer>& servers);
     void autorunChanged(bool enabled);
     void autoSaveEnabledChanged(bool enabled);
     void autostartInTrayChanged(bool enabled);
@@ -203,7 +184,12 @@ signals:
     void globalAutoAcceptDirChanged(const QString& path);
     void checkUpdatesChanged(bool enabled);
     void widgetDataChanged(const QString& key);
-    void autoAcceptCallChanged(const ToxId& id, AutoAcceptCallFlags accept);
+
+    // Friend
+    void autoAcceptCallChanged(const ToxPk& id, AutoAcceptCallFlags accept);
+    void autoGroupInviteChanged(const ToxPk& id, bool accept);
+    void autoAcceptDirChanged(const ToxPk& id, const QString& dir);
+    void contactNoteChanged(const ToxPk& id, const QString& note);
 
     // GUI
     void autoLoginChanged(bool enabled);
@@ -236,6 +222,7 @@ signals:
     // Privacy
     void typingNotificationChanged(bool enabled);
     void dbSyncTypeChanged(Db::syncType type);
+    void blackListChanged(QStringList& blist);
 
     // Audio
     void inDevChanged(const QString& name);
@@ -244,7 +231,9 @@ signals:
     void outDevChanged(const QString& name);
     void audioOutDevEnabledChanged(bool enabled);
     void outVolumeChanged(int volume);
+    void audioBitrateChanged(int bitrate);
     void enableTestSoundChanged(bool enabled);
+    void enableBackend2Changed(bool enabled);
 
     // Video
     void videoDevChanged(const QString& name);
@@ -254,12 +243,6 @@ signals:
     void camVideoFPSChanged(quint16 fps);
 
 public:
-    const QList<DhtServer>& getDhtServerList() const;
-    void setDhtServerList(const QList<DhtServer>& newDhtServerList);
-
-    bool getEnableIPv6() const;
-    void setEnableIPv6(bool newValue);
-
     bool getMakeToxPortable() const;
     void setMakeToxPortable(bool newValue);
 
@@ -312,19 +295,33 @@ public:
     void setAutoSaveEnabled(bool newValue);
     bool getAutoSaveEnabled() const;
 
-    bool getForceTCP() const;
-    void setForceTCP(bool newValue);
+    // ICoreSettings
+    const QList<DhtServer>& getDhtServerList() const override;
+    void setDhtServerList(const QList<DhtServer>& servers) override;
 
-    QNetworkProxy getProxy() const;
+    bool getEnableIPv6() const override;
+    void setEnableIPv6(bool enabled) override;
 
-    QString getProxyAddr() const;
-    void setProxyAddr(const QString& newValue);
+    bool getForceTCP() const override;
+    void setForceTCP(bool enabled) override;
 
-    ProxyType getProxyType() const;
-    void setProxyType(ProxyType newValue);
+    QString getProxyAddr() const override;
+    void setProxyAddr(const QString& address) override;
 
-    quint16 getProxyPort() const;
-    void setProxyPort(quint16 newValue);
+    ICoreSettings::ProxyType getProxyType() const override;
+    void setProxyType(ICoreSettings::ProxyType type) override;
+
+    quint16 getProxyPort() const override;
+    void setProxyPort(quint16 port) override;
+
+    QNetworkProxy getProxy() const override;
+
+    SIGNAL_IMPL(Settings, enableIPv6Changed, bool enabled)
+    SIGNAL_IMPL(Settings, forceTCPChanged, bool enabled)
+    SIGNAL_IMPL(Settings, proxyTypeChanged, ICoreSettings::ProxyType type)
+    SIGNAL_IMPL(Settings, proxyAddressChanged, const QString& address)
+    SIGNAL_IMPL(Settings, proxyPortChanged, quint16 port)
+    SIGNAL_IMPL(Settings, dhtServerListChanged, const QList<DhtServer>& servers)
 
     bool getEnableLogging() const;
     void setEnableLogging(bool newValue);
@@ -371,8 +368,14 @@ public:
     int getOutVolume() const;
     void setOutVolume(int volume);
 
+    int getAudioBitrate() const;
+    void setAudioBitrate(int bitrate);
+
     bool getEnableTestSound() const;
     void setEnableTestSound(bool newValue);
+
+    bool getEnableBackend2() const;
+    void setEnableBackend2(bool enabled);
 
     QString getVideoDev() const;
     void setVideoDev(const QString& deviceSpecifier);
@@ -407,17 +410,20 @@ public:
     int getEmojiFontPointSize() const;
     void setEmojiFontPointSize(int value);
 
-    QString getContactNote(const ToxId& id) const;
-    void setContactNote(const ToxId& id, const QString& note);
+    QString getContactNote(const ToxPk& id) const;
+    void setContactNote(const ToxPk& id, const QString& note);
 
-    QString getAutoAcceptDir(const ToxId& id) const;
-    void setAutoAcceptDir(const ToxId& id, const QString& dir);
+    QString getAutoAcceptDir(const ToxPk& id) const;
+    void setAutoAcceptDir(const ToxPk& id, const QString& dir);
 
-    AutoAcceptCallFlags getAutoAcceptCall(const ToxId& id) const;
-    void setAutoAcceptCall(const ToxId& id, AutoAcceptCallFlags accept);
+    AutoAcceptCallFlags getAutoAcceptCall(const ToxPk& id) const;
+    void setAutoAcceptCall(const ToxPk& id, AutoAcceptCallFlags accept);
 
     QString getGlobalAutoAcceptDir() const;
     void setGlobalAutoAcceptDir(const QString& dir);
+
+    bool getAutoGroupInvite(const ToxPk& id) const;
+    void setAutoGroupInvite(const ToxPk& id, bool accept);
 
     // ChatView
     const QFont& getChatMessageFont() const;
@@ -438,6 +444,8 @@ public:
     // Privacy
     bool getTypingNotification() const;
     void setTypingNotification(bool enabled);
+    QStringList getBlackList() const;
+    void setBlackList(const QStringList& blist);
 
     // State
     QByteArray getWindowGeometry() const;
@@ -461,16 +469,16 @@ public:
     QString getFriendAddress(const QString& publicKey) const;
     void updateFriendAddress(const QString& newAddr);
 
-    QString getFriendAlias(const ToxId& id) const;
-    void setFriendAlias(const ToxId& id, const QString& alias);
+    QString getFriendAlias(const ToxPk& id) const;
+    void setFriendAlias(const ToxPk& id, const QString& alias);
 
-    int getFriendCircleID(const ToxId& id) const;
-    void setFriendCircleID(const ToxId& id, int circleID);
+    int getFriendCircleID(const ToxPk& id) const;
+    void setFriendCircleID(const ToxPk& id, int circleID);
 
-    QDate getFriendActivity(const ToxId& id) const;
-    void setFriendActivity(const ToxId& id, const QDate &date);
+    QDate getFriendActivity(const ToxPk& id) const;
+    void setFriendActivity(const ToxPk& id, const QDate& date);
 
-    void removeFriendSettings(const ToxId& id);
+    void removeFriendSettings(const ToxPk& id);
 
     bool getFauxOfflineMessaging() const;
     void setFauxOfflineMessaging(bool value);
@@ -529,11 +537,12 @@ public:
 private:
     Settings();
     ~Settings();
-    Settings(Settings &settings) = delete;
+    Settings(Settings& settings) = delete;
     Settings& operator=(const Settings&) = delete;
+    void savePersonal(QString profileName, const ToxEncrypt* passkey);
 
-private slots:
-    void savePersonal(QString profileName, const QString &password);
+public slots:
+    void savePersonal(Profile* profile);
 
 private:
     bool loaded;
@@ -566,7 +575,7 @@ private:
 
     bool forceTCP;
 
-    ProxyType proxyType;
+    ICoreSettings::ProxyType proxyType;
     QString proxyAddr;
     quint16 proxyPort;
 
@@ -615,6 +624,7 @@ private:
     // Privacy
     bool typingNotification;
     Db::syncType dbSyncType;
+    QStringList blackList;
 
     // Audio
     QString inDev;
@@ -623,7 +633,9 @@ private:
     QString outDev;
     bool audioOutDevEnabled;
     int outVolume;
+    int audioBitrate;
     bool enableTestSound;
+    bool enableBackend2;
 
     // Video
     QString videoDev;
@@ -641,6 +653,7 @@ private:
         int circleID = -1;
         QDate activity = QDate();
         AutoAcceptCallFlags autoAcceptCall;
+        bool autoGroupInvite = false;
     };
 
     struct circleProp
@@ -649,7 +662,7 @@ private:
         bool expanded;
     };
 
-    QHash<QString, friendProp> friendLst;
+    QHash<QByteArray, friendProp> friendLst;
 
     QVector<circleProp> circleLst;
 

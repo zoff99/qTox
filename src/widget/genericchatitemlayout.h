@@ -23,15 +23,15 @@ class GenericChatItemWidget;
 class GenericChatItemLayout
 {
 public:
-
     GenericChatItemLayout();
+    GenericChatItemLayout(const GenericChatItemLayout& layout) = delete;
     ~GenericChatItemLayout();
 
     void addSortedWidget(GenericChatItemWidget* widget, int stretch = 0, Qt::Alignment alignment = 0);
     int indexOfSortedWidget(GenericChatItemWidget* widget) const;
     bool existsSortedWidget(GenericChatItemWidget* widget) const;
     void removeSortedWidget(GenericChatItemWidget* widget);
-    void search(const QString &searchString, bool hideAll = false);
+    void search(const QString& searchString, bool hideAll = false);
 
     QLayout* getLayout() const;
 

@@ -20,9 +20,9 @@
 #ifndef AVFORM_H
 #define AVFORM_H
 
+#include <QList>
 #include <QObject>
 #include <QString>
-#include <QList>
 
 #include "genericsettings.h"
 #include "ui_avform.h"
@@ -38,7 +38,10 @@ class AVForm : public GenericForm, private Ui::AVForm
 public:
     AVForm();
     ~AVForm();
-    QString getFormName() final override {return tr("Audio/Video");}
+    QString getFormName() final override
+    {
+        return tr("Audio/Video");
+    }
 
 private:
     void getAudioInDevices();
@@ -46,9 +49,10 @@ private:
     void getVideoDevices();
 
     static int getModeSize(VideoMode mode);
-    void selectBestModes(QVector<VideoMode> &allVideoModes);
+    void selectBestModes(QVector<VideoMode>& allVideoModes);
     void fillCameraModesComboBox();
     void fillScreenModesComboBox();
+    void fillAudioQualityComboBox();
     int searchPreferredIndex();
 
     void createVideoSurface();
@@ -63,6 +67,7 @@ private slots:
     void on_playbackSlider_valueChanged(int value);
     void on_cbEnableTestSound_stateChanged();
     void on_microphoneSlider_valueChanged(int value);
+    void on_audioQualityComboBox_currentIndexChanged(int index);
 
     // camera
     void on_videoDevCombobox_currentIndexChanged(int index);
@@ -70,18 +75,20 @@ private slots:
 
     void rescanDevices();
 
+    void on_cbEnableBackend2_stateChanged();
+
 protected:
     void updateVideoModes(int curIndex);
 
 private:
     void hideEvent(QHideEvent* event) final override;
-    void showEvent(QShowEvent*event) final override;
-    void open(const QString &devName, const VideoMode &mode);
+    void showEvent(QShowEvent* event) final override;
+    void open(const QString& devName, const VideoMode& mode);
 
 private:
     bool subscribedToAudioIn;
-    VideoSurface *camVideoSurface;
-    CameraSource &camera;
+    VideoSurface* camVideoSurface;
+    CameraSource& camera;
     QVector<QPair<QString, QString>> videoDeviceList;
     QVector<VideoMode> videoModes;
 };

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#    Copyright © 2015-2016 by The qTox Project Contributors
+#    Copyright © 2015-2017 by The qTox Project Contributors
 #
 #    This program is libre software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 # stop as soon as one of steps will fail
 set -e -o pipefail
 
-# Qt 5.3, since that's the lowest supported version
-sudo add-apt-repository -y ppa:beineri/opt-qt532-trusty
+# Qt 5.5, since that's the lowest supported version
+sudo add-apt-repository -y ppa:beineri/opt-qt551-trusty
 sudo apt-get update -qq
 
 # install needed Qt, OpenAL, opus, qrencode, GTK tray deps, sqlcipher
@@ -31,6 +31,7 @@ sudo apt-get install -y --force-yes \
     build-essential \
     check \
     checkinstall \
+    libexif-dev \
     libgdk-pixbuf2.0-dev \
     libglib2.0-dev \
     libgtk2.0-dev \
@@ -41,15 +42,15 @@ sudo apt-get install -y --force-yes \
     libtool \
     libvpx-dev \
     libxss-dev qrencode \
-    qt53base \
-    qt53script \
-    qt53svg \
-    qt53tools \
-    qt53xmlpatterns \
+    qt55base \
+    qt55script \
+    qt55svg \
+    qt55tools \
+    qt55xmlpatterns \
     pkg-config || yes
 
 # Qt
-source /opt/qt53/bin/qt53-env.sh || yes
+source /opt/qt55/bin/qt55-env.sh || yes
 
 # ffmpeg
 if [ ! -e "libs" ]; then mkdir libs; fi
@@ -68,7 +69,7 @@ cd ffmpeg*
 # demuxers, decoders and parsers needed for webcams:
 # mjpeg, h264
 
-./configure --prefix="$PREFIX_DIR" \
+CC="ccache $CC" CXX="ccache $CXX" ./configure --prefix="$PREFIX_DIR" \
     --disable-avfilter \
     --disable-avresample \
     --disable-bzlib \
@@ -116,7 +117,7 @@ cd ffmpeg*
     --enable-decoder=h264 \
     --enable-decoder=mjpeg
 
-make -j$(nproc)
+CC="ccache $CC" CXX="ccache $CXX" make -j$(nproc)
 make install
 cd ../../
 # libsodium
@@ -124,7 +125,8 @@ git clone git://github.com/jedisct1/libsodium.git
 cd libsodium
 git checkout tags/1.0.8
 ./autogen.sh
-./configure && make -j$(nproc)
+CC="ccache $CC" CXX="ccache $CXX" ./configure
+CC="ccache $CC" CXX="ccache $CXX" make -j$(nproc)
 sudo checkinstall --install --pkgname libsodium --pkgversion 1.0.8 --nodoc -y
 sudo ldconfig
 cd ..
@@ -132,10 +134,17 @@ cd ..
 git clone --branch v0.1.0 --depth=1 https://github.com/toktok/c-toxcore.git toxcore
 cd toxcore
 autoreconf -if
-./configure
-make -j$(nproc) > /dev/null
+CC="ccache $CC" CXX="ccache $CXX" ./configure
+CC="ccache $CC" CXX="ccache $CXX" make -j$(nproc) > /dev/null
 sudo make install
 echo '/usr/local/lib/' | sudo tee -a /etc/ld.so.conf.d/locallib.conf
+sudo ldconfig
+cd ..
+
+# filteraudio
+git clone --branch v0.0.1 --depth=1 https://github.com/irungentoo/filter_audio filteraudio
+cd filteraudio
+CC="ccache $CC" CXX="ccache $CXX" sudo make install -j$(nproc)
 sudo ldconfig
 cd ..
 
@@ -145,14 +154,54 @@ $CXX --version
 # needed, otherwise ffmpeg doesn't get detected
 export PKG_CONFIG_PATH="$PWD/libs/lib/pkgconfig"
 
-# first build qTox without support for optional dependencies
-echo '*** BUILDING "MINIMAL" VERSION ***'
-qmake qtox.pro QMAKE_CC="$CC" QMAKE_CXX="$CXX" ENABLE_SYSTRAY_STATUSNOTIFIER_BACKEND=NO ENABLE_SYSTRAY_GTK_BACKEND=NO DISABLE_PLATFORM_EXT=YES SMILEYS=NO
-# ↓ reduce if build fails with OOM
-make -j$(nproc)
-# clean it up, and build normal version
-make clean
-echo '*** BUILDING "FULL" VERSION ***'
-qmake qtox.pro QMAKE_CC="$CC" QMAKE_CXX="$CXX"
-# ↓ reduce if build fails with OOM
-make -j$(nproc)
+build_qtox() {
+    bdir() {
+        cd $BUILDDIR
+        make -j$(nproc)
+        # check if `qtox` file has been made, is non-empty and is an executable
+        [[ -s qtox ]] && [[ -x qtox ]]
+        cd -
+    }
+
+    local BUILDDIR=_build
+
+    # first build qTox without support for optional dependencies
+    echo '*** BUILDING "MINIMAL" VERSION ***'
+    cmake -H. -B"$BUILDDIR" \
+        -DSMILEYS=DISABLED \
+        -DENABLE_STATUSNOTIFIER=False \
+        -DENABLE_GTK_SYSTRAY=False
+
+    bdir
+
+    # clean it up, and build normal version
+    rm -rf "$BUILDDIR"
+
+    echo '*** BUILDING "FULL" VERSION ***'
+    cmake -H. -B"$BUILDDIR"
+    bdir
+}
+
+test_qtox() {
+    local BUILDDIR=_build
+
+    cd $BUILDDIR
+    make test
+    cd -
+}
+
+# CMake is supposed to process files, e.g. ones with versions.
+# Check whether those changes have been committed.
+check_if_differs() {
+    echo "Checking whether files processed by CMake have been committed..."
+    echo ""
+    # ↓ `0` exit status only if there are no changes
+    git diff --exit-code
+}
+
+main() {
+    build_qtox
+    test_qtox
+    check_if_differs
+}
+main
