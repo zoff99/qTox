@@ -10,6 +10,7 @@ machine:
 dependencies:
   pre:
     - sudo apt-get update
+    - sudo apt-get install zip
     - docker info
 compile:
   override:
@@ -24,8 +25,12 @@ compile:
       debian:stretch-slim
       /bin/bash /script/build.sh "$BUILD__" "$BTYPE__"
 
-    - echo "--- save artefacts here ---"
-    - ls -al /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"
+    - ls -al /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"/
+    - ls -al /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"/qtox.exe
+    
+    - mkdir -p $CIRCLE_ARTIFACTS/"$BUILD__"/
+    - cp -av /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"/qtox_"$BTYPE__".exe $CIRCLE_ARTIFACTS/"$BUILD__"/
+    - cd /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"/ ; zip $CIRCLE_ARTIFACTS/"$BUILD__"/qtox_"$BUILD__"_"$BTYPE__".zip *.dll
 test:
   override:
     - echo "no tests yet"
