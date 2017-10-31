@@ -22,8 +22,8 @@ compile:
       -v /home/ubuntu/script:/script
       -v /home/ubuntu/qTox:/qtox
       debian:stretch-slim
-      /bin/bash /script/build.sh "$BUILD__" "$BTYPE__" > $CIRCLE_ARTIFACTS/make_out.txt 2>&1 ; if [ $? -eq 0 ]; then touch ~/ok.txt ; fi ; touch ~/ready.txt :
-        background: true
+      /bin/bash /script/build.sh "$BUILD__" "$BTYPE__" > $CIRCLE_ARTIFACTS/make_out.txt 2>&1 ; if [ $? -eq 0 ]; then touch ~/ok.txt ; fi ; touch ~/ready.txt
+#        background: true
 
     - ready_="0";
       counter=0;
