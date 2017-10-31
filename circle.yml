@@ -1,4 +1,6 @@
 machine:
+  services:
+    - docker
   timezone:
     Europe/Vienna
   environment:
@@ -9,9 +11,18 @@ dependencies:
     - sudo apt-get install clang
     - sudo apt-get install cmake
     - sudo apt-get install build-essential libtool autotools-dev automake checkinstall check git yasm
+    - docker info
 compile:
   override:
-    - echo dummy
+    - mkdir -p ~/workspace
+    - mkdir -p ~/script
+
+    - docker run --rm
+      -v /home/ubuntu/workspace:/workspace
+      -v /home/ubuntu/script:/script
+      -v /home/ubuntu/qTox:/qtox
+      debian:stretch-slim
+      /bin/bash /script/build.sh i686 release
 test:
   override:
     - echo dummy
