@@ -28,4 +28,4 @@ compile:
     - ls -al /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"
 test:
   override:
-- echo "no tests yet"
+    - echo "no tests yet"
