@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2017 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -19,21 +19,12 @@
 
 #include "genericchatform.h"
 
-#include <QDebug>
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QKeyEvent>
-#include <QPushButton>
-#include <QShortcut>
-#include <QSplitter>
-#include <QClipboard>
-
 #include "src/chatlog/chatlog.h"
 #include "src/chatlog/content/timestamp.h"
 #include "src/core/core.h"
-#include "src/friend.h"
+#include "src/model/friend.h"
 #include "src/friendlist.h"
-#include "src/group.h"
+#include "src/model/group.h"
 #include "src/grouplist.h"
 #include "src/persistence/settings.h"
 #include "src/persistence/smileypack.h"
@@ -44,15 +35,84 @@
 #include "src/widget/maskablepixmapwidget.h"
 #include "src/widget/style.h"
 #include "src/widget/tool/chattextedit.h"
-#include "src/widget/tool/croppinglabel.h"
 #include "src/widget/tool/flyoutoverlaywidget.h"
 #include "src/widget/translator.h"
 #include "src/widget/widget.h"
 
-GenericChatForm::GenericChatForm(QWidget *parent)
-  : QWidget(parent, Qt::Window)
-  , audioInputFlag(false)
-  , audioOutputFlag(false)
+#include <QClipboard>
+#include <QFileDialog>
+#include <QKeyEvent>
+#include <QShortcut>
+
+/**
+ * @class GenericChatForm
+ * @brief Parent class for all chatforms. It's provide the minimum required UI
+ * elements and methods to work with chat messages.
+ *
+ * TODO: reword
+ * @var GenericChatForm::historyBaselineDate
+ * @brief Used by HistoryKeeper to load messages from t to historyBaselineDate
+ *        (excluded)
+ */
+
+#define SET_STYLESHEET(x) (x)->setStyleSheet(Style::getStylesheet(":/ui/" #x "/" #x ".css"))
+
+static const QSize AVATAR_SIZE{40, 40};
+static const QSize CALL_BUTTONS_SIZE{50, 40};
+static const QSize VOL_MIC_BUTTONS_SIZE{22, 18};
+static const QSize FILE_FLYOUT_SIZE{24, 24};
+static const short FOOT_BUTTONS_SPACING = 2;
+static const short MESSAGE_EDIT_HEIGHT = 50;
+static const short MAIN_FOOT_LAYOUT_SPACING = 5;
+static const short MIC_BUTTONS_LAYOUT_SPACING = 4;
+static const short HEAD_LAYOUT_SPACING = 5;
+static const short BUTTONS_LAYOUT_HOR_SPACING = 4;
+static const QString FONT_STYLE[]{"normal", "italic", "oblique"};
+
+/**
+ * @brief Creates CSS style string for needed class with specified font
+ * @param font Font that needs to be represented for a class
+ * @param name Class name
+ * @return Style string
+ */
+static QString fontToCss(const QFont& font, const QString& name)
+{
+    QString result{"%1{"
+                   "font-family: \"%2\"; "
+                   "font-size: %3px; "
+                   "font-style: \"%4\"; "
+                   "font-weight: normal;}"};
+    return result.arg(name).arg(font.family()).arg(font.pixelSize()).arg(FONT_STYLE[font.style()]);
+}
+
+/**
+ * @brief Searches for name (possibly alias) of someone with specified public key among all of your
+ * friends or groups you are participated
+ * @param pk Searched public key
+ * @return Name or alias of someone with such public key, or public key string representation if no
+ * one was found
+ */
+QString GenericChatForm::resolveToxPk(const ToxPk& pk)
+{
+    Friend* f = FriendList::findFriend(pk);
+    if (f) {
+        return f->getDisplayedName();
+    }
+
+    for (Group* it : GroupList::getAllGroups()) {
+        QString res = it->resolveToxId(pk);
+        if (!res.isEmpty()) {
+            return res;
+        }
+    }
+
+    return pk.toString();
+}
+
+GenericChatForm::GenericChatForm(QWidget* parent)
+    : QWidget(parent, Qt::Window)
+    , audioInputFlag(false)
+    , audioOutputFlag(false)
 {
     curRow = 0;
     headWidget = new QWidget();
@@ -63,28 +123,24 @@ GenericChatForm::GenericChatForm(QWidget *parent)
     nameLabel->setEditable(true);
     nameLabel->setTextFormat(Qt::PlainText);
 
-    avatar = new MaskablePixmapWidget(this, QSize(40,40), ":/img/avatar_mask.svg");
-    QHBoxLayout *mainFootLayout = new QHBoxLayout(),
-                *headLayout = new QHBoxLayout();
+    avatar = new MaskablePixmapWidget(this, AVATAR_SIZE, ":/img/avatar_mask.svg");
+    QHBoxLayout *mainFootLayout = new QHBoxLayout(), *headLayout = new QHBoxLayout();
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(),
-                *footButtonsSmall = new QVBoxLayout(),
+    QVBoxLayout *mainLayout = new QVBoxLayout(), *footButtonsSmall = new QVBoxLayout(),
                 *micButtonsLayout = new QVBoxLayout();
-                headTextLayout = new QVBoxLayout();
+    headTextLayout = new QVBoxLayout();
 
-    QGridLayout *buttonsLayout = new QGridLayout();
+    QGridLayout* buttonsLayout = new QGridLayout();
 
     chatWidget = new ChatLog(this);
     chatWidget->setBusyNotification(ChatMessage::createBusyNotification());
 
     // settings
     const Settings& s = Settings::getInstance();
-    connect(&s, &Settings::emojiFontPointSizeChanged,
-            chatWidget, &ChatLog::forceRelayout);
+    connect(&s, &Settings::emojiFontPointSizeChanged, chatWidget, &ChatLog::forceRelayout);
+    connect(&s, &Settings::chatMessageFontChanged, this, &GenericChatForm::onChatMessageFontChanged);
 
     msgEdit = new ChatTextEdit();
-    // TODO: make it work without restart
-    msgEdit->setCurrentFont(s.getChatMessageFont());
 
     sendButton = new QPushButton();
     emoteButton = new QPushButton();
@@ -92,48 +148,47 @@ GenericChatForm::GenericChatForm(QWidget *parent)
     // Setting the sizes in the CSS doesn't work (glitch with high DPIs)
     fileButton = new QPushButton();
     screenshotButton = new QPushButton;
+
     callButton = new QPushButton();
-    callButton->setFixedSize(50,40);
+    callButton->setFixedSize(CALL_BUTTONS_SIZE);
     videoButton = new QPushButton();
-    videoButton->setFixedSize(50,40);
-    volButton = new QPushButton();
-    //volButton->setFixedSize(25,20);
-    volButton->setToolTip("");
-    micButton = new QPushButton();
-    // micButton->setFixedSize(25,20);
-    micButton->setToolTip("");
+    videoButton->setFixedSize(CALL_BUTTONS_SIZE);
+
+    volButton = new QToolButton();
+    volButton->setFixedSize(VOL_MIC_BUTTONS_SIZE);
+    micButton = new QToolButton();
+    micButton->setFixedSize(VOL_MIC_BUTTONS_SIZE);
+
+    // TODO: Make updateCallButtons (see ChatForm) abstract
+    //       and call here to set tooltips.
 
     fileFlyout = new FlyoutOverlayWidget;
-    QHBoxLayout *fileLayout = new QHBoxLayout(fileFlyout);
+    QHBoxLayout* fileLayout = new QHBoxLayout(fileFlyout);
     fileLayout->addWidget(screenshotButton);
     fileLayout->setContentsMargins(0, 0, 0, 0);
 
-    footButtonsSmall->setSpacing(2);
+    footButtonsSmall->setSpacing(FOOT_BUTTONS_SPACING);
     fileLayout->setSpacing(0);
     fileLayout->setMargin(0);
 
-    msgEdit->setStyleSheet(Style::getStylesheet(":/ui/msgEdit/msgEdit.css"));
-    msgEdit->setFixedHeight(50);
+    msgEdit->setStyleSheet(Style::getStylesheet(":/ui/msgEdit/msgEdit.css")
+                           + fontToCss(s.getChatMessageFont(), "QTextEdit"));
+    msgEdit->setFixedHeight(MESSAGE_EDIT_HEIGHT);
     msgEdit->setFrameStyle(QFrame::NoFrame);
 
-    sendButton->setStyleSheet(Style::getStylesheet(":/ui/sendButton/sendButton.css"));
-    fileButton->setStyleSheet(Style::getStylesheet(":/ui/fileButton/fileButton.css"));
-    screenshotButton->setStyleSheet(Style::getStylesheet(":/ui/screenshotButton/screenshotButton.css"));
-    emoteButton->setStyleSheet(Style::getStylesheet(":/ui/emoteButton/emoteButton.css"));
+    SET_STYLESHEET(sendButton);
+    SET_STYLESHEET(fileButton);
+    SET_STYLESHEET(screenshotButton);
+    SET_STYLESHEET(emoteButton);
+    SET_STYLESHEET(callButton);
+    SET_STYLESHEET(videoButton);
+    SET_STYLESHEET(volButton);
+    SET_STYLESHEET(micButton);
 
     callButton->setObjectName("green");
-    callButton->setStyleSheet(Style::getStylesheet(":/ui/callButton/callButton.css"));
-
     videoButton->setObjectName("green");
-    videoButton->setStyleSheet(Style::getStylesheet(":/ui/videoButton/videoButton.css"));
-
-    QString volButtonStylesheet = Style::getStylesheet(":/ui/volButton/volButton.css");
     volButton->setObjectName("grey");
-    volButton->setStyleSheet(volButtonStylesheet);
-
-    QString micButtonStylesheet = Style::getStylesheet(":/ui/micButton/micButton.css");
     micButton->setObjectName("grey");
-    micButton->setStyleSheet(micButtonStylesheet);
 
     setLayout(mainLayout);
 
@@ -154,7 +209,7 @@ GenericChatForm::GenericChatForm(QWidget *parent)
 
     mainFootLayout->addWidget(msgEdit);
     mainFootLayout->addLayout(footButtonsSmall);
-    mainFootLayout->addSpacing(5);
+    mainFootLayout->addSpacing(MAIN_FOOT_LAYOUT_SPACING);
     mainFootLayout->addWidget(sendButton);
     mainFootLayout->setSpacing(0);
 
@@ -162,26 +217,25 @@ GenericChatForm::GenericChatForm(QWidget *parent)
     headTextLayout->addWidget(nameLabel);
     headTextLayout->addStretch();
 
-    micButtonsLayout->setSpacing(0);
+    micButtonsLayout->setSpacing(MIC_BUTTONS_LAYOUT_SPACING);
     micButtonsLayout->addWidget(micButton, Qt::AlignTop | Qt::AlignRight);
-    micButtonsLayout->addSpacing(4);
     micButtonsLayout->addWidget(volButton, Qt::AlignTop | Qt::AlignRight);
 
     buttonsLayout->addLayout(micButtonsLayout, 0, 0, 2, 1, Qt::AlignTop | Qt::AlignRight);
     buttonsLayout->addWidget(callButton, 0, 1, 2, 1, Qt::AlignTop);
     buttonsLayout->addWidget(videoButton, 0, 2, 2, 1, Qt::AlignTop);
     buttonsLayout->setVerticalSpacing(0);
-    buttonsLayout->setHorizontalSpacing(4);
+    buttonsLayout->setHorizontalSpacing(BUTTONS_LAYOUT_HOR_SPACING);
 
     headLayout->addWidget(avatar);
-    headLayout->addSpacing(5);
+    headLayout->addSpacing(HEAD_LAYOUT_SPACING);
     headLayout->addLayout(headTextLayout);
     headLayout->addLayout(buttonsLayout);
 
     headWidget->setLayout(headLayout);
 
-    //Fix for incorrect layouts on OS X as per
-    //https://bugreports.qt-project.org/browse/QTBUG-14591
+    // Fix for incorrect layouts on OS X as per
+    // https://bugreports.qt-project.org/browse/QTBUG-14591
     sendButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
     fileButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
     screenshotButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
@@ -193,23 +247,20 @@ GenericChatForm::GenericChatForm(QWidget *parent)
 
     menu.addActions(chatWidget->actions());
     menu.addSeparator();
-    saveChatAction = menu.addAction(QIcon::fromTheme("document-save"),
-                                    QString(), this, SLOT(onSaveLogClicked()));
-    clearAction = menu.addAction(QIcon::fromTheme("edit-clear"),
-                                 QString(), this, SLOT(clearChatArea(bool)));
+    saveChatAction =
+        menu.addAction(QIcon::fromTheme("document-save"), QString(), this, SLOT(onSaveLogClicked()));
+    clearAction =
+        menu.addAction(QIcon::fromTheme("edit-clear"), QString(), this, SLOT(clearChatArea(bool)));
 
-    quoteAction = menu.addAction(QIcon(),
-                                 QString(), this, SLOT(quoteSelectedText()));
+    quoteAction = menu.addAction(QIcon(), QString(), this, SLOT(quoteSelectedText()));
 
-    copyLinkAction = menu.addAction(QIcon(),
-                                    QString(), this, SLOT(copyLink()));
+    copyLinkAction = menu.addAction(QIcon(), QString(), this, SLOT(copyLink()));
 
     menu.addSeparator();
 
-    connect(emoteButton, &QPushButton::clicked,
-            this, &GenericChatForm::onEmoteButtonClicked);
-    connect(chatWidget, &ChatLog::customContextMenuRequested,
-            this, &GenericChatForm::onChatContextMenuRequested);
+    connect(emoteButton, &QPushButton::clicked, this, &GenericChatForm::onEmoteButtonClicked);
+    connect(chatWidget, &ChatLog::customContextMenuRequested, this,
+            &GenericChatForm::onChatContextMenuRequested);
 
     new QShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_L, this, SLOT(clearChatArea()));
     new QShortcut(Qt::ALT + Qt::Key_Q, this, SLOT(quoteSelectedText()));
@@ -217,7 +268,7 @@ GenericChatForm::GenericChatForm(QWidget *parent)
     chatWidget->setStyleSheet(Style::getStylesheet(":/ui/chatArea/chatArea.css"));
     headWidget->setStyleSheet(Style::getStylesheet(":/ui/chatArea/chatHead.css"));
 
-    fileFlyout->setFixedSize(24, 24);
+    fileFlyout->setFixedSize(FILE_FLYOUT_SIZE);
     fileFlyout->setParent(this);
     fileButton->installEventFilter(this);
     fileFlyout->installEventFilter(this);
@@ -255,22 +306,11 @@ void GenericChatForm::hideFileMenu()
         fileFlyout->animateHide();
 }
 
-bool GenericChatForm::isEmpty()
-{
-    return chatWidget->isEmpty();
-}
-
-ChatLog *GenericChatForm::getChatLog() const
-{
-    return chatWidget;
-}
-
 QDate GenericChatForm::getLatestDate() const
 {
     ChatLine::Ptr chatLine = chatWidget->getLatestLine();
 
-    if (chatLine)
-    {
+    if (chatLine) {
         Timestamp* timestamp = qobject_cast<Timestamp*>(chatLine->getContent(2));
 
         if (timestamp)
@@ -282,10 +322,11 @@ QDate GenericChatForm::getLatestDate() const
     return QDate();
 }
 
-void GenericChatForm::setName(const QString &newName)
+void GenericChatForm::setName(const QString& newName)
 {
     nameLabel->setText(newName);
-    nameLabel->setToolTip(Qt::convertFromPlainText(newName, Qt::WhiteSpaceNormal)); // for overlength names
+    nameLabel->setToolTip(
+        Qt::convertFromPlainText(newName, Qt::WhiteSpaceNormal)); // for overlength names
 }
 
 void GenericChatForm::show(ContentLayout* contentLayout)
@@ -296,7 +337,7 @@ void GenericChatForm::show(ContentLayout* contentLayout)
     QWidget::show();
 }
 
-void GenericChatForm::showEvent(QShowEvent *)
+void GenericChatForm::showEvent(QShowEvent*)
 {
     msgEdit->setFocus();
 }
@@ -304,11 +345,10 @@ void GenericChatForm::showEvent(QShowEvent *)
 bool GenericChatForm::event(QEvent* e)
 {
     // If the user accidentally starts typing outside of the msgEdit, focus it automatically
-    if (e->type() == QEvent::KeyRelease && !msgEdit->hasFocus())
-    {
+    if (e->type() == QEvent::KeyRelease && !msgEdit->hasFocus()) {
         QKeyEvent* ke = static_cast<QKeyEvent*>(e);
         if ((ke->modifiers() == Qt::NoModifier || ke->modifiers() == Qt::ShiftModifier)
-                && !ke->text().isEmpty())
+            && !ke->text().isEmpty())
             msgEdit->setFocus();
     }
     return QWidget::event(e);
@@ -322,12 +362,10 @@ void GenericChatForm::onChatContextMenuRequested(QPoint pos)
     // If we right-clicked on a link, give the option to copy it
     bool clickedOnLink = false;
     Text* clickedText = qobject_cast<Text*>(chatWidget->getContentFromGlobalPos(pos));
-    if (clickedText)
-    {
+    if (clickedText) {
         QPointF scenePos = chatWidget->mapToScene(chatWidget->mapFromGlobal(pos));
         QString linkTarget = clickedText->getLinkAt(scenePos);
-        if (!linkTarget.isEmpty())
-        {
+        if (!linkTarget.isEmpty()) {
             clickedOnLink = true;
             copyLinkAction->setData(linkTarget);
         }
@@ -337,62 +375,100 @@ void GenericChatForm::onChatContextMenuRequested(QPoint pos)
     menu.exec(pos);
 }
 
-ChatMessage::Ptr GenericChatForm::addMessage(const ToxId& author, const QString &message, bool isAction,
-                                             const QDateTime &datetime, bool isSent)
+/**
+ * @brief Show, is it needed to hide message author name or not
+ * @param messageAuthor Author of the sent message
+ * @oaran messageTime DateTime of the sent message
+ * @return True if it's needed to hide name, false otherwise
+ */
+bool GenericChatForm::needsToHideName(const ToxPk& messageAuthor, const QDateTime& messageTime) const
+{
+    qint64 messagesTimeDiff = prevMsgDateTime.secsTo(messageTime);
+    return messageAuthor == previousId && messagesTimeDiff < chatWidget->repNameAfter;
+}
+
+/**
+ * @brief Creates ChatMessage shared object and inserts it into ChatLog
+ * @param author Author of the message
+ * @param message Message text
+ * @param dt Date and time when message was sent
+ * @param isAction True if this is an action message, false otherwise
+ * @param isSent True if message was received by your friend
+ * @return ChatMessage object
+ */
+ChatMessage::Ptr GenericChatForm::createMessage(const ToxPk& author, const QString& message,
+                                                const QDateTime& dt, bool isAction, bool isSent)
 {
     const Core* core = Core::getInstance();
-    bool authorIsActiveProfile = author == core->getSelfId();
-    QString authorStr = authorIsActiveProfile ? core->getUsername() : resolveToxId(author);
-
-
-    if (getLatestDate() != QDate::currentDate())
-    {
-        const Settings& s = Settings::getInstance();
-        QString dateText = QDate::currentDate().toString(s.getDateFormat());
-        addSystemInfoMessage(dateText, ChatMessage::INFO, QDateTime());
+    bool isSelf = author == core->getSelfId().getPublicKey();
+    QString authorStr = isSelf ? core->getUsername() : resolveToxPk(author);
+    if (getLatestDate() != QDate::currentDate()) {
+        addSystemDateMessage();
     }
 
     ChatMessage::Ptr msg;
-    if (isAction)
-    {
-        msg = ChatMessage::createChatMessage(authorStr, message, ChatMessage::ACTION, authorIsActiveProfile);
-        previousId.clear();
-    }
-    else
-    {
-        msg = ChatMessage::createChatMessage(authorStr, message, ChatMessage::NORMAL, authorIsActiveProfile);
-        if ( (author == previousId) && (prevMsgDateTime.secsTo(QDateTime::currentDateTime()) < getChatLog()->repNameAfter) )
+    if (isAction) {
+        msg = ChatMessage::createChatMessage(authorStr, message, ChatMessage::ACTION, isSelf);
+        previousId = ToxPk{};
+    } else {
+        msg = ChatMessage::createChatMessage(authorStr, message, ChatMessage::NORMAL, isSelf);
+        const QDateTime newMsgDateTime = QDateTime::currentDateTime();
+        if (needsToHideName(author, newMsgDateTime)) {
             msg->hideSender();
+        }
 
         previousId = author;
-        prevMsgDateTime = QDateTime::currentDateTime();
+        prevMsgDateTime = newMsgDateTime;
+    }
+
+    if (isSent) {
+        msg->markAsSent(dt);
     }
 
     insertChatMessage(msg);
-
-    if (isSent)
-        msg->markAsSent(datetime);
-
     return msg;
 }
 
-ChatMessage::Ptr GenericChatForm::addSelfMessage(const QString &message, bool isAction, const QDateTime &datetime, bool isSent)
+/**
+ * @brief Same, as createMessage, but creates message that you will send to someone
+ */
+ChatMessage::Ptr GenericChatForm::createSelfMessage(const QString& message, const QDateTime& dt,
+                                                    bool isAction, bool isSent)
 {
-    return addMessage(Core::getInstance()->getSelfId(), message, isAction, datetime, isSent);
+    ToxPk selfPk = Core::getInstance()->getSelfId().getPublicKey();
+    return createMessage(selfPk, message, dt, isAction, isSent);
 }
 
-void GenericChatForm::addAlertMessage(const ToxId &author, QString message, QDateTime datetime)
+/**
+ * @brief Inserts message into ChatLog
+ */
+void GenericChatForm::addMessage(const ToxPk& author, const QString& message, const QDateTime& dt,
+                                 bool isAction)
 {
-    QString authorStr = resolveToxId(author);
-    bool isSelf = author == Core::getInstance()->getSelfId();
-    ChatMessage::Ptr msg = ChatMessage::createChatMessage(authorStr, message, ChatMessage::ALERT, isSelf, datetime);
-    insertChatMessage(msg);
+    createMessage(author, message, dt, isAction, true);
+}
 
-    if ((author == previousId) && (prevMsgDateTime.secsTo(QDateTime::currentDateTime()) < getChatLog()->repNameAfter))
-        msg->hideSender();
+/**
+ * @brief Inserts int ChatLog message that you have sent
+ */
+void GenericChatForm::addSelfMessage(const QString& message, const QDateTime& datetime, bool isAction)
+{
+    createSelfMessage(message, datetime, isAction, true);
+}
 
+void GenericChatForm::addAlertMessage(const ToxPk& author, const QString& msg, const QDateTime& dt)
+{
+    QString authorStr = resolveToxPk(author);
+    bool isSelf = author == Core::getInstance()->getSelfId().getPublicKey();
+    auto chatMsg = ChatMessage::createChatMessage(authorStr, msg, ChatMessage::ALERT, isSelf, dt);
+    const QDateTime newMsgDateTime = QDateTime::currentDateTime();
+    if (needsToHideName(author, newMsgDateTime)) {
+        chatMsg->hideSender();
+    }
+
+    insertChatMessage(chatMsg);
     previousId = author;
-    prevMsgDateTime = QDateTime::currentDateTime();
+    prevMsgDateTime = newMsgDateTime;
 }
 
 void GenericChatForm::onEmoteButtonClicked()
@@ -406,9 +482,9 @@ void GenericChatForm::onEmoteButtonClicked()
     widget.installEventFilter(this);
 
     QWidget* sender = qobject_cast<QWidget*>(QObject::sender());
-    if (sender)
-    {
-        QPoint pos = -QPoint(widget.sizeHint().width() / 2, widget.sizeHint().height()) - QPoint(0, 10);
+    if (sender) {
+        QPoint pos =
+            -QPoint(widget.sizeHint().width() / 2, widget.sizeHint().height()) - QPoint(0, 10);
         widget.exec(sender->mapToGlobal(pos));
     }
 }
@@ -435,8 +511,7 @@ void GenericChatForm::onSaveLogClicked()
 
     QString plainText;
     auto lines = chatWidget->getLines();
-    for (ChatLine::Ptr l : lines)
-    {
+    for (ChatLine::Ptr l : lines) {
         Timestamp* rightCol = qobject_cast<Timestamp*>(l->getContent(2));
 
         if (!rightCol)
@@ -466,10 +541,34 @@ void GenericChatForm::focusInput()
     msgEdit->setFocus();
 }
 
-void GenericChatForm::addSystemInfoMessage(const QString &message, ChatMessage::SystemMessageType type, const QDateTime &datetime)
+void GenericChatForm::onChatMessageFontChanged(const QFont& font)
 {
-    previousId.clear();
+    // chat log
+    chatWidget->fontChanged(font);
+    chatWidget->forceRelayout();
+    // message editor
+    msgEdit->setStyleSheet(Style::getStylesheet(":/ui/msgEdit/msgEdit.css")
+                           + fontToCss(font, "QTextEdit"));
+}
+
+void GenericChatForm::addSystemInfoMessage(const QString& message, ChatMessage::SystemMessageType type,
+                                           const QDateTime& datetime)
+{
+    if (getLatestDate() != QDate::currentDate()) {
+        addSystemDateMessage();
+    }
+
+    previousId = ToxPk();
     insertChatMessage(ChatMessage::createChatInfoMessage(message, type, datetime));
+}
+
+void GenericChatForm::addSystemDateMessage()
+{
+    const Settings& s = Settings::getInstance();
+    QString dateText = QDate::currentDate().toString(s.getDateFormat());
+
+    previousId = ToxPk();
+    insertChatMessage(ChatMessage::createChatInfoMessage(dateText, ChatMessage::INFO, QDateTime()));
 }
 
 void GenericChatForm::clearChatArea()
@@ -480,12 +579,12 @@ void GenericChatForm::clearChatArea()
 void GenericChatForm::clearChatArea(bool notinform)
 {
     chatWidget->clear();
-    previousId = ToxId();
+    previousId = ToxPk();
 
     if (!notinform)
         addSystemInfoMessage(tr("Cleared"), ChatMessage::INFO, QDateTime::currentDateTime());
 
-    earliestMessage = QDateTime(); //null
+    earliestMessage = QDateTime(); // null
     historyBaselineDate = QDateTime::currentDateTime();
 
     emit chatAreaCleared();
@@ -494,22 +593,6 @@ void GenericChatForm::clearChatArea(bool notinform)
 void GenericChatForm::onSelectAllClicked()
 {
     chatWidget->selectAll();
-}
-
-QString GenericChatForm::resolveToxId(const ToxId &id)
-{
-    Friend *f = FriendList::findFriend(id);
-    if (f)
-        return f->getDisplayedName();
-
-    for (Group *it : GroupList::getAllGroups())
-    {
-        QString res = it->resolveToxId(id);
-        if (res.size())
-            return res;
-    }
-
-    return QString();
 }
 
 void GenericChatForm::insertChatMessage(ChatMessage::Ptr msg)
@@ -533,8 +616,7 @@ void GenericChatForm::resizeEvent(QResizeEvent* event)
 bool GenericChatForm::eventFilter(QObject* object, QEvent* event)
 {
     EmoticonsWidget* ev = qobject_cast<EmoticonsWidget*>(object);
-    if (ev && event->type() == QEvent::KeyPress)
-    {
+    if (ev && event->type() == QEvent::KeyPress) {
         QKeyEvent* key = static_cast<QKeyEvent*>(event);
         msgEdit->sendKeyEvent(key);
         msgEdit->setFocus();
@@ -547,14 +629,12 @@ bool GenericChatForm::eventFilter(QObject* object, QEvent* event)
     if (!qobject_cast<QWidget*>(object)->isEnabled())
         return false;
 
-    switch(event->type())
-    {
+    switch (event->type()) {
     case QEvent::Enter:
         showFileMenu();
         break;
 
-    case QEvent::Leave:
-    {
+    case QEvent::Leave: {
         QPoint flyPos = fileFlyout->mapToGlobal(QPoint());
         QSize flySize = fileFlyout->size();
 
@@ -588,8 +668,7 @@ void GenericChatForm::onSplitterMoved(int, int)
 
 void GenericChatForm::onShowMessagesClicked()
 {
-    if (netcam)
-    {
+    if (netcam) {
         if (bodySplitter->sizes()[1] == 0)
             bodySplitter->setSizes({1, 1});
         else
@@ -662,8 +741,8 @@ void GenericChatForm::showNetcam()
     if (!netcam)
         netcam = createNetcam();
 
-    connect(netcam, &GenericNetCamView::showMessageClicked,
-            this, &GenericChatForm::onShowMessagesClicked);
+    connect(netcam, &GenericNetCamView::showMessageClicked, this,
+            &GenericChatForm::onShowMessagesClicked);
 
     bodySplitter->insertWidget(0, netcam);
     bodySplitter->setCollapsible(0, false);

@@ -42,27 +42,26 @@ int ChatLineContent::type() const
 
 void ChatLineContent::selectionMouseMove(QPointF)
 {
-
 }
 
 void ChatLineContent::selectionStarted(QPointF)
 {
-
 }
 
 void ChatLineContent::selectionCleared()
 {
-
 }
 
 void ChatLineContent::selectionDoubleClick(QPointF)
 {
+}
 
+void ChatLineContent::selectionTripleClick(QPointF)
+{
 }
 
 void ChatLineContent::selectionFocusChanged(bool)
 {
-
 }
 
 bool ChatLineContent::isOverSelection(QPointF) const
@@ -75,6 +74,11 @@ QString ChatLineContent::getSelectedText() const
     return QString();
 }
 
+void ChatLineContent::fontChanged(const QFont& font)
+{
+    Q_UNUSED(font);
+}
+
 qreal ChatLineContent::getAscent() const
 {
     return 0.0;
@@ -82,7 +86,6 @@ qreal ChatLineContent::getAscent() const
 
 void ChatLineContent::visibilityChanged(bool)
 {
-
 }
 
 QString ChatLineContent::getText() const

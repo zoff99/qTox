@@ -45,7 +45,7 @@
     </message>
     <message>
         <source>Use slider to set volume of your speakers.</source>
-        <translation>Використовуйте повзунок для регулювання гучності пристрою відтворення.</translation>
+        <translation>Використовуйте повзунок для регулювання гучності динаміків.</translation>
     </message>
     <message>
         <source>Capture device</source>
@@ -85,6 +85,38 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Test Sound</source>
+        <translation>Перевірити звук</translation>
+    </message>
+    <message>
+        <source>Enables the experimental audio backend with echo cancelling support, needs qTox restart to take effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable experimental audio backend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio quality</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transmitted audio quality. Lower this setting if your bandwidth is not high enough or if you want to lower the internet usage.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>High (64 kbps)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Medium (32 kbps)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Low (16 kbps)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Very low (8 kbps)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -105,7 +137,7 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Original author: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Автор: %1</translation>
     </message>
     <message>
         <source>You are using qTox version %1.</source>
@@ -127,7 +159,7 @@ which may lead to problems with video calls.</source>
         <source>A list of all known issues may be found at our %1 at Github. If you discover a bug or security vulnerability within qTox, please report it according to the guidelines in our %2 wiki article.</source>
         <comment>`%1` is replaced by translation of `bug tracker`
 `%2` is replaced by translation of `Writing Useful Bug Reports`</comment>
-        <translation type="unfinished"></translation>
+        <translation>Список знаних проблем знаходиться у Github за адресою %1. Якщо ви знайшли помилку чи ваду у системі безпеки qTox, будь ласка, повідомте про неї згідно до інструкції у нашій статті на wiki %2.</translation>
     </message>
     <message>
         <source>bug-tracker</source>
@@ -141,17 +173,113 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Click here to report a bug.</source>
-        <translation type="unfinished"></translation>
+        <translation>Натисніть щоб повідомити про помилку.</translation>
     </message>
     <message>
         <source>See a full list of %1 at Github</source>
         <comment>`%1` is replaced with translation of word `contributors`</comment>
-        <translation type="unfinished"></translation>
+        <translation>Переглянути повний список %1 на Github</translation>
     </message>
     <message>
         <source>contributors</source>
         <comment>Replaces `%1` in `See a full list ofâ¦`</comment>
+        <translation type="unfinished">Співавтори</translation>
+    </message>
+</context>
+<context>
+    <name>AboutFriendForm</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Діалог</translation>
+    </message>
+    <message>
+        <source>username</source>
+        <translation type="unfinished">Ім&apos;я користувача</translation>
+    </message>
+    <message>
+        <source>status message</source>
+        <translation type="unfinished">Статус</translation>
+    </message>
+    <message>
+        <source>Public key:</source>
+        <translation type="unfinished">Відкритий ключ:</translation>
+    </message>
+    <message>
+        <source>Used aliases:</source>
+        <translation type="unfinished">Використовуємі псевдоніми:</translation>
+    </message>
+    <message>
+        <source>HISTORY OF ALIASES</source>
+        <translation type="unfinished">ІСТОРІЯ ПСЕВДОНІМІВ</translation>
+    </message>
+    <message>
+        <source>Automatically accept files from contact if set</source>
+        <translation type="unfinished">Автоматично приймати файли від контакту, якщо вибрано</translation>
+    </message>
+    <message>
+        <source>Auto accept files</source>
+        <translation type="unfinished">Автоматично приймати файли</translation>
+    </message>
+    <message>
+        <source>Default directory to save files:</source>
+        <translation type="unfinished">Каталог для зберігання файлів за замовчуванням:</translation>
+    </message>
+    <message>
+        <source>Auto accept for this contact is disabled</source>
+        <translation type="unfinished">Автоматичний прийом файлів для цього контакту вимкнено</translation>
+    </message>
+    <message>
+        <source>Auto accept call:</source>
+        <translation type="unfinished">Автоприйом дзвінків:</translation>
+    </message>
+    <message>
+        <source>Manual</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <translation type="unfinished">Аудіо</translation>
+    </message>
+    <message>
+        <source>Audio + Video</source>
+        <translation type="unfinished">Аудіо + Відео</translation>
+    </message>
+    <message>
+        <source>Automatically accept group chat invitations from this contact if set.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto accept group invites</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove history (operation can not be undone!)</source>
+        <translation type="unfinished">Видалити історію (операцію відмінити неможливо!)</translation>
+    </message>
+    <message>
+        <source>Notes</source>
+        <translation type="unfinished">Нотатки</translation>
+    </message>
+    <message>
+        <source>Input field for notes about the contact</source>
+        <translation type="unfinished">Поле для приміток про контакт</translation>
+    </message>
+    <message>
+        <source>You can save comment about this contact here.</source>
+        <translation type="unfinished">Ви можете залишити коментар про даний контакт тут.</translation>
+    </message>
+    <message>
+        <source>Choose an auto accept directory</source>
+        <comment>popup title</comment>
+        <translation type="unfinished">Оберіть теку, для автоматичного отримання файлів</translation>
+    </message>
+    <message>
+        <source>History removed</source>
+        <translation type="unfinished">Історію видалено</translation>
+    </message>
+    <message>
+        <source>Chat history with %1 removed!</source>
+        <translation type="unfinished">Історію переписки з %1 видалено!</translation>
     </message>
 </context>
 <context>
@@ -178,142 +306,22 @@ which may lead to problems with video calls.</source>
     </message>
 </context>
 <context>
-    <name>AboutUser</name>
-    <message>
-        <source>Dialog</source>
-        <translation>Діалог</translation>
-    </message>
-    <message>
-        <source>username</source>
-        <translation>Ім&apos;я користувача</translation>
-    </message>
-    <message>
-        <source>status message</source>
-        <translation>Статус</translation>
-    </message>
-    <message>
-        <source>Public key:</source>
-        <translation>Відкритий ключ:</translation>
-    </message>
-    <message>
-        <source>Used aliases:</source>
-        <translation>Використовуємі псевдоніми:</translation>
-    </message>
-    <message>
-        <source>HISTORY OF ALIASES</source>
-        <translation>ІСТОРІЯ ПСЕВДОНІМІВ</translation>
-    </message>
-    <message>
-        <source>Default directory to save files:</source>
-        <translatorcomment>To reduce string length it is also possible: &quot;Каталог для збергіання файлів:&quot;, which means &quot;Directory to save files&quot; (withot default).</translatorcomment>
-        <translation>Каталог для зберігання файлів за замовчуванням:</translation>
-    </message>
-    <message>
-        <source>Auto accept for this contact is disabled</source>
-        <translatorcomment>To reduce string length it is also possible: 
-1) &quot;Автоприйом файлів для цього контакту вимкнено&quot;. Where &quot;Автоприйом&quot; means the same as &quot;Автоматичний прийом&quot; but is not a dictionary word.
-2) &quot;Автоматичний прийом файлів вимкнено&quot;. Which means &quot;auto accept files is disabled&quot;, without &quot;for this contact&quot;.</translatorcomment>
-        <translation>Автоматичний прийом файлів для цього контакту вимкнено</translation>
-    </message>
-    <message>
-        <source>Auto accept files</source>
-        <translation>Автоматично приймати файли</translation>
-    </message>
-    <message>
-        <source>Remove history (operation can not be undone!)</source>
-        <translation>Видалити історію (операцію відмінити неможливо!)</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation>Нотатки</translation>
-    </message>
-    <message>
-        <source>You can save comment about this contact here.</source>
-        <translation>Ви можете залишити коментар про даний контакт тут.</translation>
-    </message>
-    <message>
-        <source>Choose an auto accept directory</source>
-        <comment>popup title</comment>
-        <translatorcomment>I changed &quot;Оберіть теку, для автоматичного отримання файлів&quot; to &quot;Оберіть каталог для автоматичного отримання файлів&quot;, because there is no need to put comma there and &quot;Каталог&quot; is more common word for &quot;Directory&quot; then &quot;тека (теку)&quot;</translatorcomment>
-        <translation>Оберіть каталог для автоматичного отримання файлів</translation>
-    </message>
-    <message>
-        <source>History removed</source>
-        <translation>Історію видалено</translation>
-    </message>
-    <message>
-        <source>Chat history with %1 removed!</source>
-        <translation>Історію переписки з %1 видалено!</translation>
-    </message>
-    <message>
-        <source>Auto accept call:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Manual</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Audio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Audio + Video</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Automatically accept files from contact if set</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input field for notes about the contact</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>AddFriendForm</name>
     <message>
         <source>Add Friends</source>
         <translation>Додати друзів</translation>
     </message>
     <message>
-        <source>Tox ID</source>
-        <comment>Tox ID of the person you&apos;re sending a friend request to</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <source>either 76 hexadecimal characters or name@example.com</source>
-        <comment>Tox ID format description</comment>
-        <translation>76 шістнадцяткових цифр або name@example.com</translation>
-    </message>
-    <message>
         <source>Invalid Tox ID format</source>
         <translation>Некоректний формат Tox ID</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <comment>The message you send in friend requests</comment>
-        <translation>Повідомлення</translation>
     </message>
     <message>
         <source>Send friend request</source>
         <translation>Надіслати запит на дружбу</translation>
     </message>
     <message>
-        <source>%1 here! Tox me maybe?</source>
-        <comment>Default message in friend requests if the field is left blank. Write something appropriate!</comment>
-        <translatorcomment>That means &quot;Hi, I&apos;m %1! Please, add me to you contact list.
-It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian noun can&apos;t mean a verb (like &quot;call&quot; for noun and verb in English)</translatorcomment>
-        <translation>Привіт, я %1! Додай мене в свій список контактів, будь ласка.</translation>
-    </message>
-    <message>
         <source>Couldn&apos;t add friend</source>
         <translation>Не можемо додати друга</translation>
-    </message>
-    <message>
-        <source>You can&apos;t add yourself as a friend!</source>
-        <comment>When trying to add your own Tox ID as friend</comment>
-        <translation>Ви не можете додати самого себе до друзів!</translation>
     </message>
     <message>
         <source>Add a friend</source>
@@ -332,24 +340,96 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
         <translation>Відхилити</translation>
     </message>
     <message>
-        <source>This Tox ID does not exist</source>
-        <comment>Toxme error</comment>
-        <translation type="unfinished">Даного Tox ID не існує</translation>
-    </message>
-    <message>
         <source>Tox ID, either 76 hexadecimal characters or name@example.com</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tox ID - або 76 символів 0-9 A-F, або name@example.com</translation>
     </message>
     <message>
         <source>Type in Tox ID of your friend</source>
-        <translation type="unfinished"></translation>
+        <translation>Впишіть Tox ID вашого друга</translation>
     </message>
     <message>
         <source>Friend request message</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Повідомлення у запрошенні на дружбу</translation>
     </message>
     <message>
         <source>Type message to send with the friend request or leave empty to send a default message</source>
+        <translation type="unfinished">Впишіть повідомлення у запрошення на дружбу, або залишіть його порожнім, щоб надіслати стандартне повідомлення</translation>
+    </message>
+    <message>
+        <source>%1 Tox ID is invalid or does not exist</source>
+        <comment>Toxme error</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can&apos;t add yourself as a friend!</source>
+        <extracomment>When trying to add your own Tox ID as friend</extracomment>
+        <translation type="unfinished">Ви не можете додати самого себе до друзів!</translation>
+    </message>
+    <message>
+        <source>Open contact list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t open file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t open the contact file</source>
+        <extracomment>Error message when trying to open a contact list file to import</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>We couldn&apos;t find any contacts to import in this file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tox ID</source>
+        <extracomment>Tox ID of the person you&apos;re sending a friend request to</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>either 76 hexadecimal characters or name@example.com</source>
+        <extracomment>Tox ID format description</extracomment>
+        <translation type="unfinished">76 шістнадцяткових цифр або name@example.com</translation>
+    </message>
+    <message>
+        <source>Message</source>
+        <extracomment>The message you send in friend requests</extracomment>
+        <translation type="unfinished">Повідомлення</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <extracomment>Button to choose a file with a list of contacts to import</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send friend requests</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 here! Tox me maybe?</source>
+        <extracomment>Default message in friend requests if the field is left blank. Write something appropriate!</extracomment>
+        <translation type="unfinished">Привіт, я %1! Додай мене в свій список контактів, будь ласка.</translation>
+    </message>
+    <message>
+        <source>Import a list of contacts, one Tox ID per line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Ready to import %n contact(s), click send to confirm</source>
+        <extracomment>Shows the number of contacts we&apos;re about to import from a file (at least one)</extracomment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Import contacts</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -361,27 +441,27 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
     </message>
     <message>
         <source>Unless you %1 know what you are doing, please do %2 change anything here. Changes made here may lead to problems with qTox, and even to loss of your data, e.g. history.</source>
-        <translation type="unfinished"></translation>
+        <translation>Якщо Ви не %1, будь ласка, %2 змінюйте тут нічого. Зміни в цьому місці можуть призвести до проблем із qTox та навіть до втрати ваших даних, наприклад, історії.</translation>
     </message>
     <message>
         <source>really</source>
-        <translation type="unfinished"></translation>
+        <translation>впевнені</translation>
     </message>
     <message>
         <source>not</source>
-        <translation type="unfinished"></translation>
+        <translation>не</translation>
     </message>
     <message>
         <source>IMPORTANT NOTE</source>
-        <translation type="unfinished"></translation>
+        <translation>ВАЖЛИВА ПРИМІТКА</translation>
     </message>
     <message>
         <source>Reset settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Скинути налаштування</translation>
     </message>
     <message>
         <source>All settings will be reset to default. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Всі налаштування будуть скинуті до стандартних. Ви впевнені?</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -399,11 +479,11 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
     <message>
         <source>You can&apos;t disconnect while a call is active!</source>
         <comment>popup text</comment>
-        <translation type="unfinished">Ви не можете від&apos;єднатись під час активного дзвінка!</translation>
+        <translation>Ви не можете від&apos;єднатись під час активного дзвінка!</translation>
     </message>
     <message>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти файл</translation>
     </message>
     <message>
         <source>Logs (*.log)</source>
@@ -481,15 +561,15 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Налагодження</translation>
     </message>
     <message>
         <source>Export Debug Log</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вивантажити логи налагодження</translation>
     </message>
     <message>
         <source>Copy Debug Log</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Скопіювати логи налагодження</translation>
     </message>
 </context>
 <context>
@@ -622,6 +702,34 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
         <comment>e.g. &quot;Dubslow is now online&quot;</comment>
         <translation type="unfinished">%1 тепер вже відомий як %2</translation>
     </message>
+    <message>
+        <source>Can&apos;t start video call</source>
+        <translation>Не можу розпочати відеодзвінок</translation>
+    </message>
+    <message>
+        <source>Can&apos;t start audio call</source>
+        <translation>Не можу розпочати аудіодзвінок</translation>
+    </message>
+    <message>
+        <source>Microphone can be muted only during a call</source>
+        <translation>Вимкнути мікрофон можна лише під час дзвінка</translation>
+    </message>
+    <message>
+        <source>Sound can be disabled only during a call</source>
+        <translation>Звук можливо вимкнути лише під час дзвінка</translation>
+    </message>
+    <message>
+        <source>Export to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save chat log</source>
+        <translation type="unfinished">Зберегти чат</translation>
+    </message>
+    <message>
+        <source>Call with %1 ended unexpectedly. %2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ChatLog</name>
@@ -669,61 +777,28 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
         <translation>Вітання з qTox</translation>
     </message>
     <message>
-        <source>You need to write a message with your request</source>
-        <translation>Напишіть повідомлення з вашим запитом</translation>
-    </message>
-    <message>
-        <source>Your message is too long!</source>
-        <translation>Ваше повідомлення завелике!</translation>
-    </message>
-    <message>
-        <source>Friend is already added</source>
-        <translation>Друга вже додано</translation>
-    </message>
-    <message>
-        <source>/me offers friendship.</source>
-        <translation>/me пропонує дружбу.</translation>
-    </message>
-    <message>
         <source>/me offers friendship, &quot;%1&quot;</source>
         <translation>/me пропонує дружбу, &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>The previous password is incorrect; please try again:</source>
-        <comment>used on retries in load()</comment>
-        <translatorcomment>можливо, не &quot;попередній&quot;, а &quot;перший&quot;</translatorcomment>
-        <translation>Попередній пароль неправильний; спробуйте ще раз:</translation>
+        <source>Invalid Tox ID</source>
+        <comment>Error while sending friendship request</comment>
+        <translation type="unfinished">Невірний Tox ID</translation>
     </message>
     <message>
-        <source>Encrypted chat history</source>
-        <translation>Зашифрована історія</translation>
+        <source>You need to write a message with your request</source>
+        <comment>Error while sending friendship request</comment>
+        <translation type="unfinished">Напишіть повідомлення з вашим запитом</translation>
     </message>
     <message>
-        <source>No encrypted chat history file found, or it was corrupted.
-History will be disabled!</source>
-        <translation>Не знайдено зашифрованої історії чату або вона була пошкоджена.
-Історія чату буде вимкнена!</translation>
+        <source>Your message is too long!</source>
+        <comment>Error while sending friendship request</comment>
+        <translation type="unfinished">Ваше повідомлення завелике!</translation>
     </message>
     <message>
-        <source>Please enter the password for the chat history for the profile &quot;%1&quot;.</source>
-        <comment>used in load() when no hist pw set</comment>
-        <translation>Будь ласка, введіть пароль для історії переписки для профілю &quot;%1&quot;.</translation>
-    </message>
-    <message>
-        <source>
-Disabling chat history now will leave the encrypted history intact (but not usable); if you later remember the password, you may re-enable encryption from the Privacy tab with the correct password to use the history.</source>
-        <comment>part of history password dialog</comment>
-        <translation type="unfinished">
-Вимкнення історії переписки залишить Вашу зашифровану історію неушкодженою (але невикористовуємою); якщо пізніше Ви пам&apos;ятатимете пароль, Ви зможете знову увімкнути шифрування з вкладки &quot;Приватність&quot;.</translation>
-    </message>
-    <message>
-        <source>The chat history password failed. Please try another?</source>
-        <comment>used only when pw set before load() doesn&apos;t work</comment>
-        <translation>Щось не так з паролем для історії чату. Спробуйте інший?</translation>
-    </message>
-    <message>
-        <source>Disable chat history</source>
-        <translation>Вимкнути історію чату</translation>
+        <source>Friend is already added</source>
+        <comment>Error while sending friendship request</comment>
+        <translation type="unfinished">Друга вже додано</translation>
     </message>
 </context>
 <context>
@@ -828,33 +903,27 @@ Disabling chat history now will leave the encrypted history intact (but not usab
     <name>FriendListWidget</name>
     <message>
         <source>Today</source>
-        <comment>Category for sorting friends by activity</comment>
-        <translation>Сьогодні</translation>
+        <translation type="unfinished">Сьогодні</translation>
     </message>
     <message>
         <source>Yesterday</source>
-        <comment>Category for sorting friends by activity</comment>
-        <translation>Вчора</translation>
+        <translation type="unfinished">Вчора</translation>
     </message>
     <message>
         <source>Last 7 days</source>
-        <comment>Category for sorting friends by activity</comment>
-        <translation>Останні 7 днів</translation>
+        <translation type="unfinished">Останні 7 днів</translation>
     </message>
     <message>
         <source>This month</source>
-        <comment>Category for sorting friends by activity</comment>
-        <translation>Цього місяця</translation>
+        <translation type="unfinished">Цього місяця</translation>
     </message>
     <message>
         <source>Older than 6 Months</source>
-        <comment>Category for sorting friends by activity</comment>
-        <translation>Раніше 6 місяців</translation>
+        <translation type="unfinished">Раніше 6 місяців</translation>
     </message>
     <message>
-        <source>Unknown</source>
-        <comment>Category for sorting friends by activity</comment>
-        <translation>Невідомо</translation>
+        <source>Never</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1180,7 +1249,7 @@ instead of system taskbar.</source>
     </message>
     <message>
         <source>Copy link address</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопіювати адресу посилання</translation>
     </message>
 </context>
 <context>
@@ -1255,19 +1324,22 @@ instead of system taskbar.</source>
     </message>
     <message>
         <source>Group invites</source>
+        <translation>Групові запрошення</translation>
+    </message>
+</context>
+<context>
+    <name>GroupInviteWidget</name>
+    <message>
+        <source>Invited by %1 on %2 at %3.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Join</source>
-        <translation>Приєднатись</translation>
+        <translation>Долучитися</translation>
     </message>
     <message>
         <source>Decline</source>
-        <translation>Відхилити</translation>
-    </message>
-    <message>
-        <source>Invited by %1 on %2 at %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Відмовитись</translation>
     </message>
 </context>
 <context>
@@ -1405,22 +1477,22 @@ Profile does not contain your history.</source>
     </message>
     <message>
         <source>Register on ToxMe</source>
-        <translation type="unfinished"></translation>
+        <translation>Зареєструватись на ToxMe</translation>
     </message>
     <message>
         <source>Name for the ToxMe service.</source>
         <comment>Tooltip for the `Username` ToxMe field.</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ім&apos;я у сервісі ToxMe.</translation>
     </message>
     <message>
         <source>Optional. Something about you. Or your cat.</source>
         <comment>Tooltip for the Biography text.</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Опціонально. Щось про Вас. Чи Вашого кота.</translation>
     </message>
     <message>
         <source>Optional. Something about you. Or your cat.</source>
         <comment>Tooltip for the Biography field.</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Опціонально. Щось про Вас. Чи Вашого кота.</translation>
     </message>
     <message>
         <source>ToxMe service to register on.</source>
@@ -1429,48 +1501,48 @@ Profile does not contain your history.</source>
     <message>
         <source>If not set, ToxMe entries are publicly visible.</source>
         <comment>Tooltip for the `Hide my name from public list` ToxMe checkbox.</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Якщо не вибрано, записи ToxMe будуть доступні всім.</translation>
     </message>
     <message>
         <source>Remove your password and encryption from your profile.</source>
         <comment>Tooltip for the `Remove password` button.</comment>
-        <translation type="unfinished"></translation>
+        <translation>Прибрати Ваш пароль та шифрування з Вашого профілю.</translation>
     </message>
     <message>
         <source>Name input</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле вводу імені</translation>
     </message>
     <message>
         <source>Name visible to contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я, що буде показане контактам</translation>
     </message>
     <message>
         <source>Status message input</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле ввода статуса</translation>
     </message>
     <message>
         <source>Status message visible to contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Статус, що буде показаний контактам</translation>
     </message>
     <message>
         <source>Your Tox ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Ваш Tox ID</translation>
     </message>
     <message>
         <source>Save QR image as file</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти QR код у файл</translation>
     </message>
     <message>
         <source>Copy QR image to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопіювати QR код у буфер обміну</translation>
     </message>
     <message>
         <source>ToxMe username to be shown on ToxMe</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ToxMe нікнейм, що відображатиметься у ToxMe</translation>
     </message>
     <message>
         <source>Optional ToxMe biography to be shown on ToxMe</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Опціонально. Біографія, що відображатиметься у ToxMe</translation>
     </message>
     <message>
         <source>ToxMe service address</source>
@@ -1482,11 +1554,11 @@ Profile does not contain your history.</source>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль</translation>
     </message>
     <message>
         <source>Update ToxMe entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити запис ToxMe</translation>
     </message>
     <message>
         <source>Rename profile.</source>
@@ -1502,27 +1574,31 @@ Profile does not contain your history.</source>
     </message>
     <message>
         <source>Remove password from profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити пароль з профілю</translation>
     </message>
     <message>
         <source>Change profile password</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити пароль профілю</translation>
     </message>
     <message>
         <source>My name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Моє ім&apos;я:</translation>
     </message>
     <message>
         <source>My status:</source>
-        <translation type="unfinished"></translation>
+        <translation>Мій статус:</translation>
     </message>
     <message>
         <source>My username</source>
-        <translation type="unfinished"></translation>
+        <translation>Мій нікнейм</translation>
     </message>
     <message>
         <source>My biography</source>
-        <translation type="unfinished"></translation>
+        <translation>Моя біографія</translation>
+    </message>
+    <message>
+        <source>My profile</source>
+        <translation>Мій профіль</translation>
     </message>
 </context>
 <context>
@@ -1534,6 +1610,10 @@ Profile does not contain your history.</source>
     <message>
         <source>Load history from:</source>
         <translation>Завантажити історію від:</translation>
+    </message>
+    <message>
+        <source>%1 messages</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1649,35 +1729,35 @@ You may want to create one.</source>
     </message>
     <message>
         <source>Username input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле вводу для нікнейма</translation>
     </message>
     <message>
         <source>Password input field, you can leave it empty (no password), or type at least 6 characters</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле вводу пароля. Його можна залишити порожнім (без пароля) або встановити щонайменше 6 символів</translation>
     </message>
     <message>
         <source>Password confirmation field</source>
-        <translation type="unfinished"></translation>
+        <translation>Підтвердіть пароль</translation>
     </message>
     <message>
         <source>Create a new profile button</source>
-        <translation type="unfinished"></translation>
+        <translation>Кнопка створення нового профілю</translation>
     </message>
     <message>
         <source>Profile list</source>
-        <translation type="unfinished"></translation>
+        <translation>Список профілів</translation>
     </message>
     <message>
         <source>List of profiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Список профілів</translation>
     </message>
     <message>
         <source>Password input</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле вводу пароля</translation>
     </message>
     <message>
         <source>Load automatically checkbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Галочка для автоматичного завантаження</translation>
     </message>
     <message>
         <source>Import profile</source>
@@ -1685,15 +1765,15 @@ You may want to create one.</source>
     </message>
     <message>
         <source>Load selected profile button</source>
-        <translation type="unfinished"></translation>
+        <translation>Кнопка завантаження обраного профіля</translation>
     </message>
     <message>
         <source>New profile creation page</source>
-        <translation type="unfinished"></translation>
+        <translation>Сторінка створення нового профіля</translation>
     </message>
     <message>
         <source>Loading existing profile page</source>
-        <translation type="unfinished"></translation>
+        <translation>Сторінка завантаження існуючого профіля</translation>
     </message>
 </context>
 <context>
@@ -1732,19 +1812,19 @@ You may want to create one.</source>
     </message>
     <message>
         <source>Open profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити профіль</translation>
     </message>
     <message>
         <source>Open profile page when clicked</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">По кліку відкрити сторінку профілю</translation>
     </message>
     <message>
         <source>Status message input</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле ввода статуса</translation>
     </message>
     <message>
         <source>Set your status message that will be shown to others</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановіть Ваш статус, який буде показано іншим</translation>
     </message>
     <message>
         <source>Status</source>
@@ -1752,15 +1832,15 @@ You may want to create one.</source>
     </message>
     <message>
         <source>Set availability status</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Встановити доступність</translation>
     </message>
     <message>
         <source>Contact search</source>
-        <translation type="unfinished"></translation>
+        <translation>Пошук контакту</translation>
     </message>
     <message>
         <source>Contact search input for known friends</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле пошуку по друзям</translation>
     </message>
     <message>
         <source>Sorting and visibility</source>
@@ -1772,23 +1852,23 @@ You may want to create one.</source>
     </message>
     <message>
         <source>Open Add friends page</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити сторінку додавання друзів</translation>
     </message>
     <message>
         <source>Groupchat</source>
-        <translation type="unfinished"></translation>
+        <translation>Груповий чат</translation>
     </message>
     <message>
         <source>Open groupchat management page</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити сторінку керування груповим чатом</translation>
     </message>
     <message>
         <source>File transfers history</source>
-        <translation type="unfinished"></translation>
+        <translation>Історія надісланих файлів</translation>
     </message>
     <message>
         <source>Open File transfers history</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити історію надісланих файлів</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -1796,7 +1876,7 @@ You may want to create one.</source>
     </message>
     <message>
         <source>Open Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити налаштування</translation>
     </message>
 </context>
 <context>
@@ -1917,6 +1997,25 @@ Save format changes are possible, which may result in data loss.</source>
         <source>Privacy</source>
         <translation type="unfinished">Приватність</translation>
     </message>
+    <message>
+        <source>BlackList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter group message by group member&apos;s public key. Put public key here, one per line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Profile</name>
+    <message>
+        <source>Failed to derive key from password, the profile won&apos;t use the new password.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t change password on the database, it might be corrupted or use the old password.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ProfileForm</name>
@@ -1956,33 +2055,8 @@ Please use another image.</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <source>Profile already exists</source>
-        <comment>rename failure title</comment>
-        <translation>Профіль вже існує</translation>
-    </message>
-    <message>
-        <source>A profile named &quot;%1&quot; already exists.</source>
-        <comment>rename confirm text</comment>
-        <translation>Профіль з іменем користувача &quot;%1&quot; вже існує.</translation>
-    </message>
-    <message>
-        <source>Failed to rename</source>
-        <comment>rename failed title</comment>
-        <translation>Помилка перейменування</translation>
-    </message>
-    <message>
         <source>Couldn&apos;t rename the profile to &quot;%1&quot;</source>
         <translation>Неможливо перейменувати профіль в &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Export profile</source>
-        <comment>save dialog title</comment>
-        <translation>Експорт профілю</translation>
-    </message>
-    <message>
-        <source>Tox save file (*.tox)</source>
-        <comment>save dialog filter</comment>
-        <translation>Файл Tox (*.tox)</translation>
     </message>
     <message>
         <source>Location not writable</source>
@@ -2021,22 +2095,8 @@ Please use another image.</source>
         <translation>Ви впевнені?</translation>
     </message>
     <message>
-        <source>Are you sure you want to delete your password?</source>
-        <comment>deletion confirmation text</comment>
-        <translation>Ви дійсно бажаєте видалити Ваш пароль?</translation>
-    </message>
-    <message>
         <source>Please enter a new password.</source>
         <translation>Введіть новий пароль, будь ласка.</translation>
-    </message>
-    <message>
-        <source>User Profile</source>
-        <translation>Профіль користувача</translation>
-    </message>
-    <message>
-        <source>This bunch of characters tells other Tox clients how to contact you.
-Share it with your friends to communicate.</source>
-        <translation>Цей набір символів дозволяє клієнтам Tox зв&apos;язатись з Вами. Для комунікації поділіться ним з своїм друзями.</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this profile?</source>
@@ -2052,16 +2112,6 @@ Share it with your friends to communicate.</source>
         <source>Save QrCode (*.png)</source>
         <comment>save dialog filter</comment>
         <translation>Зберегти Qr код (*.png)</translation>
-    </message>
-    <message>
-        <source>The following files could not be deleted:</source>
-        <comment>deletion failed text part 1</comment>
-        <translation>Не вдалось видалити наступні файли:</translation>
-    </message>
-    <message>
-        <source>Please manually remove them.</source>
-        <comment>deletion failed text part 2</comment>
-        <translation>Будь ласка, видаліть їх самостійно.</translation>
     </message>
     <message>
         <source>Files could not be deleted!</source>
@@ -2113,6 +2163,73 @@ Share it with your friends to communicate.</source>
     <message>
         <source>Current profile location: %1</source>
         <translation type="unfinished">Поточне місцезнаходження файлів профілю: %1</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t change password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This bunch of characters tells other Tox clients how to contact you.
+Share it with your friends to communicate.
+
+This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty path is unavaliable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to rename</source>
+        <translation type="unfinished">Помилка перейменування</translation>
+    </message>
+    <message>
+        <source>Profile already exists</source>
+        <translation type="unfinished">Профіль вже існує</translation>
+    </message>
+    <message>
+        <source>A profile named &quot;%1&quot; already exists.</source>
+        <translation type="unfinished">Профіль з іменем користувача &quot;%1&quot; вже існує.</translation>
+    </message>
+    <message>
+        <source>Empty name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty name is unavaliable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t change password on the database, it might be corrupted or use the old password.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export profile</source>
+        <translation type="unfinished">Експорт профілю</translation>
+    </message>
+    <message>
+        <source>Tox save file (*.tox)</source>
+        <extracomment>save dialog filter</extracomment>
+        <translation type="unfinished">Файл Tox (*.tox)</translation>
+    </message>
+    <message>
+        <source>The following files could not be deleted:</source>
+        <extracomment>deletion failed text part 1</extracomment>
+        <translation type="unfinished">Не вдалось видалити наступні файли:</translation>
+    </message>
+    <message>
+        <source>Please manually remove them.</source>
+        <extracomment>deletion failed text part 2</extracomment>
+        <translation type="unfinished">Будь ласка, видаліть їх самостійно.</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete your password?</source>
+        <extracomment>deletion confirmation text</extracomment>
+        <translation type="unfinished">Ви дійсно бажаєте видалити Ваш пароль?</translation>
     </message>
 </context>
 <context>
@@ -2189,6 +2306,22 @@ Share it with your friends to communicate.</source>
     </message>
 </context>
 <context>
+    <name>QMessageBox</name>
+    <message>
+        <source>Couldn&apos;t add friend</source>
+        <translation type="unfinished">Не можемо додати друга</translation>
+    </message>
+    <message>
+        <source>%1 is not a valid Toxme address.</source>
+        <translation>%1 - неправильна адреса ToxMe.</translation>
+    </message>
+    <message>
+        <source>You can&apos;t add yourself as a friend!</source>
+        <comment>When trying to add your own Tox ID as friend</comment>
+        <translation type="unfinished">Ви не можете додати самого себе до друзів!</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Version %1, %2</source>
@@ -2240,10 +2373,6 @@ It will be installed when qTox restarts.</source>
     <message>
         <source>Incoming call...</source>
         <translation>Вхідний дзвінок...</translation>
-    </message>
-    <message>
-        <source>Resizing</source>
-        <translation>Змінити розмір</translation>
     </message>
     <message>
         <source>%1 here! Tox me maybe?</source>
@@ -2319,6 +2448,14 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
         <source>Internal ToxMe error</source>
         <translation>Внутрішня помилка ToxMe</translation>
     </message>
+    <message>
+        <source>Reformatting text in progress..</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starts new instance and opens the login screen.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RemoveFriendDialog</name>
@@ -2340,7 +2477,7 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
     </message>
     <message>
         <source>Remove all chat history with the friend if set</source>
-        <translation type="unfinished"></translation>
+        <translation>Коли встановлено, видаляти усю історію спілкування з другом</translation>
     </message>
 </context>
 <context>
@@ -2399,19 +2536,19 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
     </message>
     <message>
         <source>Confirm password</source>
-        <translation type="unfinished"></translation>
+        <translation>Підтвердіть пароль</translation>
     </message>
     <message>
         <source>Confirm password input</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле вводу підтвердження пароля</translation>
     </message>
     <message>
         <source>Password input</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле введення пароля</translation>
     </message>
     <message>
         <source>Password input field, minimum 6 characters long</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле введення пароля, мінімальна довжина 6 символів</translation>
     </message>
 </context>
 <context>
@@ -2450,10 +2587,6 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
         <comment>Don&apos;t send a friend request</comment>
         <translation>Скасувати</translation>
     </message>
-    <message>
-        <source>%1 is not a valid Toxme address.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>UserInterfaceForm</name>
@@ -2463,7 +2596,7 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
     </message>
     <message>
         <source>User Interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Інтерфейс користувача</translation>
     </message>
 </context>
 <context>
@@ -2532,7 +2665,7 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
     </message>
     <message>
         <source>Contact list</source>
-        <translation type="unfinished"></translation>
+        <translation>Список контактів</translation>
     </message>
     <message>
         <source>Always notify about new messages in groupchats.</source>
@@ -2571,7 +2704,7 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
     </message>
     <message>
         <source>Emoticons</source>
-        <translation type="unfinished"></translation>
+        <translation>Емоції</translation>
     </message>
     <message>
         <source>Use emoticons</source>
@@ -2636,10 +2769,6 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
         <source>toxcore failed to start with your proxy settings. qTox cannot run; please modify your settings and restart.</source>
         <comment>popup text</comment>
         <translation>Помилка запуску ядра tox із поточними параметрами проксі. qTox не працює; змініть параметри і перезапустіть.</translation>
-    </message>
-    <message>
-        <source>Add friend</source>
-        <translation>Додати друга</translation>
     </message>
     <message>
         <source>Add new circle...</source>
@@ -2724,10 +2853,6 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
         <translation>Попередня бесіда</translation>
     </message>
     <message>
-        <source>File transfers</source>
-        <translation>Передачі файлів</translation>
-    </message>
-    <message>
         <source>Executable file</source>
         <comment>popup title</comment>
         <translation>Виконуваний файл</translation>
@@ -2736,14 +2861,6 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
         <source>You have asked qTox to open an executable file. Executable files can potentially damage your computer. Are you sure want to open this file?</source>
         <comment>popup text</comment>
         <translation>Ви намагаєтеся відкрити виконуваний файл. Виконувані файли можуть нанести шкоди вашому комп’ютеру. Ви все ще хочете відкрити цей файл?</translation>
-    </message>
-    <message>
-        <source>Settings</source>
-        <translation>Параметри</translation>
-    </message>
-    <message>
-        <source>Profile</source>
-        <translation>Профіль</translation>
     </message>
     <message>
         <source>Couldn&apos;t request friendship</source>
@@ -2766,41 +2883,12 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
         <translation>Ваш статус</translation>
     </message>
     <message>
-        <source>away</source>
-        <comment>contact status</comment>
-        <translation>Відійшов</translation>
-    </message>
-    <message>
-        <source>busy</source>
-        <comment>contact status</comment>
-        <translation>Зайнятий</translation>
-    </message>
-    <message>
-        <source>offline</source>
-        <comment>contact status</comment>
-        <translation>Поза мережею</translation>
-    </message>
-    <message>
-        <source>online</source>
-        <comment>contact status</comment>
-        <translation>В мережі</translation>
-    </message>
-    <message>
-        <source>%1 is now %2</source>
-        <comment>e.g. &quot;Dubslow is now online&quot;</comment>
-        <translation>%1 тепер вже відомий як %2</translation>
-    </message>
-    <message>
         <source>%1 has set the title to %2</source>
         <translation>%1 встановив тему %2</translation>
     </message>
     <message>
         <source>Message failed to send</source>
         <translation>Не вдалось відправити повідомлення</translation>
-    </message>
-    <message>
-        <source>Group invites</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;Empty&gt;</source>
@@ -2835,6 +2923,31 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
         <source>Show</source>
         <comment>Tray action menu to show qTox window</comment>
         <translation type="unfinished">Відкрити</translation>
+    </message>
+    <message>
+        <source>Add friend</source>
+        <comment>title of the window</comment>
+        <translation type="unfinished">Додати друга</translation>
+    </message>
+    <message>
+        <source>Group invites</source>
+        <comment>title of the window</comment>
+        <translation>Групові запрошення</translation>
+    </message>
+    <message>
+        <source>File transfers</source>
+        <comment>title of the window</comment>
+        <translation type="unfinished">Передачі файлів</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <comment>title of the window</comment>
+        <translation type="unfinished">Параметри</translation>
+    </message>
+    <message>
+        <source>My profile</source>
+        <comment>title of the window</comment>
+        <translation>Мій профіль</translation>
     </message>
 </context>
 </TS>

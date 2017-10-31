@@ -8,7 +8,7 @@ class PasswordEdit : public QLineEdit
 {
     Q_OBJECT
 public:
-    explicit PasswordEdit(QWidget *parent);
+    explicit PasswordEdit(QWidget* parent);
     ~PasswordEdit();
 
 protected:
@@ -24,7 +24,7 @@ private:
         EventHandler();
         ~EventHandler();
         void updateActions();
-        bool eventFilter(QObject *obj, QEvent *event);
+        bool eventFilter(QObject* obj, QEvent* event);
     };
 
     void registerHandler();

@@ -19,14 +19,6 @@
 
 set -eu -o pipefail
 
-# windows check
-if cmd.exe /c ver 2>/dev/null
-then
-    cd windows
-    ./bootstrap.sh
-    exit $?
-fi
-
 
 ################ parameters ################
 # directory where the script is located
@@ -39,7 +31,7 @@ readonly INSTALL_DIR=libs
 readonly BASE_DIR="${SCRIPT_DIR}/${INSTALL_DIR}"
 
 # versions of libs to checkout
-readonly TOXCORE_VERSION="v0.1.2"
+readonly TOXCORE_VERSION="v0.1.10"
 readonly SQLCIPHER_VERSION="v3.4.0"
 
 # directory names of cloned repositories

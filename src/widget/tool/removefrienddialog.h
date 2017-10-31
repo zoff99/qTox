@@ -2,16 +2,16 @@
 #define DELETEFRIENDDIALOG_H
 
 
-#include <QDialog>
 #include "ui_removefrienddialog.h"
-#include "src/friend.h"
+#include "src/model/friend.h"
+#include <QDialog>
 
 
 class RemoveFriendDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit RemoveFriendDialog(QWidget *parent, const Friend* f);
+    explicit RemoveFriendDialog(QWidget* parent, const Friend* f);
 
     inline bool removeHistory()
     {

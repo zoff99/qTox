@@ -21,20 +21,19 @@
 #ifndef CALLCONFIRMWIDGET_H
 #define CALLCONFIRMWIDGET_H
 
-#include <QWidget>
-#include <QRect>
-#include <QPolygon>
 #include <QBrush>
+#include <QPolygon>
+#include <QRect>
+#include <QWidget>
 
 class QPaintEvent;
 class QShowEvent;
-class Friend;
 
 class CallConfirmWidget final : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CallConfirmWidget(const QWidget *Anchor, const Friend& f);
+    explicit CallConfirmWidget(const QWidget* anchor);
 
 signals:
     void accepted();
@@ -47,11 +46,10 @@ protected:
     void paintEvent(QPaintEvent* event) final;
     void showEvent(QShowEvent* event) final;
     void hideEvent(QHideEvent* event) final;
-    bool eventFilter(QObject *, QEvent* event) final;
+    bool eventFilter(QObject*, QEvent* event) final;
 
 private:
     const QWidget* anchor;
-    const Friend& f;
 
     QRect mainRect;
     QPolygon spikePoly;

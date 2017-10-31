@@ -21,26 +21,32 @@
 #define HISTORY_H
 
 #include <QDateTime>
-#include <QVector>
 #include <QHash>
+#include <QVector>
 
 #include <cstdint>
 #include <tox/toxencryptsave.h>
 
+#include "src/core/toxpk.h"
 #include "src/persistence/db/rawdatabase.h"
 
 class Profile;
 class HistoryKeeper;
 
 class History
-{   
+{
 public:
     struct HistMessage
     {
-        HistMessage(qint64 id, bool isSent, QDateTime timestamp, QString chat,
-                    QString dispName, QString sender, QString message)
-            : chat{chat}, sender{sender}, message{message}, dispName{dispName}
-            , timestamp{timestamp}, id{id}, isSent{isSent}
+        HistMessage(qint64 id, bool isSent, QDateTime timestamp, QString chat, QString dispName,
+                    QString sender, QString message)
+            : chat{chat}
+            , sender{sender}
+            , message{message}
+            , dispName{dispName}
+            , timestamp{timestamp}
+            , id{id}
+            , isSent{isSent}
         {
         }
 
@@ -53,8 +59,14 @@ public:
         bool isSent;
     };
 
+    struct DateMessages
+    {
+        uint offsetDays;
+        uint count;
+    };
+
 public:
-    History(std::shared_ptr<RawDatabase> db);
+    explicit History(std::shared_ptr<RawDatabase> db);
     ~History();
 
     bool isValid();
@@ -62,21 +74,22 @@ public:
 
     void eraseHistory();
     void removeFriendHistory(const QString& friendPk);
-    void addNewMessage(const QString& friendPk, const QString& message,
-                       const QString& sender, const QDateTime& time,
-                       bool isSent, QString dispName,
-                       std::function<void(int64_t)> insertIdCallback={});
+    void addNewMessage(const QString& friendPk, const QString& message, const QString& sender,
+                       const QDateTime& time, bool isSent, QString dispName,
+                       const std::function<void(int64_t)>& insertIdCallback = {});
 
-    QList<HistMessage> getChatHistory(const QString& friendPk,
-                                      const QDateTime& from,
+    QList<HistMessage> getChatHistory(const QString& friendPk, const QDateTime& from,
                                       const QDateTime& to);
+
+    QList<DateMessages> getChatHistoryCounts(const ToxPk& friendPk, const QDate& from, const QDate& to);
+
     void markAsSent(qint64 messageId);
+
 protected:
-    QVector<RawDatabase::Query> generateNewMessageQueries(
-            const QString& friendPk, const QString& message,
-            const QString& sender, const QDateTime& time,
-            bool isSent, QString dispName,
-            std::function<void(int64_t)> insertIdCallback={});
+    QVector<RawDatabase::Query>
+    generateNewMessageQueries(const QString& friendPk, const QString& message,
+                              const QString& sender, const QDateTime& time, bool isSent,
+                              QString dispName, std::function<void(int64_t)> insertIdCallback = {});
 
 private:
     std::shared_ptr<RawDatabase> db;

@@ -11,6 +11,7 @@ TRANSLATIONS = \
     translations/eo.ts \
     translations/es.ts \
     translations/et.ts \
+    translations/fa.ts \
     translations/fi.ts \
     translations/fr.ts \
     translations/he.ts \
@@ -26,15 +27,20 @@ TRANSLATIONS = \
     translations/pl.ts \
     translations/pr.ts \
     translations/pt.ts \
+    translations/ro.ts \
     translations/ru.ts \
     translations/sk.ts \
     translations/sl.ts \
+    translations/sr.ts \
+    translations/sr_Latn.ts \
     translations/sv.ts \
     translations/sw.ts \
+    translations/ta.ts \
     translations/tr.ts \
     translations/ug.ts \
     translations/uk.ts \
-    translations/zh.ts
+    translations/zh_CN.ts \
+    translations/zh_TW.ts
 
 #rules to generate ts
 isEmpty(QMAKE_LUPDATE) {

@@ -1,8 +1,11 @@
-<a name="qtox" \>
+<a name="qtox" />
+
 <p align="center">
 <img src="https://qtox.github.io/assets/imgs/logo_head.png" alt="qTox" />
 </p>
+
 ---
+
 <p align="center">
 <a href="https://github.com/qTox/qTox/blob/master/LICENSE">
 <img src="https://img.shields.io/badge/license-GPLv3%2B-blue.svg" alt="GPLv3+" />
@@ -14,13 +17,17 @@
 <img src="https://hosted.weblate.org/widgets/tox/-/svg-badge.svg"
      alt="Translate on Weblate" />
 </a>
+<a href="https://gitter.im/qtox/qTox?utm_source=badge">
+<img src="https://badges.gitter.im/Join Chat.svg" alt="Gitter">
+</a>
 <a href="https://github.com/qTox/release-schedule/blob/master/README.md">
 <img src="https://qtox.github.io/release-schedule/status.svg"
 title="Week of Merges: population of Merges increases!
-
 Week of Testing: Your mana regenerates!" />
 </a></p>
+
 ---
+
 <p align="center"><b>
 qTox is a powerful Tox client that follows the Tox design guidelines
 while running on all major platforms.
@@ -34,12 +41,12 @@ while running on all major platforms.
  **[Mailing list] |**
  **IRC:** [#qtox@freenode]
 
-====
+---
 
 Windows | Linux | OS X | FreeBSD
 --------|-------|------|--------
-**[64 bit installer]**, [signature][sig-64] | **[CentOS, Debian, Fedora, openSUSE, Ubuntu]** | **[Building instructions]** | **[Port]**
-[32 bit installer], [signature][sig-32] | **[Arch]**, **[Gentoo]** | |
+**[64 bit installer]**, [signature][sig-64] | **[Arch]**, **[Gentoo]** | **[Latest release]**  | **[Package & Port]**
+[32 bit installer], [signature][sig-32] | | [Building instructions] |
 [64 bit][64portable], [32 bit][32portable] portable | [Other] | |
 
 _**Bold** options are recommended._
@@ -100,18 +107,46 @@ the mailing list**.
 
 There are [IRC logs] available.
 
+### GPG fingerprints
 
+List of GPG fingerprints used by qTox developers to sign commits, merges, tags,
+and possibly other stuff.
+
+Active qTox maintainers:
+
+```
+3103 9166 FA90 2CA5 0D05  D608 5AF9 F2E2 9107 C727      – Diadlo
+C7A2 552D 0B25 0F98 3827  742C 1332 03A3 AC39 9151      – initramfs
+CA92 21C5 389B 7C50 AA5F  7793 52A5 0775 BE13 DF17      - noavarice
+DA26 2CC9 3C0E 1E52 5AD2  1C85 9677 5D45 4B8E BF44      – sudden6
+2880 C860 D95C 909D 3DA4  5C68 7E08 6DD6 6126 3264      – tux3
+BA78 83E2 2F9D 3594 5BA3  3760 5313 7C30 33F0 9008      – zetok
+```
+
+Past qTox maintainers:
+
+```
+F365 8D0A 04A5 76A4 1072  FC0D 296F 0B76 4741 106C      – agilob
+1157 616B BD86 0C53 9926  F813 9591 A163 FF9B E04C      – antis81
+1D29 8BC7 25B7 BE82 65BA  EAB9 3DB8 E053 15C2 20AA      – Dubslow
+```
+
+Windows updates, managed by `tux3`:
+
+```
+AED3 1134 9C23 A123 E5C4  AA4B 139C A045 3DA2 D773
+```
 
 [#qtox@freenode]: https://webchat.freenode.net/?channels=qtox
-[32 bit installer]: https://build.tox.chat/view/qtox/job/qTox_pkg_windows_x86_stable_release/lastSuccessfulBuild/artifact/setup-qtox.exe
-[32portable]: https://build.tox.chat/job/qTox_build_windows_x86_release/lastSuccessfulBuild/artifact/qTox_build_windows_x86_release.zip
-[64 bit installer]: https://build.tox.chat/view/qtox/job/qTox_pkg_windows_x86-64_stable_release/lastSuccessfulBuild/artifact/setup-qtox.exe
-[64portable]: https://build.tox.chat/job/qTox_build_windows_x86-64_release/lastSuccessfulBuild/artifact/qTox_build_windows_x86-64_release.zip
+[32 bit installer]: https://qtox-win.pkg.tox.chat/qtox/win32/download
+[32portable]: https://qtox-win.pkg.tox.chat/qtox/win32/download-portable
+[64 bit installer]: https://qtox-win.pkg.tox.chat/qtox/win64/download
+[64portable]: https://qtox-win.pkg.tox.chat/qtox/win64/download-portable
 [Arch]: /INSTALL.md#arch
 [Building instructions]: /INSTALL.md#os-x
-[CentOS, Debian, Fedora, openSUSE, Ubuntu]: https://software.opensuse.org/download.html?project=home%3Aantonbatenev%3Atox&package=qtox
 [Contributing]: /CONTRIBUTING.md#how-to-start-contributing
 [easy issues]: https://github.com/qTox/qTox/labels/E-easy
+[Latest release]: https://github.com/qTox/qTox/releases/latest
 [Gentoo]: /INSTALL.md#gentoo
 [Install/Build]: /INSTALL.md
 [IRC logs]: https://github.com/qTox/qtox-irc-logs
@@ -120,13 +155,13 @@ There are [IRC logs] available.
 [Mailing list]: https://lists.tox.chat
 [Other]: /INSTALL.md#linux
 [qTox-dev mailing list]: https://lists.tox.chat/listinfo/qtox-dev
-[Port]: /INSTALL.md#freebsd-easy
+[Package & Port]: /INSTALL.md#freebsd-easy
 [Report bugs]: https://github.com/qTox/qTox/wiki/Writing-Useful-Bug-Reports
 [reporting bugs]: https://github.com/qTox/qTox/wiki/Writing-Useful-Bug-Reports
 [Reviewing and testing pull requests]: /CONTRIBUTING.md#reviews
 [Roadmap]: https://github.com/qTox/qTox/milestones
-[sig-32]: https://qtox-win.pkg.tox.chat/qtox/win32/setup-qtox.exe.asc
-[sig-64]: https://qtox-win.pkg.tox.chat/qtox/win64/setup-qtox.exe.asc
+[sig-32]: https://qtox-win.pkg.tox.chat/qtox/win32/download-sig
+[sig-64]: https://qtox-win.pkg.tox.chat/qtox/win64/download-sig
 [Testing]: https://github.com/qTox/qTox/wiki/Testing
 [Translating, it's easy]: /translations/README.md
 [User Manual]: /doc/user_manual_en.md

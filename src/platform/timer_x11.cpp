@@ -17,37 +17,35 @@
 
 #include <QtCore/qsystemdetection.h>
 #if defined(Q_OS_UNIX) && !defined(__APPLE__) && !defined(__MACH__)
-#include <QDebug>
 #include "src/platform/timer.h"
+#include "src/platform/x11_display.h"
+#include <QDebug>
 #include <X11/extensions/scrnsaver.h>
 
 uint32_t Platform::getIdleTime()
 {
     uint32_t idleTime = 0;
 
-    Display *display = XOpenDisplay(NULL);
-    if (!display)
-    {
-        qDebug() << "XOpenDisplay(NULL) failed";
+    Display* display = X11Display::lock();
+    if (!display) {
+        qDebug() << "XOpenDisplay failed";
+        X11Display::unlock();
         return 0;
     }
 
     int32_t x11event = 0, x11error = 0;
     static int32_t hasExtension = XScreenSaverQueryExtension(display, &x11event, &x11error);
-    if (hasExtension)
-    {
-        XScreenSaverInfo *info = XScreenSaverAllocInfo();
-        if (info)
-        {
+    if (hasExtension) {
+        XScreenSaverInfo* info = XScreenSaverAllocInfo();
+        if (info) {
             XScreenSaverQueryInfo(display, DefaultRootWindow(display), info);
             idleTime = info->idle;
             XFree(info);
-        }
-        else
+        } else
             qDebug() << "XScreenSaverAllocInfo() failed";
     }
-    XCloseDisplay(display);
+    X11Display::unlock();
     return idleTime;
 }
 
-#endif  // Q_OS_UNIX
+#endif // Q_OS_UNIX

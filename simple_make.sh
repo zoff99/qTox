@@ -6,10 +6,13 @@ apt_install() {
     local apt_packages=(
         automake
         autotools-dev
+        build-essential
         check
         checkinstall
-        git build-essential
+        cmake
+        git
         libavdevice-dev
+        libexif-dev
         libgdk-pixbuf2.0-dev
         libglib2.0-dev
         libgtk2.0-dev
@@ -25,18 +28,9 @@ apt_install() {
         libxss-dev
         qrencode
         qt5-default
-        qt5-qmake
+        qttools5-dev
         qttools5-dev-tools
     )
-
-    local codename=$(lsb_release -c -s)
-
-    # Enable Debian Jessie backports repository for libsqlcipher-dev (if not yet enabled)
-    if [ ${codename} == jessie ] && [ $(apt-cache policy | fgrep jessie-backports -c) == 0 ]
-    then
-        echo "deb http://httpredir.debian.org/debian jessie-backports main" | sudo tee /etc/apt/sources.list.d/qtox-backports.list
-        sudo apt-get update
-    fi
 
     sudo apt-get install "${apt_packages[@]}"
 }
@@ -90,8 +84,6 @@ dnf_install() {
         qt-creator
         qt-devel
         qt-doc
-        sqlite
-        sqlite-devel
     )
     sudo dnf install "${dnf_packages[@]}"
 }
@@ -114,54 +106,58 @@ fedora_locallib() {
 
 zypper_install() {
     local zypper_packages=(
+        automake
+        cmake
         git
-        libffmpeg-devel
+        libavcodec-devel
+        libavdevice-devel
         libopus-devel
         libQt5Concurrent-devel
         libqt5-linguist
+        libqt5-linguist-devel
         libQt5Network-devel
         libQt5OpenGL-devel
         libqt5-qtbase-common-devel
         libqt5-qtsvg-devel
-        libQt5Sql5-sqlite
-        libQt5Sql-devel
+        libQt5Test-devel
         libQt5Xml-devel
         libsodium-devel
         libvpx-devel
         libXScrnSaver-devel
         openal-soft-devel
         patterns-openSUSE-devel_basis
-        patterns-openSUSE-devel_basis
         qrencode-devel
         sqlcipher-devel
     )
+
+    # if not sudo is installed, e.g. in docker image, install it
+    command -v sudo || zypper in sudo
+
     sudo zypper in "${zypper_packages[@]}"
 }
 
 main() {
-    if which apt-get
+    if command -v zypper && [ -f /etc/products.d/openSUSE.prod ]
+    then
+        zypper_install
+    elif command -v apt-get
     then
         apt_install
-    elif which pacman
+    elif command -v pacman
     then
         pacman_install
-    elif which dnf
+    elif command -v dnf
     then
         dnf_install
         fedora_locallib
-    elif which zypper
-    then
-        zypper_install
     else
         echo "Unknown package manager, attempting to compile anyways"
     fi
 
     ./bootstrap.sh
-    if [ -e /etc/redhat-release -o -e /etc/zypp ]; then
-        qmake-qt5
-    else
-        qmake
-    fi
+    mkdir -p _build
+    cd _build
+    cmake ../
     make -j$(nproc)
 }
 main

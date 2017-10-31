@@ -18,26 +18,27 @@
 */
 
 #include "addfriendform.h"
-#include <QFont>
-#include <QMessageBox>
-#include <QErrorMessage>
-#include <QApplication>
-#include <QClipboard>
-#include <QRegularExpression>
-#include <QTabWidget>
-#include <QSignalMapper>
-#include <tox/tox.h>
-#include "src/nexus.h"
 #include "src/core/core.h"
 #include "src/net/toxme.h"
-#include "src/persistence/settings.h"
-#include "src/widget/gui.h"
-#include "src/widget/translator.h"
-#include "src/widget/contentlayout.h"
-#include "src/widget/tool/croppinglabel.h"
 #include "src/net/toxme.h"
-#include <QWindow>
+#include "src/nexus.h"
+#include "src/persistence/settings.h"
+#include "src/widget/contentlayout.h"
+#include "src/widget/gui.h"
+#include "src/widget/tool/croppinglabel.h"
+#include "src/widget/translator.h"
+#include <QApplication>
+#include <QClipboard>
+#include <QErrorMessage>
+#include <QFont>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QRegularExpression>
 #include <QScrollArea>
+#include <QSignalMapper>
+#include <QTabWidget>
+#include <QWindow>
+#include <tox/tox.h>
 
 /**
  * @var QString AddFriendForm::lastUsername
@@ -53,7 +54,25 @@ AddFriendForm::AddFriendForm()
     headLabel.setFont(bold);
     toxIdLabel.setTextFormat(Qt::RichText);
 
+    main->setLayout(&layout);
+    layout.addWidget(&toxIdLabel);
+    layout.addWidget(&toxId);
+    layout.addWidget(&messageLabel);
+    layout.addWidget(&message);
+    layout.addWidget(&sendButton);
     tabWidget->addTab(main, QString());
+
+    importContacts = new QWidget(tabWidget);
+    importContacts->setLayout(&importContactsLayout);
+    importFileLine.addWidget(&importFileLabel);
+    importFileLine.addStretch();
+    importFileLine.addWidget(&importFileButton);
+    importContactsLayout.addLayout(&importFileLine);
+    importContactsLayout.addWidget(&importMessageLabel);
+    importContactsLayout.addWidget(&importMessage);
+    importContactsLayout.addWidget(&importSendButton);
+    tabWidget->addTab(importContacts, QString());
+
     QScrollArea* scrollArea = new QScrollArea(tabWidget);
     QWidget* requestWidget = new QWidget(tabWidget);
     scrollArea->setWidget(requestWidget);
@@ -62,36 +81,31 @@ AddFriendForm::AddFriendForm()
     requestsLayout->addStretch(1);
     tabWidget->addTab(scrollArea, QString());
 
-    main->setLayout(&layout);
-    layout.addWidget(&toxIdLabel);
-    layout.addWidget(&toxId);
-    layout.addWidget(&messageLabel);
-    layout.addWidget(&message);
-    layout.addWidget(&sendButton);
-
     head->setLayout(&headLayout);
     headLayout.addWidget(&headLabel);
 
     connect(&toxId, &QLineEdit::returnPressed, this, &AddFriendForm::onSendTriggered);
     connect(&toxId, &QLineEdit::textChanged, this, &AddFriendForm::onIdChanged);
     connect(tabWidget, &QTabWidget::currentChanged, this, &AddFriendForm::onCurrentChanged);
-    connect(&sendButton, SIGNAL(clicked()), this, SLOT(onSendTriggered()));
+    connect(&sendButton, &QPushButton::clicked, this, &AddFriendForm::onSendTriggered);
+    connect(&importSendButton, &QPushButton::clicked, this, &AddFriendForm::onImportSendClicked);
+    connect(&importFileButton, &QPushButton::clicked, this, &AddFriendForm::onImportOpenClicked);
     connect(Nexus::getCore(), &Core::usernameSet, this, &AddFriendForm::onUsernameSet);
 
     // accessibility stuff
-    toxIdLabel.setAccessibleDescription(tr("Tox ID, either 76 hexadecimal characters or name@example.com"));
+    toxIdLabel.setAccessibleDescription(
+        tr("Tox ID, either 76 hexadecimal characters or name@example.com"));
     toxId.setAccessibleDescription(tr("Type in Tox ID of your friend"));
     messageLabel.setAccessibleDescription(tr("Friend request message"));
-    message.setAccessibleDescription(
-        tr("Type message to send with the friend request or leave empty to send a default message"));
+    message.setAccessibleDescription(tr(
+        "Type message to send with the friend request or leave empty to send a default message"));
+    message.setTabChangesFocus(true);
 
     retranslateUi();
     Translator::registerHandler(std::bind(&AddFriendForm::retranslateUi, this), this);
 
-    int size = Settings::getInstance().getFriendRequestSize();
-
-    for (int i = 0; i < size; ++i)
-    {
+    const int size = Settings::getInstance().getFriendRequestSize();
+    for (int i = 0; i < size; ++i) {
         Settings::Request request = Settings::getInstance().getFriendRequest(i);
         addFriendRequestWidget(request.address, request.message);
     }
@@ -106,8 +120,7 @@ AddFriendForm::~AddFriendForm()
 
 bool AddFriendForm::isShown() const
 {
-    if (head->isVisible())
-    {
+    if (head->isVisible()) {
         head->window()->windowHandle()->alert(0);
         return true;
     }
@@ -126,7 +139,7 @@ void AddFriendForm::show(ContentLayout* contentLayout)
 
     // Fix #3421
     // Needed to update tab after opening window
-    int index = tabWidget->currentIndex();
+    const int index = tabWidget->currentIndex();
     onCurrentChanged(index);
 }
 
@@ -136,18 +149,24 @@ QString AddFriendForm::getMessage() const
     return !msg.isEmpty() ? msg : message.placeholderText();
 }
 
+QString AddFriendForm::getImportMessage() const
+{
+    const QString msg = importMessage.toPlainText();
+    return msg.isEmpty() ? importMessage.placeholderText() : msg;
+}
+
 void AddFriendForm::setMode(Mode mode)
 {
     tabWidget->setCurrentIndex(mode);
 }
 
-bool AddFriendForm::addFriendRequest(const QString &friendAddress, const QString &message)
+bool AddFriendForm::addFriendRequest(const QString& friendAddress, const QString& message)
 {
-    if (Settings::getInstance().addFriendRequest(friendAddress, message))
-    {
+    if (Settings::getInstance().addFriendRequest(friendAddress, message)) {
         addFriendRequestWidget(friendAddress, message);
-        if (isShown())
+        if (isShown()) {
             onCurrentChanged(tabWidget->currentIndex());
+        }
 
         return true;
     }
@@ -160,59 +179,108 @@ void AddFriendForm::onUsernameSet(const QString& username)
     retranslateUi();
 }
 
-void AddFriendForm::onSendTriggered()
+void AddFriendForm::addFriend(const QString& idText)
 {
-    QString id = toxId.text().trimmed();
+    ToxId friendId(idText);
 
-    if (!ToxId::isValidToxId(id))
-    {
-        ToxId toxId = Toxme::lookup(id); // Try Toxme
-        if (toxId.toString().isEmpty())
-        {
+    if (!friendId.isValid()) {
+        friendId = Toxme::lookup(idText); // Try Toxme
+        if (!friendId.isValid()) {
             GUI::showWarning(tr("Couldn't add friend"),
-                             tr("This Tox ID is invalid or does not exist", "Toxme error"));
+                             tr("%1 Tox ID is invalid or does not exist", "Toxme error")
+                             .arg(idText));
             return;
         }
-        id = toxId.toString();
     }
 
-    deleteFriendRequest(id);
-    if (id.toUpper() == Core::getInstance()->getSelfId().toString().toUpper())
+    deleteFriendRequest(friendId);
+    if (friendId == Core::getInstance()->getSelfId()) {
         GUI::showWarning(tr("Couldn't add friend"),
-                         tr("You can't add yourself as a friend!",
-                            "When trying to add your own Tox ID as friend"));
-    else
-        emit friendRequested(id, getMessage());
+                         //: When trying to add your own Tox ID as friend
+                         tr("You can't add yourself as a friend!"));
+    } else {
+        emit friendRequested(friendId, getMessage());
+    }
+}
+
+void AddFriendForm::onSendTriggered()
+{
+    const QString idText = toxId.text().trimmed();
+    addFriend(idText);
 
     this->toxId.clear();
     this->message.clear();
 }
 
-void AddFriendForm::onIdChanged(const QString &id)
+void AddFriendForm::onImportSendClicked()
 {
-    QString tId = id.trimmed();
-    QRegularExpression dnsIdExpression("^\\S+@\\S+$");
-    bool isValidId = tId.isEmpty() || ToxId::isToxId(tId) || tId.contains(dnsIdExpression);
-
-    QString toxIdText(tr("Tox ID", "Tox ID of the person you're sending a friend request to"));
-    QString toxIdComment(tr("either 76 hexadecimal characters or name@example.com", "Tox ID format description"));
-
-    if (isValidId)
-    {
-        toxIdLabel.setText(toxIdText +
-                           QStringLiteral(" (") +
-                           toxIdComment +
-                           QStringLiteral(")"));
-    }
-    else
-    {
-        toxIdLabel.setText(toxIdText +
-                           QStringLiteral(" <font color='red'>(") +
-                           toxIdComment +
-                           QStringLiteral(")</font>"));
+    for (const QString& idText : contactsToImport) {
+        addFriend(idText);
     }
 
-    toxId.setStyleSheet(isValidId ? QStringLiteral("") : QStringLiteral("QLineEdit { background-color: #FFC1C1; }"));
+    contactsToImport.clear();
+    importMessage.clear();
+    retranslateUi(); // Update the importFileLabel
+}
+
+static inline bool checkIsValidId(const QString& id)
+{
+    static const QRegularExpression dnsIdExpression("^\\S+@\\S+$");
+    return ToxId::isToxId(id) || id.contains(dnsIdExpression);
+}
+
+void AddFriendForm::onImportOpenClicked()
+{
+    const QString path = QFileDialog::getOpenFileName(tabWidget, tr("Open contact list"));
+    if (path.isEmpty()) {
+        return;
+    }
+
+    QFile contactFile(path);
+    if (!contactFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        GUI::showWarning(tr("Couldn't open file"),
+                         //: Error message when trying to open a contact list file to import
+                         tr("Couldn't open the contact file"));
+        return;
+    }
+
+    contactsToImport = QString::fromUtf8(contactFile.readAll()).split('\n');
+    QMutableListIterator<QString> it(contactsToImport);
+    qDebug() << "Import list:";
+    while (it.hasNext()) {
+        const QString id = it.value().trimmed();
+        const bool valid = !id.isEmpty() && checkIsValidId(id);
+        if (valid) {
+            it.value() = id;
+        } else {
+            it.remove();
+        }
+        qDebug() << it.next();
+    }
+
+    if (contactsToImport.isEmpty()) {
+        GUI::showWarning(tr("Invalid file"),
+                         tr("We couldn't find any contacts to import in this file!"));
+    }
+
+    retranslateUi(); // Update the importFileLabel to show how many contacts we have
+}
+
+void AddFriendForm::onIdChanged(const QString& id)
+{
+    const QString tId = id.trimmed();
+    const bool isValidId = tId.isEmpty() || checkIsValidId(tId);
+
+    //: Tox ID of the person you're sending a friend request to
+    const QString toxIdText(tr("Tox ID"));
+    //: Tox ID format description
+    const QString toxIdComment(tr("either 76 hexadecimal characters or name@example.com"));
+
+    const QString labelText = isValidId ? QStringLiteral("%1 (%2)")
+                                        : QStringLiteral("%1 <font color='red'>(%2)</font>");
+    toxIdLabel.setText(labelText.arg(toxIdText, toxIdComment));
+    toxId.setStyleSheet(isValidId ? QStringLiteral("")
+                                  : QStringLiteral("QLineEdit { background-color: #FFC1C1; }"));
     toxId.setToolTip(isValidId ? QStringLiteral("") : tr("Invalid Tox ID format"));
 
     sendButton.setEnabled(isValidId && !tId.isEmpty());
@@ -220,25 +288,21 @@ void AddFriendForm::onIdChanged(const QString &id)
 
 void AddFriendForm::setIdFromClipboard()
 {
-    QClipboard* clipboard = QApplication::clipboard();
-    QString id = clipboard->text().trimmed();
+    const QClipboard* clipboard = QApplication::clipboard();
+    const QString id = clipboard->text().trimmed();
     const Core* core = Core::getInstance();
-    if (core->isReady() && !id.isEmpty()
-            && ToxId::isToxId(id)
-            && ToxId(id) != core->getSelfId())
-    {
+    const bool isSelf = core->isReady() && ToxId(id) != core->getSelfId();
+    if (!id.isEmpty() && ToxId::isToxId(id) && isSelf) {
         toxId.setText(id);
     }
 }
 
-void AddFriendForm::deleteFriendRequest(const QString& toxId)
+void AddFriendForm::deleteFriendRequest(const ToxId& toxId)
 {
-    int size = Settings::getInstance().getFriendRequestSize();
-    for (int i = 0; i < size; ++i)
-    {
+    const int size = Settings::getInstance().getFriendRequestSize();
+    for (int i = 0; i < size; ++i) {
         Settings::Request request = Settings::getInstance().getFriendRequest(i);
-        if (ToxId(toxId) == ToxId(request.address))
-        {
+        if (toxId == ToxId(request.address)) {
             Settings::getInstance().removeFriendRequest(i);
             return;
         }
@@ -249,11 +313,12 @@ void AddFriendForm::onFriendRequestAccepted()
 {
     QPushButton* acceptButton = static_cast<QPushButton*>(sender());
     QWidget* friendWidget = acceptButton->parentWidget();
-    int index = requestsLayout->indexOf(friendWidget);
+    const int index = requestsLayout->indexOf(friendWidget);
     removeFriendRequestWidget(friendWidget);
-    Settings::Request request = Settings::getInstance().getFriendRequest(requestsLayout->count() - index - 1);
-    emit friendRequestAccepted(request.address);
-    Settings::getInstance().removeFriendRequest(requestsLayout->count() - index - 1);
+    const int indexFromEnd = requestsLayout->count() - index - 1;
+    const Settings::Request request = Settings::getInstance().getFriendRequest(indexFromEnd);
+    emit friendRequestAccepted(ToxId(request.address).getPublicKey());
+    Settings::getInstance().removeFriendRequest(indexFromEnd);
     Settings::getInstance().savePersonal();
 }
 
@@ -261,16 +326,16 @@ void AddFriendForm::onFriendRequestRejected()
 {
     QPushButton* rejectButton = static_cast<QPushButton*>(sender());
     QWidget* friendWidget = rejectButton->parentWidget();
-    int index = requestsLayout->indexOf(friendWidget);
+    const int index = requestsLayout->indexOf(friendWidget);
     removeFriendRequestWidget(friendWidget);
-    Settings::getInstance().removeFriendRequest(requestsLayout->count() - index - 1);
+    const int indexFromEnd = requestsLayout->count() - index - 1;
+    Settings::getInstance().removeFriendRequest(indexFromEnd);
     Settings::getInstance().savePersonal();
 }
 
 void AddFriendForm::onCurrentChanged(int index)
 {
-    if (index == FriendRequest && Settings::getInstance().getUnreadFriendRequests() != 0)
-    {
+    if (index == FriendRequest && Settings::getInstance().getUnreadFriendRequests() != 0) {
         Settings::getInstance().clearUnreadFriendRequests();
         Settings::getInstance().savePersonal();
         emit friendRequestsSeen();
@@ -280,25 +345,40 @@ void AddFriendForm::onCurrentChanged(int index)
 void AddFriendForm::retranslateUi()
 {
     headLabel.setText(tr("Add Friends"));
-    messageLabel.setText(tr("Message","The message you send in friend requests"));
+    //: The message you send in friend requests
+    static const QString messageLabelText = tr("Message");
+    messageLabel.setText(messageLabelText);
+    importMessageLabel.setText(messageLabelText);
+    //: Button to choose a file with a list of contacts to import
+    importFileButton.setText(tr("Open"));
+    importSendButton.setText(tr("Send friend requests"));
     sendButton.setText(tr("Send friend request"));
-    message.setPlaceholderText(tr("%1 here! Tox me maybe?",
-                "Default message in friend requests if the field is left blank. Write something appropriate!")
-                .arg(lastUsername));
+    //: Default message in friend requests if the field is left blank. Write something appropriate!
+    message.setPlaceholderText(tr("%1 here! Tox me maybe?").arg(lastUsername));
+    importMessage.setPlaceholderText(message.placeholderText());
+
+    importFileLabel.setText(contactsToImport.isEmpty()
+            ? tr("Import a list of contacts, one Tox ID per line")
+            //: Shows the number of contacts we're about to import from a file (at least one)
+            : tr("Ready to import %n contact(s), click send to confirm", "",
+                 contactsToImport.size()));
 
     onIdChanged(toxId.text());
 
-    tabWidget->setTabText(0, tr("Add a friend"));
-    tabWidget->setTabText(1, tr("Friend requests"));
+    tabWidget->setTabText(AddFriend, tr("Add a friend"));
+    tabWidget->setTabText(ImportContacts, tr("Import contacts"));
+    tabWidget->setTabText(FriendRequest, tr("Friend requests"));
 
-    for (QPushButton* acceptButton : acceptButtons)
+    for (QPushButton* acceptButton : acceptButtons) {
         retranslateAcceptButton(acceptButton);
+    }
 
-    for (QPushButton* rejectButton : rejectButtons)
+    for (QPushButton* rejectButton : rejectButtons) {
         retranslateRejectButton(rejectButton);
+    }
 }
 
-void AddFriendForm::addFriendRequestWidget(const QString &friendAddress, const QString &message)
+void AddFriendForm::addFriendRequestWidget(const QString& friendAddress, const QString& message)
 {
     QWidget* friendWidget = new QWidget(tabWidget);
     QHBoxLayout* friendLayout = new QHBoxLayout(friendWidget);
@@ -313,8 +393,7 @@ void AddFriendForm::addFriendRequestWidget(const QString &friendAddress, const Q
 
     QLabel* messageLabel = new QLabel(message);
     // allow to select text, but treat links as plaintext to prevent phishing
-    messageLabel->setTextInteractionFlags(Qt::TextSelectableByMouse |
-                                          Qt::TextSelectableByKeyboard);
+    messageLabel->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
     messageLabel->setTextFormat(Qt::PlainText);
     messageLabel->setWordWrap(true);
     horLayout->addWidget(messageLabel, 1);
@@ -343,12 +422,12 @@ void AddFriendForm::removeFriendRequestWidget(QWidget* friendWidget)
     friendWidget->deleteLater();
 }
 
-void AddFriendForm::retranslateAcceptButton(QPushButton *acceptButton)
+void AddFriendForm::retranslateAcceptButton(QPushButton* acceptButton)
 {
     acceptButton->setText(tr("Accept"));
 }
 
-void AddFriendForm::retranslateRejectButton(QPushButton *rejectButton)
+void AddFriendForm::retranslateRejectButton(QPushButton* rejectButton)
 {
     rejectButton->setText(tr("Reject"));
 }

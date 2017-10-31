@@ -1,3 +1,25 @@
+- [Filing an issue](#filing-an-issue)
+  - [Must read](#must-read)
+  - [Good to know](#good-to-know)
+- [How to start contributing](#how-to-start-contributing)
+  - [Before you start…](#before-you-start)
+  - [Must read](#must-read)
+  - [Pull request](#pull-request)
+  - [How to open a pull request](#how-to-open-a-pull-reqeust)
+  - [How to deal with large amounts of merge conflicts](#merge-conflicts)
+  - [Git Commit Guidelines](#commit)
+    - [Commit Message Format](#commit-message-format)
+      - [Header](#header)
+      - [Type](#type)
+      - [Scope](#scope)
+      - [Subject](#subject)
+      - [Body](#body)
+  - [Reviewing](#reviewing)
+    - [Testing PRs](#testing-prs)
+  - [Git config](#git-config)
+- [Coding guidelines](#coding-guidelines)
+
+
 Note that you don't need to know all of the `CONTRIBUTING.md` – it is there to
 help you with things as you go, and make things easier, not harder.
 
@@ -130,6 +152,8 @@ git push
 
 That's it! Happy contributing!
 
+<a name="merge-conflicts" />
+
 ## How to deal with large amounts of merge conflicts
 
 Usually you want to avoid conflicts and they should be rare. If conflicts
@@ -173,8 +197,9 @@ git push -f
   do `git pull`. Then you can start fixing the conflicts.  [Here is a good
   explanation](https://www.atlassian.com/git/tutorials/merging-vs-rebasing).
 
+<a name="commit" />
 
-## <a name="commit"></a> Git Commit Guidelines
+## Git Commit Guidelines
 
 We have very precise rules over how our git commit messages can be formatted.
 This leads to **more readable messages** that are easy to follow when looking
@@ -196,7 +221,7 @@ special format that includes a **type**, a **scope** and a **subject**:
 The **header** is mandatory and the **body** is optional. The **scope** of the
 header is also optional.
 
-### Header
+#### Header
 
 The header must be a short (72 characters or less) summary of the changes made.
 
@@ -220,8 +245,8 @@ Must be one of the following:
 ##### Revert
 
 If the commit reverts a previous commit, it should begin with `revert: `,
-followed by the header of the reverted commit. In the body it should say:
-`Revert commit <hash>.`, where the hash is the SHA of the commit being
+followed by the header of the reverted commit. In the body it should say: `This
+reverts commit <hash>.`, where the hash is the SHA of the commit being
 reverted.
 
 #### Scope
@@ -238,7 +263,7 @@ For example:
 * `tray` – change affects tray icon
 * `l10n` – translation update
 * `i18n` – something has been made translatable
-* `build` – change affects build system / scripts, e.g. `qtox.pro`,
+* `build` – change affects build system / scripts, e.g. `CMakeLists.txt`,
   `simple_make.sh`, etc.
 * `travis` – change affects Travis CI
 * `CONTRIBUTING` – change to the contributing guidelines
@@ -280,7 +305,7 @@ Include every section of the body that is relevant for your commit.
 space or two newlines. The rest of the commit message is then used for this.
 
 
-## Reviews
+## Reviewing
 
 Currently `reviewable.io` is being used to review changes that land in qTox.
 
@@ -349,143 +374,7 @@ git config --global commit.gpgsign true
 
 # Coding Guidelines
 
-Use `C++11`.
-
-## Includes
-
-On the project level, include files starting with the root directory of the
-repository, e.g. `src/core/core.h` from `src/widget/widget.cpp`:
-
-```C++
-#include "src/core/core.h"
-```
-
-Do **not** use `<>` tags to include files on the project level, e.g.
-`src/core/core.h` from `src/widget/widget.cpp`:
-
-```C++
-#include <core.h>    // WRONG
-```
-
-If including files from the operating system, external libraries, frameworks
-or Qt classes use `<>` tags, e.g. `cstdio` and `QString` from `src/main.cpp`:
-
-```C++
-#include <cstdio>
-#include <QString>
-```
-
-## Coding style
-
-```C++
-function()
-{
-    1st_line;
-    2nd_line;
-}
-
-// if / while / for / switch
-// always use curly brackets
-if () // ← note the space between `if` and parenthesis
-{
-    1_line_curly;
-}
-else if ()
-{
-    just_one_line;
-}
-else
-{
-    each_condition_in_curly;
-}
-
-QObject* asterisksGoWithTheType;
-uint8_t* array = new uint8_t[count];
-
-// camelCase for variables, CamelCase for classes
-QObject notToMentionThatWeUseCamelCase;
-```
-
-
-## Dynamic casts / RTTI
-
-qTox is compiled without support for RTTI, as such PRs making use of
-`dynamic_cast()` will fail to compile and may be rejected on this basis. For
-manipulating Qt-based objects, use `qobject_cast()` instead.
-
-Compiling qTox without RTTI support gives up to 5-6% size reductions on
-compiled binary files. The usage of `dynamic_cast()` can also be completely
-mitigated when dealing with Qt objects through use of `qobject_cast()` which
-behaves very much like C++'s `dynamic_cast()` but without the RTTI overhead.
-
-Enforced with `-fno-rtti`.
-
-## Documentation
-
-If you added a new function, also add a doxygen comment before the
-implementation. If you changed an old function, make sure the doxygen comment
-is still correct. If it doesn't exist add it.
-
-Don't put docs in .h files, if there is a corresponding .cpp file.
-
-### Documentation style
-
-```C++
-/*...license info...*/
-#include "blabla.h"
-
-/**
- * @brief I can be briefly described as well!
- *
- * And here goes my longer descrption!
- *
- * @param x Description for the first parameter
- * @param y Description for the second paramater
- * @return An amazing result
- */
-static int example(int x, int y)
-{
-    // Function implementation...
-}
-
-/**
- * @class OurClass
- * @brief Exists for some reason...!?
- * 
- * Longer description
- */
-
-/**
- * @enum OurClass::OurEnum
- * @brief The brief description line.
- * 
- * @var EnumValue1
- * means something
- * 
- * @var EnumValue2
- * means something else
- * 
- * Optional long description
- */
-
-/**
- * @fn OurClass::somethingHappened(const QString &happened)
- * @param[in] happened    tells what has happened...
- * @brief This signal is emitted when something has happened in the class.
- * 
- * Here's an optional longer description of what the signal additionally does.
- */
-```
-
-## No translatable HTML tags
-
-Do not put HTML in UI files, or inside `tr()`. Instead, you can put put it in
-C++ code in the following way, to make only user-facing text translatable:
-```C++
-someWidget->setTooltip(
-    QStringLiteral("<html><!-- some HTML text -->") + tr("Translatable text…") +
-    QStringLiteral("</html>");
-```
+See [coding_standards.md].
 
 ## Limitations
 
@@ -502,3 +391,4 @@ Symbols that should be forbidden for filenames under Windows:
 
 [pull request]: https://github.com/qTox/qTox/pulls
 [`test-pr.sh`]: /test-pr.sh
+[coding_standards.md]: /doc/coding_standards.md

@@ -69,6 +69,8 @@ right-clicking on a contact a menu appears that has the following options:
 * __Move to circle:__ offers an option to move friend to a new
   [circle](#circles), or to an existing one.
 * __Set alias:__ set alias that will be displayed instead of contact's name.
+* __Auto accept group invites:__ if enabled, all group chat invites from this
+  friend are automatically accepted.
 * __Auto accept files from this friend:__ option to automatically save files
   from the selected contact in a chosen directory.
 * __Remove friend:__ option to remove the contact. Confirmation is needed to
@@ -266,6 +268,10 @@ will alter your Tox ID. You don't need to tell your existing contacts your new
 Tox ID, but you have to tell new contacts your new Tox ID. Your Tox ID can be
 found in your [User Profile](#user-profile).
 
+#### BlackList
+
+BlackList is a feature of qTox that locally blocks a group member's messages across all your joined groups, in case someone spams a group. You need to put a members public key into the BlackList text box one per line to activate it. Currently qTox doesn't have a method to get the public key from a group member, this will be added in the future.
+
 ### Audio/Video
 #### Audio Settings
 
@@ -415,11 +421,12 @@ The following shortcuts are currently supported:
 | `CTRL` + `TAB` | Switch to the next contact |
 | `CTRL` + `SHIFT` + `TAB` | Switch to the previous contact|
 | `ALT` + `q` | Quote selected text |
+| `F11` | Toggle fullscreen mode |
 
 ## Emoji Packs
 
 qTox provides support for custom emoji packs. To install a new emoji pack
-put it in `%AppData%/Local/emoticons` for Windows or `~/.local/share/emoticons`
+put it in `%LOCALAPPDATA%/emoticons` for Windows or `~/.local/share/emoticons`
 for Linux. If these directories don't exist, you have to create them. The emoji
 files have to be in a subfolder also containing `emoticon.xml`, see the
 structure of https://github.com/qTox/qTox/tree/v1.5.2/smileys for further

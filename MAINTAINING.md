@@ -72,19 +72,19 @@ git config --global alias.logs 'log --show-signature'
   the PR before merging.
   - with trivial changes, like fixing typos or something along those lines,
     feel free to merge right away.
-- if you're about to merge PR, assign yourself to it.
-- if you decide that PR actually isn't to be (yet) merged, de-assign yourself.
 - if PR requires some changes, comment what parts need to be adjusted, and
   assign the `PR-needs-changes` label – after requested changes are done,
   remove the label.
 - if PR doesn't apply properly on top of current master (when using
   [`merge-pr.sh`] script), request a rebase and tag PR with `PR-needs-rebase`.
+- if a PR requires changes but there has been no activity from the PR submitter
+  for more than 2 months, close the PR.
 
 
 # Issues
 
 - tag issues
-  - `help wanted` tag should be used whenever no one is currently working on
+  - `up for grabs` tag should be used whenever no one is currently working on
     the issue, and you're not going to work on it in foreseeable future (hours,
     day or two).
   - when you request more info to be provided in the issue, tag it with
@@ -110,7 +110,8 @@ translations, on the other, it lessened problems that were happening with
 
 To get translations into qTox:
 
-1. Add Weblate: `git remote add weblate git://git.weblate.org/qtox.git`
+1. Add Weblate: `git remote add weblate
+   https://hosted.weblate.org/git/tox/qtox/`
 2. Fetch newest: `git fetch weblate`
 3. Check what has been changed compared to master: `git log --no-merges
    master..weblate/master`
@@ -146,6 +147,72 @@ To get translations into qTox:
 **It's a good idea to lock translations on Weblate while they're in merge
 process, so that no translation effort would be lost when resetting Weblate.**
 
+## Adding new translations
+
+Files to edit when adding a new translation:
+
+- `CMakeLists.txt`
+- `src/widget/form/settings/generalform.cpp`
+- `translations/README.md`
+- `translations/i18n.pri`
+- `translations/translations.qrc`
+
+Follow steps for adding translations from Weblate up to step 5. Next:
+
+1. Edit files to add translation to qTox.
+2. Before committing, clean up translation from Weblate and commit the change:
+
+   ```
+   ./tools/update-translation-files.sh translations/$TRANSLATION.ts
+   git commit --amend translations/$TRANSLATION.ts
+   ```
+3. Commit the changes to other files adding language to qTox.
+
+
+# Releases
+
+## Tagging scheme
+
+- tag versions that are to be released, make sure that they are GPG-signed,
+  i.e. `git tag -s v1.8.0`
+- use semantic versions for tags: `vMAJOR.MINOR.PATCH`
+  - `MAJOR` – bump version when there are breaking changes to video, audio,
+    text chats, groupchats, file transfers, and any other basic functionality.
+    For other things, `MINOR` and `PATCH` are to be bumped.
+  - `MINOR` – bump version when there are:
+    - new features added
+    - UI/feature breaking changes
+    - other non-breaking changes
+  - `PATCH` – bump when there have been only fixes added. If changes include
+    something more than just bugfixes, bump `MAJOR` or `MINOR` version
+    accordingly.
+- bumping a higher-level version "resets" lower-version numbers, e.g.
+  `v1.7.1 → v2.0.0`
+
+## Steps for release
+
+### Before tagging
+
+- Update version number for windows/osx packages using the
+  [`./tools/update-versions.sh`] script, e.g. `./tools/update-versions.sh
+  1.11.0`
+- Generate changelog with `clog`.
+  - In a `MAJOR`/`MINOR` release tag should include information that changelog
+    is located in the `CHANGELOG.md` file, e.g. `For details see CHANGELOG.md`
+- To release a `PATCH` version after non-fix changes have landed on `master`
+  branch, checkout latest `MAJOR`/`MINOR` version and `git cherry-pick -x`
+  commits from `master` that you want `PATCH` release to include. Once
+  cherry-picking has been done, tag HEAD of the branch.
+  - When making a `PATCH` tag, include in tag message short summary of what the
+    tag release fixes, and to whom it's interesting (often only some
+    OSes/distributions would find given `PATCH` release interesting).
+
+### After tagging
+
+- Create and GPG-sign tarball using [`./tools/create-tarball.sh`] script, and
+  upload the tarball to the github release that was created by a Travis OSX
+  release job.
+
 
 # How to become a maintainer?
 
@@ -164,3 +231,5 @@ helping for a while, ask to be added to the `qTox` organization on GitHub.
 [`merge-pr.sh`]: /merge-pr.sh
 [`test-pr.sh`]: /test-pr.sh
 [`./tools/deweblate-translation-file.sh`]: /tools/deweblate-translation-file.sh
+[`./tools/create-tarball.sh`]: /tools/create-tarball.sh
+[`./tools/update-versions.sh`]: /tools/update-versions.sh

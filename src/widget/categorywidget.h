@@ -21,7 +21,7 @@
 #define CATEGORYWIDGET_H
 
 #include "genericchatitemwidget.h"
-#include "src/core/corestructs.h"
+#include "src/core/core.h"
 
 class FriendListLayout;
 class FriendListWidget;
@@ -33,11 +33,11 @@ class CategoryWidget : public GenericChatItemWidget
 {
     Q_OBJECT
 public:
-    explicit CategoryWidget(QWidget* parent = 0);
+    explicit CategoryWidget(bool compact, QWidget* parent = 0);
 
     bool isExpanded() const;
     void setExpanded(bool isExpanded, bool save = true);
-    void setName(const QString &name, bool save = true);
+    void setName(const QString& name, bool save = true);
 
     void addFriendWidget(FriendWidget* w, Status s);
     void removeFriendWidget(FriendWidget* w, Status s);
@@ -46,10 +46,12 @@ public:
     bool hasChatrooms() const;
     bool cycleContacts(bool forward);
     bool cycleContacts(FriendWidget* activeChatroomWidget, bool forward);
-    void search(const QString &searchString, bool updateAll = false, bool hideOnline = false, bool hideOffline = false);
+    void search(const QString& searchString, bool updateAll = false, bool hideOnline = false,
+                bool hideOffline = false);
 
 public slots:
     void onCompactChanged(bool compact);
+    void moveFriendWidgets(FriendListWidget* friendList);
 
 protected:
     virtual void leaveEvent(QEvent* event) final override;
@@ -59,13 +61,18 @@ protected:
     void setContainerAttribute(Qt::WidgetAttribute attribute, bool enabled);
     QLayout* friendOnlineLayout() const;
     QLayout* friendOfflineLayout() const;
-    void moveFriendWidgets(FriendListWidget* friendList);
-    void emitChatroomWidget(QLayout *layout, int index);
+    void emitChatroomWidget(QLayout* layout, int index);
 
 private:
-    virtual void onSetName() {}
-    virtual void onExpand() {}
-    virtual void onAddFriendWidget(FriendWidget*) {}
+    virtual void onSetName()
+    {
+    }
+    virtual void onExpand()
+    {
+    }
+    virtual void onAddFriendWidget(FriendWidget*)
+    {
+    }
 
     QWidget* listWidget;
     FriendListLayout* listLayout;

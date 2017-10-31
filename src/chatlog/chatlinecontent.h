@@ -45,9 +45,11 @@ public:
     virtual void selectionStarted(QPointF scenePos);
     virtual void selectionCleared();
     virtual void selectionDoubleClick(QPointF scenePos);
+    virtual void selectionTripleClick(QPointF scenePos);
     virtual void selectionFocusChanged(bool focusIn);
     virtual bool isOverSelection(QPointF scenePos) const;
     virtual QString getSelectedText() const;
+    virtual void fontChanged(const QFont& font);
 
     virtual QString getText() const;
 

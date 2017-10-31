@@ -19,12 +19,22 @@
 
 #include "loadhistorydialog.h"
 #include "ui_loadhistorydialog.h"
+#include "src/nexus.h"
+#include "src/persistence/history.h"
+#include "src/persistence/profile.h"
+#include <QDate>
+#include <QTextCharFormat>
+#include <QCalendarWidget>
 
-LoadHistoryDialog::LoadHistoryDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::LoadHistoryDialog)
+LoadHistoryDialog::LoadHistoryDialog(const ToxPk& friendPk, QWidget* parent)
+    : QDialog(parent)
+    , ui(new Ui::LoadHistoryDialog)
+    , friendPk(friendPk)
 {
     ui->setupUi(this);
+    highlightDates(QDate::currentDate().year(), QDate::currentDate().month());
+    connect(ui->fromDate, &QCalendarWidget::currentPageChanged, this,
+            &LoadHistoryDialog::highlightDates);
 }
 
 LoadHistoryDialog::~LoadHistoryDialog()
@@ -35,11 +45,29 @@ LoadHistoryDialog::~LoadHistoryDialog()
 QDateTime LoadHistoryDialog::getFromDate()
 {
     QDateTime res(ui->fromDate->selectedDate());
-    if (res.date().month() != ui->fromDate->monthShown() || res.date().year() != ui->fromDate->yearShown())
-    {
+    if (res.date().month() != ui->fromDate->monthShown()
+        || res.date().year() != ui->fromDate->yearShown()) {
         QDate newDate(ui->fromDate->yearShown(), ui->fromDate->monthShown(), 1);
         res.setDate(newDate);
     }
 
     return res;
+}
+
+void LoadHistoryDialog::highlightDates(int year, int month)
+{
+    History* history = Nexus::getProfile()->getHistory();
+    QDate monthStart(year, month, 1);
+    QDate monthEnd(year, month + 1, 1);
+    QList<History::DateMessages> counts =
+        history->getChatHistoryCounts(this->friendPk, monthStart, monthEnd);
+
+    QTextCharFormat format;
+    format.setFontWeight(QFont::Bold);
+
+    QCalendarWidget* calendar = ui->fromDate;
+    for (History::DateMessages p : counts) {
+        format.setToolTip(tr("%1 messages").arg(p.count));
+        calendar->setDateTextFormat(monthStart.addDays(p.offsetDays), format);
+    }
 }

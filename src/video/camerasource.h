@@ -20,14 +20,14 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <QHash>
-#include <QString>
-#include <QFuture>
-#include <QVector>
-#include <QReadWriteLock>
-#include <atomic>
-#include "src/video/videosource.h"
 #include "src/video/videomode.h"
+#include "src/video/videosource.h"
+#include <QFuture>
+#include <QHash>
+#include <QReadWriteLock>
+#include <QString>
+#include <QVector>
+#include <atomic>
 
 class CameraDevice;
 struct AVCodecContext;
@@ -39,36 +39,45 @@ class CameraSource : public VideoSource
 public:
     static CameraSource& getInstance();
     static void destroyInstance();
-    void open();
-    void open(const QString& deviceName);
-    void open(const QString& deviceName, VideoMode mode);
-    void close();
-    bool isOpen();
+    void setupDefault();
+    bool isNone() const;
 
     // VideoSource interface
-    virtual bool subscribe() override;
+    virtual void subscribe() override;
     virtual void unsubscribe() override;
+
+public slots:
+    void setupDevice(const QString& deviceName, const VideoMode& mode);
 
 signals:
     void deviceOpened();
+    void openFailed();
 
 private:
     CameraSource();
     ~CameraSource();
     void stream();
-    bool openDevice();
+
+private slots:
+    void openDevice();
     void closeDevice();
 
 private:
     QFuture<void> streamFuture;
+    QThread* deviceThread;
+
     QString deviceName;
     CameraDevice* device;
     VideoMode mode;
-    AVCodecContext* cctx, *cctxOrig;
+    AVCodecContext* cctx;
+    // TODO: Remove when ffmpeg version will be bumped to the 3.1.0
+    AVCodecContext* cctxOrig;
     int videoStreamIndex;
+
+    QReadWriteLock deviceMutex;
     QReadWriteLock streamMutex;
-    std::atomic_bool _isOpen;
-    std::atomic_bool streamBlocker;
+
+    std::atomic_bool _isNone;
     std::atomic_int subscriptions;
 
     static CameraSource* instance;

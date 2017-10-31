@@ -23,7 +23,7 @@
 #include <QFrame>
 #include <QPushButton>
 
-GenericNetCamView::GenericNetCamView(QWidget *parent)
+GenericNetCamView::GenericNetCamView(QWidget* parent)
     : QWidget(parent)
 {
     verLayout = new QVBoxLayout(this);
@@ -65,8 +65,7 @@ QSize GenericNetCamView::getSurfaceMinSize()
 
 void GenericNetCamView::setShowMessages(bool show, bool notify)
 {
-    if (!show)
-    {
+    if (!show) {
         button->setText(tr("Hide Messages"));
         button->setIcon(QIcon());
         return;

@@ -21,7 +21,11 @@
 #ifndef TOXID_H
 #define TOXID_H
 
+#include "toxpk.h"
+
+#include <QByteArray>
 #include <QString>
+#include <cstdint>
 
 class ToxId
 {
@@ -31,6 +35,8 @@ public:
     explicit ToxId(const QString& id);
     explicit ToxId(const QByteArray& rawId);
     explicit ToxId(const uint8_t* rawId, int len);
+    ToxId& operator=(const ToxId& other) = default;
+    ToxId& operator=(ToxId&& other) = default;
 
     bool operator==(const ToxId& other) const;
     bool operator!=(const ToxId& other) const;
@@ -39,12 +45,10 @@ public:
     bool isValid() const;
 
     static bool isValidToxId(const QString& id);
-    static bool isToxId(const QString &id);
+    static bool isToxId(const QString& id);
     const uint8_t* getBytes() const;
     QByteArray getToxId() const;
-    QByteArray getPublicKey() const;
-    const uint8_t* getPublicKeyBytes() const;
-    QString getPublicKeyString() const;
+    ToxPk getPublicKey() const;
     QString getNoSpamString() const;
 
 private:

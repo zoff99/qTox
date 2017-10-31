@@ -2,7 +2,7 @@
 
 #
 #    Copyright © 2015 by RowenStipe
-#    Copyright © 2016 by The qTox Project Contributors
+#    Copyright © 2016-2017 by The qTox Project Contributors
 #
 #    This program is libre software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -40,10 +40,8 @@ QT_DIR="/usr/local/Cellar/qt5" # Folder name of QT install
 QT_VER=($(ls ${QT_DIR} | sed -n -e 's/^\([0-9]*\.([0-9]*\.([0-9]*\).*/\1/' -e '1p;$p'))
 QT_DIR_VER="${QT_DIR}/${QT_VER[1]}"
 
-QMAKE="${QT_DIR_VER}/bin/qmake" # Don't change
-MACDEPLOYQT="${QT_DIR_VER}/bin/macdeployqt" # Don't change
-
 TOXCORE_DIR="${MAIN_DIR}/toxcore" # Change to Git location
+FILTERAUIO_DIR="${MAIN_DIR}/filter_audio" # Change to Git location
 
 LIB_INSTALL_PREFIX="${QTOX_DIR}/libs"
 
@@ -52,7 +50,6 @@ LIB_INSTALL_PREFIX="${QTOX_DIR}/libs"
 
 BUILD_DIR="${MAIN_DIR}/qTox-Mac_Build${SUBGIT}"
 DEPLOY_DIR="${MAIN_DIR}/qTox-Mac_Deployed${SUBGIT}"
-
 
 # helper function to "pretty-print"
 fcho() {
@@ -115,7 +112,7 @@ install() {
     if [[ $TRAVIS != true ]]
     then
         sleep 3
-        brew install git wget libtool autoconf automake
+        brew install git wget libtool autoconf automake pkgconfig
     fi
     brew install check libvpx opus libsodium
 
@@ -167,8 +164,16 @@ install() {
     then
         fcho "Updating brew formulas ..."
         brew update > /dev/null
+    else
+        brew install cmake
     fi
-    brew install ffmpeg qrencode qt5 sqlcipher
+    brew install ffmpeg libexif qrencode qt5 sqlcipher openal-soft
+
+    fcho "Cloning filter_audio ... "
+    git clone --branch v0.0.1 --depth=1 https://github.com/irungentoo/filter_audio "$FILTERAUIO_DIR"
+    cd "$FILTERAUIO_DIR"
+    fcho "Installing filter_audio ... "
+    make install PREFIX="$LIB_INSTALL_PREFIX"
 
     QT_VER=($(ls ${QT_DIR} | sed -n -e 's/^\([0-9]*\.([0-9]*\.([0-9]*\).*/\1/' -e '1p;$p'))
     QT_DIR_VER="${QT_DIR}/${QT_VER[1]}"
@@ -218,17 +223,15 @@ update() {
 build() {
     fcho "------------------------------"
     fcho "Starting build process ..."
-    # update version info
-    ./tools/update-versions.sh
-
     rm -rf $BUILD_DIR
     rm -rf $DEPLOY_DIR
     mkdir $BUILD_DIR
     cd $BUILD_DIR
     fcho "Now working in ${PWD}"
-    fcho "Starting qmake ... "
-    $QMAKE $QTOX_DIR/qtox.pro
-    make
+    fcho "Starting cmake ..."
+    export CMAKE_PREFIX_PATH=$(brew --prefix qt5)
+    cmake -H$QTOX_DIR -B.
+    make -j$(sysctl -n hw.ncpu)
 }
 
 deploy() {
@@ -241,10 +244,8 @@ deploy() {
         exit 0
     fi
     mkdir $DEPLOY_DIR
+    make install
     cp -r $BUILD_DIR/qTox.app $DEPLOY_DIR/qTox.app
-    cd $DEPLOY_DIR
-    fcho "Now working in ${PWD}"
-    $MACDEPLOYQT qTox.app
 }
 
 bootstrap() {
@@ -263,14 +264,7 @@ bootstrap() {
 dmgmake() {
     fcho "------------------------------"
     fcho "Starting DMG creation"
-    cd $DEPLOY_DIR
-    ln -s /Applications "./Install to Applications"
-    cp -r -f $QTOX_DIR/osx/background-DMG ./.background
-    cp -f $QTOX_DIR/osx/DS_Store-DMG ./.DS_Store
-    cp -f $QTOX_DIR/LICENSE ./LICENSE
-    cp -f $QTOX_DIR/README.md ./README.md
-    cd $QTOX_DIR
-    hdiutil create -volname qTox${SUBGIT} -srcfolder $DEPLOY_DIR -format UDZO qTox${SUBGIT}.dmg
+    cp $BUILD_DIR/qTox.dmg $QTOX_DIR/
 }
 
 helpme() {
