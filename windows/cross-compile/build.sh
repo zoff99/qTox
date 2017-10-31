@@ -271,7 +271,7 @@ then
 
   wget $QT_MIRROR/official_releases/qt/$QT_MAJOR.$QT_MINOR/$QT_VERSION/single/qt-everywhere-opensource-src-$QT_VERSION.tar.xz
   check_sha256 "$QT_HASH" "qt-everywhere-opensource-src-$QT_VERSION.tar.xz"
-  bsdtar -xf qt*.tar.xz
+  bsdtar -x --no-acls -f qt*.tar.xz
   rm qt*.tar.xz
   cd qt*
 
