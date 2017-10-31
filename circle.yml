@@ -3,6 +3,10 @@ machine:
     - docker
   timezone:
     Europe/Vienna
+  environment:
+    MAKEFLAGS: "j4"
+    BUILD__: "x86_64"
+    BTYPE__: "release"
 dependencies:
   pre:
     - sudo apt-get update
@@ -18,9 +22,10 @@ compile:
       -v /home/ubuntu/script:/script
       -v /home/ubuntu/qTox:/qtox
       debian:stretch-slim
-      /bin/bash /script/build.sh x86_64 release
+      /bin/bash /script/build.sh "$BUILD__" "$BTYPE__"
 
     - echo "--- save artefacts here ---"
+    - ls -al /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"
 test:
   override:
     - echo "no tests yet"
