@@ -22,7 +22,64 @@ compile:
       -v /home/ubuntu/script:/script
       -v /home/ubuntu/qTox:/qtox
       debian:stretch-slim
-      /bin/bash /script/build.sh "$BUILD__" "$BTYPE__"
+      /bin/bash /script/build.sh "$BUILD__" "$BTYPE__" > $CIRCLE_ARTIFACTS/make_out.txt 2>&1 ; if [ $? -eq 0 ]; then touch ~/ok.txt ; fi ; touch ~/ready.txt :
+        background: true
+
+    - ready_="0";
+      counter=0;
+      while [ $ready_ == "0" ]; do
+      tail -20 $CIRCLE_ARTIFACTS/make_out.txt;
+      echo "running ...";
+      counter=$[ $counter + 1 ] ;
+      if [ $counter -eq 38 ] ; then exit 0 ; fi ;
+      if [ ! -f ~/ready.txt ]; then
+      sleep 180 ;
+      else ready_="1" ;
+      fi ;
+      done ;
+      exit 0
+
+    - ready_="0";
+      counter=0;
+      while [ $ready_ == "0" ]; do
+      tail -20 $CIRCLE_ARTIFACTS/make_out.txt;
+      echo "running ...";
+      counter=$[ $counter + 1 ] ;
+      if [ $counter -eq 38 ] ; then exit 0 ; fi ;
+      if [ ! -f ~/ready.txt ]; then
+      sleep 180 ;
+      else ready_="1" ;
+      fi ;
+      done ;
+      exit 0
+
+    - ready_="0";
+      counter=0;
+      while [ $ready_ == "0" ]; do
+      tail -20 $CIRCLE_ARTIFACTS/make_out.txt;
+      echo "running ...";
+      counter=$[ $counter + 1 ] ;
+      if [ $counter -eq 38 ] ; then exit 0 ; fi ;
+      if [ ! -f ~/ready.txt ]; then
+      sleep 180 ;
+      else ready_="1" ;
+      fi ;
+      done ;
+      exit 0
+
+    - ready_="0";
+      counter=0;
+      while [ $ready_ == "0" ]; do
+      tail -20 $CIRCLE_ARTIFACTS/make_out.txt;
+      echo "running ...";
+      counter=$[ $counter + 1 ] ;
+      if [ $counter -eq 38 ] ; then exit 0 ; fi ;
+      if [ ! -f ~/ready.txt ]; then
+      sleep 180 ;
+      else ready_="1" ;
+      fi ;
+      done ;
+      exit 0
 
     - echo "--- save artefacts here ---"
     - ls -al /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"
