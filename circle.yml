@@ -3,14 +3,9 @@ machine:
     - docker
   timezone:
     Europe/Vienna
-  environment:
-    MAKEFLAGS: "j4"
 dependencies:
   pre:
     - sudo apt-get update
-    - sudo apt-get install clang
-    - sudo apt-get install cmake
-    - sudo apt-get install build-essential libtool autotools-dev automake checkinstall check git yasm
     - docker info
 compile:
   override:
@@ -24,6 +19,8 @@ compile:
       -v /home/ubuntu/qTox:/qtox
       debian:stretch-slim
       /bin/bash /script/build.sh i686 release
+
+    - echo "--- save artefects here ---"
 test:
   override:
-    - echo dummy
+    - echo "no tests yet"
