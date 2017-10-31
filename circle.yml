@@ -18,9 +18,9 @@ compile:
       -v /home/ubuntu/script:/script
       -v /home/ubuntu/qTox:/qtox
       debian:stretch-slim
-      /bin/bash /script/build.sh i686 release
+      /bin/bash /script/build.sh x86_64 release
 
-    - echo "--- save artefects here ---"
+    - echo "--- save artefacts here ---"
 test:
   override:
     - echo "no tests yet"
