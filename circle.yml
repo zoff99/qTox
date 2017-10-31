@@ -81,6 +81,12 @@ compile:
       done ;
       exit 0
 
+    - if [ ! -f ~/ok.txt ]; then
+      echo "Build: OK" ; exit 0 ;
+      else
+      echo "Build: **Failed**" ; exit 1 ;
+      fi
+
     - echo "--- save artefacts here ---"
     - ls -al /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"
 test:
