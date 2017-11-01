@@ -344,12 +344,6 @@ void Nexus::onLastWindowClosed()
         quit();
 }
 
-void Nexus::onLastWindowClosed()
-{
-    if (quitOnLastWindowClosed)
-        quit();
-}
-
 #ifdef Q_OS_MAC
 void Nexus::retranslateUi()
 {
