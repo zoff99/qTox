@@ -39,6 +39,27 @@
 
 set -euo pipefail
 
+# ---------- CONFIG ----------
+# ---------------------------------------------------
+# v0.1.10 more vpx tweaks        eab6e81ec9ed5b88aa712093ea53c802ff81d611
+# v0.1.10 cfg_dec2               3921fd04ee233a21befa960cf26214410e1b6582
+# v0.1.10 cfg_dec                94bf0a32adac079b7739c6d32cfc0e504993f962
+# v0.1.10 mobtweaks f73b345c21fae0e0e56fae86dc82f63188a00aca
+# c-toxcore v0.1.9 a429ef4a28a5e5e0ad010efffb76d2abc3ada0af
+# c-toxcore v0.1.8 f6db9333e2d1262e7ba3846563c30f63c98ffa38
+# c-toxcore v0.1.7 48c86e942d487a8856cbd25797b320bfb1879ddc
+# c-toxcore v0.1.6 895de7ef26e7617769f2271345e414545c2581f8
+# c-toxcore v0.1.5 995578f1038842288c1ff552fd796ab2377db6e1
+# c-toxcore v0.1.4 27a97a8280813ec05a5209811c40ab23203bb292
+# c-toxcore v0.1.3 fdb46f6cf216a866d29402ae991be9c43282dde6
+# c-toxcore v0.1.2 a096c71db867ac83fc3e01e0fbe98573d20f9286
+# ---------------------------------------------------
+
+# TOXCORE_GIT_REPO="https://github.com/TokTok/c-toxcore" # original repo
+TOXCORE_GIT_REPO="https://github.com/zoff99/c-toxcore"
+TOXCORE_VERSION="eab6e81ec9ed5b88aa712093ea53c802ff81d611"
+# ---------- CONFIG ----------
+
 # Common directory paths
 
 readonly WORKSPACE_DIR="/workspace"
@@ -883,21 +904,15 @@ fi
 # Toxcore
 
 TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
-TOXCORE_VERSION=0.1.10
-TOXCORE_HASH=4e9a2881dd0ea8e65a35fc9621644ccf500c1797a2d37983b0057ed3be971299
 if [ ! -f "$TOXCORE_PREFIX_DIR/done" ]
 then
   rm -rf "$TOXCORE_PREFIX_DIR"
   mkdir -p "$TOXCORE_PREFIX_DIR"
-
-  wget https://github.com/TokTok/c-toxcore/releases/download/v$TOXCORE_VERSION/c-toxcore-$TOXCORE_VERSION.tar.gz
-  check_sha256 "$TOXCORE_HASH" "c-toxcore-$TOXCORE_VERSION.tar.gz"
-  set +euo pipefail
-  bsdtar -xf c-toxcore*.tar.gz
-  set -euo pipefail
-  rm c-toxcore*.tar.gz
-  cd c-toxcore*
-
+  # set +euo pipefail
+  git clone "$TOXCORE_GIT_REPO"
+  cd c-toxcore
+  git checkout $TOXCORE_VERSION
+  # set -euo pipefail
   mkdir -p build
   cd build
 
