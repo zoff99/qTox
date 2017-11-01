@@ -338,13 +338,10 @@ bool Nexus::tryRemoveFile(const QString& filepath)
     return writable;
 }
 
-/**
- * @brief Calls showLogin asynchronously, so we can safely logout from within the main GUI
- */
-void Nexus::showLoginLater()
+void Nexus::onLastWindowClosed()
 {
-    GUI::setEnabled(false);
-    QMetaObject::invokeMethod(&getInstance(), "showLogin", Qt::QueuedConnection);
+    if (quitOnLastWindowClosed)
+        quit();
 }
 
 void Nexus::onLastWindowClosed()
