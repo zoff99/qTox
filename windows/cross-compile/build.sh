@@ -39,14 +39,6 @@
 
 set -euo pipefail
 
-# -----------------------
-export MAKEOPTS="-j4"
-export MAKEFLAGS="-j4"
-alias make='make -j4'
-shopt -s expand_aliases 
-# -----------------------
-
-
 # Common directory paths
 
 readonly WORKSPACE_DIR="/workspace"
