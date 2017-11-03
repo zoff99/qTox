@@ -41,6 +41,9 @@ set -euo pipefail
 
 # ---------- CONFIG ----------
 # ---------------------------------------------------
+# v0.1.10 VPX_DL_GOOD_QUALITY    9fabeaee6f8e556233334be6e076d863a6ab949c
+#          + VPX_CODEC_USE_POSTPROC
+#
 # v0.1.10 more vpx tweaks        eab6e81ec9ed5b88aa712093ea53c802ff81d611
 # v0.1.10 cfg_dec2               3921fd04ee233a21befa960cf26214410e1b6582
 # v0.1.10 cfg_dec                94bf0a32adac079b7739c6d32cfc0e504993f962
@@ -57,7 +60,7 @@ set -euo pipefail
 
 # TOXCORE_GIT_REPO="https://github.com/TokTok/c-toxcore" # original repo
 TOXCORE_GIT_REPO="https://github.com/zoff99/c-toxcore"
-TOXCORE_VERSION="eab6e81ec9ed5b88aa712093ea53c802ff81d611"
+TOXCORE_VERSION="9fabeaee6f8e556233334be6e076d863a6ab949c"
 # ---------- CONFIG ----------
 
 # Common directory paths
