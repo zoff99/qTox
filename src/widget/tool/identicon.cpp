@@ -87,6 +87,11 @@ Identicon::Identicon(const QByteArray& data)
 		qDebug() << "Identicon:sat:" << sat;
 
         colors[colorIndex].setHslF(hue, sat, lig);
+
+		qDebug() << "Identicon:colors r=:" << colors[colorIndex].red();
+		qDebug() << "Identicon:colors g=:" << colors[colorIndex].green();
+		qDebug() << "Identicon:colors b=:" << colors[colorIndex].blue();
+
     }
 
     const uint8_t* const hashBytes = reinterpret_cast<const uint8_t*>(hash.constData());
