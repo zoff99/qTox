@@ -67,13 +67,14 @@ Identicon::Identicon(const QByteArray& data)
     QByteArray hash = QCryptographicHash::hash(data, QCryptographicHash::Sha256);
 
 	qDebug() << "Identicon:hash:" << hash;
+	qDebug() << "Identicon:hash:" << hash.toHex();
 
     for (int colorIndex = 0; colorIndex < COLORS; ++colorIndex) {
         const QByteArray hashPart = hash.right(IDENTICON_COLOR_BYTES);
         hash.truncate(hash.length() - IDENTICON_COLOR_BYTES);
 
-		qDebug() << "Identicon:hash2a:" << hash;
-		qDebug() << "Identicon:hash2b:" << hashPart;
+		qDebug() << "Identicon:hash2a:" << hash.toHex();
+		qDebug() << "Identicon:hash2b:" << hashPart.toHex();
 
         const qreal hue = bytesToColor(hashPart);
 
