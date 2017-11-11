@@ -65,14 +65,27 @@ Identicon::Identicon(const QByteArray& data)
     static_assert(Identicon::COLORS == 2, "Only two colors are implemented");
     // hash with sha256
     QByteArray hash = QCryptographicHash::hash(data, QCryptographicHash::Sha256);
+
+	qDebug() << "Identicon:hash:" << hash;
+
     for (int colorIndex = 0; colorIndex < COLORS; ++colorIndex) {
         const QByteArray hashPart = hash.right(IDENTICON_COLOR_BYTES);
         hash.truncate(hash.length() - IDENTICON_COLOR_BYTES);
 
+		qDebug() << "Identicon:hash2a:" << hash;
+		qDebug() << "Identicon:hash2b:" << hashPart;
+
         const qreal hue = bytesToColor(hashPart);
+
+		qDebug() << "Identicon:hue:" << hue;
+
         // change offset when COLORS != 2
         const qreal lig = static_cast<qreal>(colorIndex) / COLORS + 0.3;
         const qreal sat = 0.5;
+
+		qDebug() << "Identicon:lig:" << lig;
+		qDebug() << "Identicon:sat:" << sat;
+
         colors[colorIndex].setHslF(hue, sat, lig);
     }
 
@@ -81,7 +94,14 @@ Identicon::Identicon(const QByteArray& data)
     for (int row = 0; row < IDENTICON_ROWS; ++row) {
         for (int col = 0; col < ACTIVE_COLS; ++col) {
             const int hashIdx = row * ACTIVE_COLS + col;
+
+			qDebug() << "Identicon:hashIdx=" << hashIdx;
+			qDebug() << "Identicon:hashBytes[hashIdx]=" << hashBytes[hashIdx];
+
             const uint8_t colorIndex = hashBytes[hashIdx] % COLORS;
+
+			qDebug() << "Identicon:colorIndex=" << colorIndex;
+
             identiconColors[row][col] = colorIndex;
         }
     }
@@ -101,11 +121,24 @@ float Identicon::bytesToColor(QByteArray bytes)
     // get foreground color
     uint64_t hue = bytesChr[0];
 
+	qDebug() << "bytesToColor:1=" << bytesChr[0];
+
     // convert the last bytes to an uint
     for (int i = 1; i < IDENTICON_COLOR_BYTES; ++i) {
         hue = hue << 8;
         hue += bytesChr[i];
+
+		qDebug() << "bytesToColor:2.=" << hue;
+
     }
+
+	float ff = (static_cast<float>(hue))
+           / (((static_cast<uint64_t>(1)) << (8 * IDENTICON_COLOR_BYTES)) - 1);
+
+	qDebug() << "bytesToColor:4a=" << ff;
+	qDebug() << "bytesToColor:4b=" << (static_cast<float>(hue));
+	qDebug() << "bytesToColor:4c=" << (((static_cast<uint64_t>(1)) << (8 * IDENTICON_COLOR_BYTES)) - 1);
+
 
     // normalize to 0.0 ... 1.0
     return (static_cast<float>(hue))
