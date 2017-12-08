@@ -87,6 +87,7 @@ UserInterfaceForm::UserInterfaceForm(SettingsWidget* myParent)
     bodyUI->cbSeparateWindow->setChecked(s.getSeparateWindow());
     bodyUI->cbDontGroupWindows->setChecked(s.getDontGroupWindows());
     bodyUI->cbDontGroupWindows->setEnabled(s.getSeparateWindow());
+    bodyUI->cbShowIdenticons->setChecked(s.getShowIdenticons());
 
     bodyUI->useEmoticons->setChecked(s.getUseEmoticons());
     for (auto entry : SmileyPack::listSmileyPacks())
@@ -239,10 +240,12 @@ void UserInterfaceForm::reloadSmileys()
     for (int i = 0; i < emoticons.size(); ++i)
         smileys.push_front(emoticons.at(i).first());
 
+    emoticonsIcons.clear();
     const QSize size(18, 18);
     for (int i = 0; i < smileLabels.size(); ++i) {
-        QIcon icon = SmileyPack::getInstance().getAsIcon(smileys[i]);
-        smileLabels[i]->setPixmap(icon.pixmap(size));
+        std::shared_ptr<QIcon> icon = SmileyPack::getInstance().getAsIcon(smileys[i]);
+        emoticonsIcons.append(icon);
+        smileLabels[i]->setPixmap(icon->pixmap(size));
         smileLabels[i]->setToolTip(smileys[i]);
     }
 
@@ -253,8 +256,7 @@ void UserInterfaceForm::reloadSmileys()
     int maxSide = qMin(desktop.geometry().height() / sideSize, desktop.geometry().width() / sideSize);
     QSize maxSize(maxSide, maxSide);
 
-    QIcon icon = SmileyPack::getInstance().getAsIcon(smileys[0]);
-    QSize actualSize = icon.actualSize(maxSize);
+    QSize actualSize = emoticonsIcons.first()->actualSize(maxSize);
     bodyUI->emoticonSize->setMaximum(actualSize.width());
 }
 
@@ -295,6 +297,11 @@ void UserInterfaceForm::on_cbDontGroupWindows_stateChanged()
 void UserInterfaceForm::on_cbGroupchatPosition_stateChanged()
 {
     Settings::getInstance().setGroupchatPosition(bodyUI->cbGroupchatPosition->isChecked());
+}
+
+void UserInterfaceForm::on_cbShowIdenticons_stateChanged()
+{
+    Settings::getInstance().setShowIdenticons(bodyUI->cbShowIdenticons->isChecked());
 }
 
 void UserInterfaceForm::on_themeColorCBox_currentIndexChanged(int)

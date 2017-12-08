@@ -55,6 +55,7 @@
 #include "src/model/friend.h"
 #include "src/friendlist.h"
 #include "src/model/group.h"
+#include "src/model/profile/profileinfo.h"
 #include "src/grouplist.h"
 #include "src/net/autoupdate.h"
 #include "src/nexus.h"
@@ -72,8 +73,6 @@
 #include "src/widget/style.h"
 #include "src/widget/translator.h"
 #include "tool/removefrienddialog.h"
-
-#include <src/model/profile/profileinfo.h>
 
 bool toxActivateEventHandler(const QByteArray&)
 {
@@ -153,6 +152,8 @@ void Widget::init()
     profilePicture = new MaskablePixmapWidget(this, QSize(40, 40), ":/img/avatar_mask.svg");
     profilePicture->setPixmap(QPixmap(":/img/contact_dark.svg"));
     profilePicture->setClickable(true);
+    profilePicture->setObjectName("selfAvatar");
+    profilePicture->setStyleSheet(Style::getStylesheet(":ui/window/profile.css"));
     ui->myProfile->insertWidget(0, profilePicture);
     ui->myProfile->insertSpacing(1, 7);
 
@@ -976,7 +977,8 @@ void Widget::addFriend(uint32_t friendId, const ToxPk& friendPk)
     Friend* newfriend = FriendList::addFriend(friendId, friendPk);
     bool compact = s.getCompactLayout();
     FriendWidget* widget = new FriendWidget(newfriend, compact);
-    ChatForm* friendForm = new ChatForm(newfriend);
+    History* history = Nexus::getProfile()->getHistory();
+    ChatForm* friendForm = new ChatForm(newfriend, history);
     newfriend->setChatForm(friendForm);
 
     friendWidgets[friendId] = widget;
@@ -1100,10 +1102,10 @@ void Widget::onFriendAliasChanged(uint32_t friendId, const QString& alias)
         GUI::setWindowTitle(alias);
     }
 
-    Status s = f->getStatus();
-    contactListWidget->moveWidget(friendWidget, s);
+    Status status = f->getStatus();
+    contactListWidget->moveWidget(friendWidget, status);
     FilterCriteria criteria = getFilterCriteria();
-    bool filter = s == Status::Offline ? filterOffline(criteria) : filterOnline(criteria);
+    bool filter = status == Status::Offline ? filterOffline(criteria) : filterOnline(criteria);
     friendWidget->searchName(ui->searchContactText->text(), filter);
 
     ChatForm* friendForm = chatForms[friendId];
@@ -1111,6 +1113,11 @@ void Widget::onFriendAliasChanged(uint32_t friendId, const QString& alias)
     for (Group* g : GroupList::getAllGroups()) {
         g->regeneratePeerList();
     }
+
+    const ToxPk& pk = f->getPublicKey();
+    Settings& s = Settings::getInstance();
+    s.setFriendAlias(pk, alias);
+    s.savePersonal();
 }
 
 void Widget::onChatroomWidgetClicked(GenericChatroomWidget* widget)
@@ -1132,16 +1139,23 @@ void Widget::openDialog(GenericChatroomWidget* widget, bool newWindow)
     GenericChatForm* form;
     const Friend* frnd = widget->getFriend();
     if (frnd) {
-        form = chatForms[frnd->getId()];
         id = frnd->getId();
+        form = chatForms[id];
     } else {
         Group* g = widget->getGroup();
         form = g->getChatForm();
         id = g->getId();
     }
 
-    ContentDialog::focusFriend(id);
-    bool chatFormIsSet = ContentDialog::friendWidgetExists(id);
+    bool chatFormIsSet;
+    if (frnd) {
+        ContentDialog::focusFriend(id);
+        chatFormIsSet = ContentDialog::friendWidgetExists(id);
+    } else {
+        ContentDialog::focusGroup(id);
+        chatFormIsSet = ContentDialog::groupWidgetExists(id);
+    }
+
     if ((chatFormIsSet || form->isVisible()) && !newWindow) {
         return;
     }
@@ -1550,7 +1564,7 @@ void Widget::toggleFullscreen()
 
 ContentDialog* Widget::createContentDialog() const
 {
-    ContentDialog* contentDialog = new ContentDialog(settingsWidget);
+    ContentDialog* contentDialog = new ContentDialog();
     connect(contentDialog, &ContentDialog::friendDialogShown, this, &Widget::onFriendDialogShown);
     connect(contentDialog, &ContentDialog::groupDialogShown, this, &Widget::onGroupDialogShown);
     connect(Core::getInstance(), &Core::usernameSet, contentDialog, &ContentDialog::setUsername);
@@ -1756,21 +1770,12 @@ void Widget::onGroupTitleChanged(int groupnumber, const QString& author, const Q
         return;
     }
 
-    if (!author.isEmpty()) {
-        QString message = tr("%1 has set the title to %2").arg(author, title);
-        QDateTime curTime = QDateTime::currentDateTime();
-        g->getChatForm()->addSystemInfoMessage(message, ChatMessage::INFO, curTime);
-    }
-
     GroupWidget* widget = groupWidgets[groupnumber];
-    contactListWidget->renameGroupWidget(widget, title);
-    g->getChatForm()->setName(title);
-
     if (widget->isActive()) {
         GUI::setWindowTitle(title);
     }
 
-    g->setName(title);
+    g->onTitleChanged(author, title);
     FilterCriteria filter = getFilterCriteria();
     widget->searchName(ui->searchContactText->text(), filterGroups(filter));
 }
@@ -1843,7 +1848,7 @@ Group* Widget::createGroup(int groupId)
     }
 
     bool enabled = coreAv->isGroupAvEnabled(groupId);
-    Group* newgroup = GroupList::addGroup(groupId, groupName, enabled);
+    Group* newgroup = GroupList::addGroup(groupId, groupName, enabled, core->getUsername());
     bool compact = Settings::getInstance().getCompactLayout();
     GroupWidget* widget = new GroupWidget(groupId, groupName, compact);
     groupWidgets[groupId] = widget;
@@ -1859,7 +1864,8 @@ Group* Widget::createGroup(int groupId)
     connect(widget, &GroupWidget::chatroomWidgetClicked, form, &ChatForm::focusInput);
     connect(form, &GroupChatForm::sendMessage, core, &Core::sendGroupMessage);
     connect(form, &GroupChatForm::sendAction, core, &Core::sendGroupAction);
-    connect(newgroup, &Group::titleChanged, core, &Core::changeGroupTitle);
+    connect(newgroup, &Group::titleChangedByUser, core, &Core::changeGroupTitle);
+    connect(core, &Core::usernameSet, newgroup, &Group::setSelfName);
 
     FilterCriteria filter = getFilterCriteria();
     widget->searchName(ui->searchContactText->text(), filterGroups(filter));
@@ -2037,19 +2043,16 @@ void Widget::onMessageSendResult(uint32_t friendId, const QString& message, int 
     }
 }
 
-void Widget::onGroupSendResult(int groupId, const QString& message, int result)
+void Widget::onGroupSendFailed(int groupId)
 {
-    Q_UNUSED(message)
     Group* g = GroupList::findGroup(groupId);
     if (!g) {
         return;
     }
 
-    if (result == -1) {
-        QString message = tr("Message failed to send");
-        QDateTime curTime = QDateTime::currentDateTime();
-        g->getChatForm()->addSystemInfoMessage(message, ChatMessage::INFO, curTime);
-    }
+    QString message = tr("Message failed to send");
+    QDateTime curTime = QDateTime::currentDateTime();
+    g->getChatForm()->addSystemInfoMessage(message, ChatMessage::INFO, curTime);
 }
 
 void Widget::onFriendTypingChanged(int friendId, bool isTyping)
@@ -2191,7 +2194,9 @@ QString Widget::getStatusIconPath(Status status)
     case Status::Offline:
         return ":/img/status/dot_offline.svg";
     }
+    qWarning() << "Status unknown";
     assert(false);
+    return QString{};
 }
 
 // Preparing needed to set correct size of icons for GTK tray backend

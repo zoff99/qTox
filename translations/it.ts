@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
+<TS version="2.1" language="it_IT">
 <context>
     <name>AVForm</name>
     <message>
@@ -89,35 +89,35 @@ questo può causare problemi con le chiamate video.</translation>
     </message>
     <message>
         <source>Enables the experimental audio backend with echo cancelling support, needs qTox restart to take effect.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Abilita il backend sonoro sperimentale con la cancellazione degli eco. Devi riavviare qTox per renderlo effettivo.</translation>
     </message>
     <message>
         <source>Enable experimental audio backend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Abilita il backend sonoro sperimentale</translation>
     </message>
     <message>
         <source>Audio quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualità audio</translation>
     </message>
     <message>
         <source>Transmitted audio quality. Lower this setting if your bandwidth is not high enough or if you want to lower the internet usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualità audio trasmessa. Abbassa questo parametro se non hai abbastanza banda o se vuoi limitare il tuo traffico di rete.</translation>
     </message>
     <message>
         <source>High (64 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alta (64 kbps)</translation>
     </message>
     <message>
         <source>Medium (32 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Media (32 kbps)</translation>
     </message>
     <message>
         <source>Low (16 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bassa (16 kbps)</translation>
     </message>
     <message>
         <source>Very low (8 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Molto bassa (8 kbps)</translation>
     </message>
 </context>
 <context>
@@ -162,16 +162,6 @@ questo può causare problemi con le chiamate video.</translation>
         <translation>Una lista di tutti i problemi può essere trovata alla nostra %1 su Github.Se scopri un bug o una vulnerabilità di sicurezza in qTox, ti preghiamo di segnalarcelo in accordo con le nostre linee guida nel nostro %2 articolo del wiki.</translation>
     </message>
     <message>
-        <source>bug-tracker</source>
-        <comment>Replaces `%1` in the `A list of all knownâ¦`</comment>
-        <translation>gestore dei bug</translation>
-    </message>
-    <message>
-        <source>Writing Useful Bug Reports</source>
-        <comment>Replaces `%2` in the `A list of all knownâ¦`</comment>
-        <translation>Redigere degli utili segnalatori di bug</translation>
-    </message>
-    <message>
         <source>Click here to report a bug.</source>
         <translation>Clicca qui per segnalare un bug.</translation>
     </message>
@@ -181,8 +171,18 @@ questo può causare problemi con le chiamate video.</translation>
         <translation>Consulta l&apos;elenco completo dei %1 su Github</translation>
     </message>
     <message>
+        <source>bug-tracker</source>
+        <comment>Replaces `%1` in the `A list of all known…`</comment>
+        <translation type="unfinished">gestore dei bug</translation>
+    </message>
+    <message>
+        <source>Writing Useful Bug Reports</source>
+        <comment>Replaces `%2` in the `A list of all known…`</comment>
+        <translation>Scrivere delle segnalazioni di bug utili</translation>
+    </message>
+    <message>
         <source>contributors</source>
-        <comment>Replaces `%1` in `See a full list ofâ¦`</comment>
+        <comment>Replaces `%1` in `See a full list of…`</comment>
         <translation>collaboratori</translation>
     </message>
 </context>
@@ -194,15 +194,15 @@ questo può causare problemi con le chiamate video.</translation>
     </message>
     <message>
         <source>username</source>
-        <translation type="unfinished">Nome profilo</translation>
+        <translation>Username</translation>
     </message>
     <message>
         <source>status message</source>
-        <translation type="unfinished">messagggio di stato</translation>
+        <translation>messaggio di stato</translation>
     </message>
     <message>
         <source>Public key:</source>
-        <translation type="unfinished">Chiave pubblica:</translation>
+        <translation>Chiave pubblica:</translation>
     </message>
     <message>
         <source>Used aliases:</source>
@@ -214,15 +214,15 @@ questo può causare problemi con le chiamate video.</translation>
     </message>
     <message>
         <source>Automatically accept files from contact if set</source>
-        <translation type="unfinished">Accetta automaticamente files dal contatto se impostato</translation>
+        <translation>Accetta automaticamente files dal contatto se selezionato</translation>
     </message>
     <message>
         <source>Auto accept files</source>
-        <translation type="unfinished">Accetta automaticamente i file inviati da questo contatto</translation>
+        <translation>Accetta automaticamente i file ricevuti</translation>
     </message>
     <message>
         <source>Default directory to save files:</source>
-        <translation type="unfinished">Cartella predefinita per salvare i file:</translation>
+        <translation>Cartella predefinita per salvare i files:</translation>
     </message>
     <message>
         <source>Auto accept for this contact is disabled</source>
@@ -421,7 +421,6 @@ questo può causare problemi con le chiamate video.</translation>
     </message>
     <message numerus="yes">
         <source>Ready to import %n contact(s), click send to confirm</source>
-        <extracomment>Shows the number of contacts we&apos;re about to import from a file (at least one)</extracomment>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -2205,12 +2204,12 @@ This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
     </message>
     <message>
         <source>Export profile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Salva profilo</translation>
     </message>
     <message>
         <source>Tox save file (*.tox)</source>
         <extracomment>save dialog filter</extracomment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">File di salvataggio di Tox (*.tox)</translation>
     </message>
     <message>
         <source>The following files could not be deleted:</source>
@@ -2226,6 +2225,10 @@ This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
         <source>Are you sure you want to delete your password?</source>
         <extracomment>deletion confirmation text</extracomment>
         <translation type="unfinished">Sei sicuro di voler rimuovere la password?</translation>
+    </message>
+    <message>
+        <source>Tox user names cannot exceed %1 characters.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2933,7 +2936,7 @@ Verrà installata al riavvio del programma.</translation>
     <message>
         <source>Settings</source>
         <comment>title of the window</comment>
-        <translation type="unfinished">Impostazioni</translation>
+        <translation>Impostazioni</translation>
     </message>
     <message>
         <source>My profile</source>

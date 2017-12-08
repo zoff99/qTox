@@ -211,6 +211,7 @@ void Settings::loadGlobal()
         groupchatPosition = s.value("groupchatPosition", true).toBool();
         separateWindow = s.value("separateWindow", false).toBool();
         dontGroupWindows = s.value("dontGroupWindows", false).toBool();
+        showIdenticons = s.value("showIdenticons", true).toBool();
 
         const QString DEFAULT_SMILEYS = ":/smileys/emojione/emoticons.xml";
         smileyPack = s.value("smileyPack", DEFAULT_SMILEYS).toString();
@@ -264,6 +265,7 @@ void Settings::loadGlobal()
         outDev = s.value("outDev", "").toString();
         audioOutDevEnabled = s.value("audioOutDevEnabled", true).toBool();
         audioInGainDecibel = s.value("inGain", 0).toReal();
+        audioThreshold = s.value("audioThreshold", 0).toReal();
         outVolume = s.value("outVolume", 100).toInt();
         audioBitrate = s.value("audioBitrate", 64).toInt();
         enableBackend2 = false;
@@ -525,6 +527,7 @@ void Settings::saveGlobal()
         s.setValue("separateWindow", separateWindow);
         s.setValue("dontGroupWindows", dontGroupWindows);
         s.setValue("groupchatPosition", groupchatPosition);
+        s.setValue("showIdenticons", showIdenticons);
 
         s.setValue("smileyPack", smileyPack);
         s.setValue("emojiFontPointSize", emojiFontPointSize);
@@ -566,6 +569,7 @@ void Settings::saveGlobal()
         s.setValue("outDev", outDev);
         s.setValue("audioOutDevEnabled", audioOutDevEnabled);
         s.setValue("inGain", audioInGainDecibel);
+        s.setValue("audioThreshold", audioThreshold);
         s.setValue("outVolume", outVolume);
         s.setValue("audioBitrate", audioBitrate);
         s.setValue("enableBackend2", enableBackend2);
@@ -1820,6 +1824,22 @@ void Settings::setAudioInGainDecibel(qreal dB)
     }
 }
 
+qreal Settings::getAudioThreshold() const
+{
+    QMutexLocker locker{&bigLock};
+    return audioThreshold;
+}
+
+void Settings::setAudioThreshold(qreal percent)
+{
+    QMutexLocker locker{&bigLock};
+
+    if (percent < audioThreshold || percent > audioThreshold) {
+        audioThreshold = percent;
+        emit audioThresholdChanged(audioThreshold);
+    }
+}
+
 QString Settings::getVideoDev() const
 {
     QMutexLocker locker{&bigLock};
@@ -2170,6 +2190,22 @@ void Settings::setGroupchatPosition(bool value)
     if (value != groupchatPosition) {
         groupchatPosition = value;
         emit groupchatPositionChanged(value);
+    }
+}
+
+bool Settings::getShowIdenticons() const
+{
+    const QMutexLocker locker{&bigLock};
+    return showIdenticons;
+}
+
+void Settings::setShowIdenticons(bool value)
+{
+    const QMutexLocker locker{&bigLock};
+
+    if (value != showIdenticons) {
+        showIdenticons = value;
+        emit showIdenticonsChanged(value);
     }
 }
 

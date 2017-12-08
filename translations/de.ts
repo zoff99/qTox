@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de_DE" sourcelanguage="en_US">
+<TS version="2.1" language="de_DE" sourcelanguage="en_US">
 <context>
     <name>AVForm</name>
     <message>
@@ -87,35 +87,35 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
     </message>
     <message>
         <source>Enables the experimental audio backend with echo cancelling support, needs qTox restart to take effect.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiviert den experimentellen Audio Back-End mit Echo Dämpfung, benötigt einen Neustart von qTox.</translation>
     </message>
     <message>
         <source>Enable experimental audio backend</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiviere den experimentellen Audio Back-End</translation>
     </message>
     <message>
         <source>Audio quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Tonqualität</translation>
     </message>
     <message>
         <source>Transmitted audio quality. Lower this setting if your bandwidth is not high enough or if you want to lower the internet usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Übertragene Tonqualität. Verringere Sie diese Einstellung, wenn Ihre Bandbreite nicht ausreichend ist oder wenn Sie die Internetauslastung verringern möchten.</translation>
     </message>
     <message>
         <source>High (64 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoch (64 kbps)</translation>
     </message>
     <message>
         <source>Medium (32 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mittel (32 kbps)</translation>
     </message>
     <message>
         <source>Low (16 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Niedrig (16 kbps)</translation>
     </message>
     <message>
         <source>Very low (8 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sehr niedrig (8 kbps)</translation>
     </message>
 </context>
 <context>
@@ -160,16 +160,6 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
         <translation>Eine Liste von bekannten Problemen kann in unserem %1 angesehen werden. Wenn Du einen Bug oder eine Sicherheitslücke findest, melde ihn bitte entsprechend unseren Richtlinien, die Du in unserem Wiki-Artikel %2 findest.</translation>
     </message>
     <message>
-        <source>bug-tracker</source>
-        <comment>Replaces `%1` in the `A list of all knownâ¦`</comment>
-        <translation>Bug-Tracker (Englisch)</translation>
-    </message>
-    <message>
-        <source>Writing Useful Bug Reports</source>
-        <comment>Replaces `%2` in the `A list of all knownâ¦`</comment>
-        <translation>„Writing Useful Bug Reports“ (Englisch)</translation>
-    </message>
-    <message>
         <source>Click here to report a bug.</source>
         <translation>Hier klicken, um einen Fehler zu melden.</translation>
     </message>
@@ -179,8 +169,18 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
         <translation>Eine komplette Liste von %1 findest du auf Github</translation>
     </message>
     <message>
+        <source>bug-tracker</source>
+        <comment>Replaces `%1` in the `A list of all known…`</comment>
+        <translation type="unfinished">Bug-Tracker</translation>
+    </message>
+    <message>
+        <source>Writing Useful Bug Reports</source>
+        <comment>Replaces `%2` in the `A list of all known…`</comment>
+        <translation type="unfinished">„Writing Useful Bug Reports“ (Englisch)</translation>
+    </message>
+    <message>
         <source>contributors</source>
-        <comment>Replaces `%1` in `See a full list ofâ¦`</comment>
+        <comment>Replaces `%1` in `See a full list of…`</comment>
         <translation>Mitwirkende</translation>
     </message>
 </context>
@@ -188,23 +188,23 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
     <name>AboutFriendForm</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Dialog</translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <source>username</source>
-        <translation type="unfinished">Benutzername</translation>
+        <translation>Benutzername</translation>
     </message>
     <message>
         <source>status message</source>
-        <translation type="unfinished">Status-Nachricht</translation>
+        <translation type="unfinished">Status</translation>
     </message>
     <message>
         <source>Public key:</source>
-        <translation type="unfinished">Öffentlicher Schlüssel:</translation>
+        <translation>Öffentlicher Schlüssel:</translation>
     </message>
     <message>
         <source>Used aliases:</source>
-        <translation type="unfinished">Verwendete Namen:</translation>
+        <translation>Verwendete Nutzernamen:</translation>
     </message>
     <message>
         <source>HISTORY OF ALIASES</source>
@@ -212,51 +212,51 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
     </message>
     <message>
         <source>Automatically accept files from contact if set</source>
-        <translation type="unfinished">Aktiviert die automatische Annahme von Dateien von diesem Kontakt</translation>
+        <translation>Nimmt Dateien dieses Kontaktes automatisch an, wenn aktiviert</translation>
     </message>
     <message>
         <source>Auto accept files</source>
-        <translation type="unfinished">Dateien automatisch annehmen</translation>
+        <translation>Dateien automatisch annehmen</translation>
     </message>
     <message>
         <source>Default directory to save files:</source>
-        <translation type="unfinished">Standardordner für Dateien:</translation>
+        <translation>Standardordner für Dateien:</translation>
     </message>
     <message>
         <source>Auto accept for this contact is disabled</source>
-        <translation type="unfinished">Automatische Annahme von Dateien ist deaktiviert</translation>
+        <translation type="unfinished">Automatische Annahme von Dateien ist bei diesem Kontakt deaktiviert</translation>
     </message>
     <message>
         <source>Auto accept call:</source>
-        <translation type="unfinished">Anruf automatisch annehmen:</translation>
+        <translation>Anruf automatisch annehmen:</translation>
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished">Manuell</translation>
+        <translation>Manuell</translation>
     </message>
     <message>
         <source>Audio</source>
-        <translation type="unfinished">Audio</translation>
+        <translation>Audio</translation>
     </message>
     <message>
         <source>Audio + Video</source>
-        <translation type="unfinished">Audio + Video</translation>
+        <translation>Audio + Video</translation>
     </message>
     <message>
         <source>Automatically accept group chat invitations from this contact if set.</source>
-        <translation type="unfinished">Von diesem Kontakt Gruppen-Chat-Einladungen automatisch akzeptieren.</translation>
+        <translation type="unfinished">Nimm Gruppenchat-Einladungen dieses Kontaktes automatisch an, wenn aktiviert.</translation>
     </message>
     <message>
         <source>Auto accept group invites</source>
-        <translation type="unfinished">Gruppeneinladungen automatisch annehmen</translation>
+        <translation>Gruppeneinladungen automatisch annehmen</translation>
     </message>
     <message>
         <source>Remove history (operation can not be undone!)</source>
-        <translation type="unfinished">Gesprächsverlauf löschen (kann nicht rückgängig gemacht werden!)</translation>
+        <translation>Chatverlauf löschen (kann nicht rückgängig gemacht werden!)</translation>
     </message>
     <message>
         <source>Notes</source>
-        <translation type="unfinished">Notizen</translation>
+        <translation>Notizen</translation>
     </message>
     <message>
         <source>Input field for notes about the contact</source>
@@ -264,20 +264,20 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
     </message>
     <message>
         <source>You can save comment about this contact here.</source>
-        <translation type="unfinished">Du kannst hier Notizen über diesen Kontakt eintragen.</translation>
+        <translation type="unfinished">Hier kannst du Notizen über diesen Kontakt eintragen.</translation>
     </message>
     <message>
         <source>Choose an auto accept directory</source>
         <comment>popup title</comment>
-        <translation type="unfinished"></translation>
+        <translation>Wähle ein Verzeichnis für automatische Annahme</translation>
     </message>
     <message>
         <source>History removed</source>
-        <translation type="unfinished">Gesprächsverlauf gelöscht</translation>
+        <translation>Chatverlauf gelöscht</translation>
     </message>
     <message>
         <source>Chat history with %1 removed!</source>
-        <translation type="unfinished">Gesprächsverlauf mit %1 wurde gelöscht!</translation>
+        <translation>Chatverlauf mit %1 wurde gelöscht!</translation>
     </message>
 </context>
 <context>
@@ -339,7 +339,7 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
     </message>
     <message>
         <source>Tox ID, either 76 hexadecimal characters or name@example.com</source>
-        <translation>Tox ID, bestehend aus entweder 76 hexadezimalen Zeichen oder name@beispiel.de</translation>
+        <translation>Tox ID, entweder 76 hexadezimalen Zeichen oder name@beispiel.de</translation>
     </message>
     <message>
         <source>Type in Tox ID of your friend</source>
@@ -356,33 +356,33 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
     <message>
         <source>%1 Tox ID is invalid or does not exist</source>
         <comment>Toxme error</comment>
-        <translation type="unfinished"></translation>
+        <translation>%1 Tox ID ist ungültig oder existiert nicht</translation>
     </message>
     <message>
         <source>You can&apos;t add yourself as a friend!</source>
         <extracomment>When trying to add your own Tox ID as friend</extracomment>
-        <translation type="unfinished">Du kannst dich nicht selbst als Freund hinzufügen!</translation>
+        <translation>Du kannst dich nicht selbst als Freund hinzufügen!</translation>
     </message>
     <message>
         <source>Open contact list</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffne Kontaktliste</translation>
     </message>
     <message>
         <source>Couldn&apos;t open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Datei nicht öffnen</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the contact file</source>
         <extracomment>Error message when trying to open a contact list file to import</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Kann Kontaktdatei nicht öffnen</translation>
     </message>
     <message>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Datei</translation>
     </message>
     <message>
         <source>We couldn&apos;t find any contacts to import in this file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Wir können keine Kontakte zum importieren in dieser Datei finden!</translation>
     </message>
     <message>
         <source>Tox ID</source>
@@ -402,11 +402,11 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
     <message>
         <source>Open</source>
         <extracomment>Button to choose a file with a list of contacts to import</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Öffnen</translation>
     </message>
     <message>
         <source>Send friend requests</source>
-        <translation type="unfinished"></translation>
+        <translation>Freundschaftsanfragen senden</translation>
     </message>
     <message>
         <source>%1 here! Tox me maybe?</source>
@@ -415,19 +415,16 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
     </message>
     <message>
         <source>Import a list of contacts, one Tox ID per line</source>
-        <translation type="unfinished"></translation>
+        <translation>Importiere Kontaktliste, eine Tox ID pro Zeile</translation>
     </message>
     <message numerus="yes">
         <source>Ready to import %n contact(s), click send to confirm</source>
-        <extracomment>Shows the number of contacts we&apos;re about to import from a file (at least one)</extracomment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation type="unfinished"><numerusform>Bereit, %n Kontakt(e) zu importieren, klicke Senden zum bestätigen</numerusform>
+        <numerusform>Bereit, %n Kontakte zu importieren, klicke Senden zum bestätigen</numerusform>
+        </translation></message>
     <message>
         <source>Import contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Importiere Kontakte</translation>
     </message>
 </context>
 <context>
@@ -446,7 +443,7 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
     </message>
     <message>
         <source>not</source>
-        <translation>nichts</translation>
+        <translation>nicht</translation>
     </message>
     <message>
         <source>IMPORTANT NOTE</source>
@@ -518,7 +515,7 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
     <message>
         <source>Disabling this allows, e.g., toxing over Tor. It adds load to the Tox network however, so uncheck only when necessary.</source>
         <extracomment>force tcp checkbox tooltip</extracomment>
-        <translation>Wenn deaktiviert, lässt sich qTox z. B. über Tor verwenden. Die Deaktivierung belastet allerdings das Tox-Netzwerk.</translation>
+        <translation type="unfinished">Wenn deaktiviert, lässt sich z.B. qTox über Tor verwenden. Die Deaktivierung belastet allerdings das Tox-Netzwerk, also bitte deaktiviere es nur wenn nötig.</translation>
     </message>
     <message>
         <source>Enable UDP (recommended)</source>
@@ -708,15 +705,15 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
     </message>
     <message>
         <source>Microphone can be muted only during a call</source>
-        <translation>Das Mikrofon kann nur während eines Gesprächs stumm geschaltet werden</translation>
+        <translation>Mikrofon kann nur während eines Anrufs stumm geschaltet werden</translation>
     </message>
     <message>
         <source>Sound can be disabled only during a call</source>
-        <translation>Die Soundausgabe kann nur während eines Gesprächs deaktiviert werden</translation>
+        <translation>Lautsprecher kann nur während eines Anrufs stumm geschaltet werden</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Als Datei exportieren</translation>
     </message>
     <message>
         <source>Save chat log</source>
@@ -724,7 +721,7 @@ Zu hohe Auflösungen können daher zu Problemen in Videoanrufen führen, wenn di
     </message>
     <message>
         <source>Call with %1 ended unexpectedly. %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Anruf mit %1 brach unerwartet ab. %2</translation>
     </message>
 </context>
 <context>
@@ -1186,7 +1183,7 @@ instead of system taskbar.</source>
     </message>
     <message>
         <source>Play sound while Busy</source>
-        <translation>Auch Ton abspielen, wenn man beschäftigt ist.</translation>
+        <translation>Auch Ton abspielen wenn „beschäftigt”</translation>
     </message>
 </context>
 <context>
@@ -1354,7 +1351,7 @@ instead of system taskbar.</source>
     </message>
     <message>
         <source>Set title...</source>
-        <translation>Titel wählen ...</translation>
+        <translation type="unfinished">Titel setzen...</translation>
     </message>
     <message>
         <source>Open chat in new window</source>
@@ -1520,7 +1517,7 @@ Das Profil beinhaltet keine Gesprächsverläufe.</translation>
     </message>
     <message>
         <source>Name visible to contacts</source>
-        <translation>Der für Kontakte sichtbarer Name</translation>
+        <translation>Der für Kontakte sichtbare Name</translation>
     </message>
     <message>
         <source>Status message input</source>
@@ -1619,7 +1616,7 @@ Das Profil beinhaltet keine Gesprächsverläufe.</translation>
     </message>
     <message>
         <source>%1 messages</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Nachrichten</translation>
     </message>
 </context>
 <context>
@@ -1854,7 +1851,7 @@ Möglicherweise möchtest du ein neues Profil erstellen.</translation>
     </message>
     <message>
         <source>Open Add friends page</source>
-        <translation>Öffne diese Seite um Freunde hinzuzufügen</translation>
+        <translation type="unfinished">Öffne die Freunde hinzufügen Seite</translation>
     </message>
     <message>
         <source>Groupchat</source>
@@ -1998,15 +1995,15 @@ Formatierungsänderungen beim Speichern sind möglich, die zu Datenverlust führ
     </message>
     <message>
         <source>Privacy</source>
-        <translation>Privatsphäre</translation>
+        <translation type="unfinished">Privatsphäre</translation>
     </message>
     <message>
         <source>BlackList</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">BlackList</translation>
     </message>
     <message>
         <source>Filter group message by group member&apos;s public key. Put public key here, one per line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtere Gruppennachricht nach öffentlichen Schlüssel des Gruppenmitglieds. Füge öffentlichen Schlüssel hier ein, ein Schlüssel pro Zeile.</translation>
     </message>
 </context>
 <context>
@@ -2017,7 +2014,7 @@ Formatierungsänderungen beim Speichern sind möglich, die zu Datenverlust führ
     </message>
     <message>
         <source>Couldn&apos;t change password on the database, it might be corrupted or use the old password.</source>
-        <translation type="unfinished">Datenbankänderung des Passwortes nicht möglich, es ist möglich, dass ein älteres Passwort verwendet wurde</translation>
+        <translation>Datenbankänderung des Passwortes nicht möglich, es ist möglich, dass ein älteres Passwort verwendet wurde.</translation>
     </message>
 </context>
 <context>
@@ -2176,35 +2173,38 @@ Bitte benutze ein anderes.</translation>
 Share it with your friends to communicate.
 
 This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dieser Haufen Zeichen sagt anderen Tox Clienten, wie sie dich kontaktieren können.
+Teile ihn mit deinen Freunden, um zu kommunizieren.
+
+Diese ID beeinhaltet deinen NoSpam-Code (in blau), und die Checksumme (in grau).</translation>
     </message>
     <message>
         <source>Empty path is unavaliable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Leerer Pfad ist nicht verfügbar</translation>
     </message>
     <message>
         <source>Failed to rename</source>
-        <translation type="unfinished">Fehler beim Umbenennen</translation>
+        <translation>Fehler beim Umbenennen</translation>
     </message>
     <message>
         <source>Profile already exists</source>
-        <translation type="unfinished">Profil bereits vorhanden</translation>
+        <translation>Profil bereits vorhanden</translation>
     </message>
     <message>
         <source>A profile named &quot;%1&quot; already exists.</source>
-        <translation type="unfinished">Ein Profil „%1“ existiert bereits.</translation>
+        <translation>Ein Profil namens „%1“ existiert bereits.</translation>
     </message>
     <message>
         <source>Empty name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Leerer Name</translation>
     </message>
     <message>
         <source>Empty name is unavaliable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Leerer Name ist nicht verfügbar</translation>
     </message>
     <message>
         <source>Empty path</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Leerer Pfad</translation>
     </message>
     <message>
         <source>Couldn&apos;t change password on the database, it might be corrupted or use the old password.</source>
@@ -2212,7 +2212,7 @@ This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
     </message>
     <message>
         <source>Export profile</source>
-        <translation type="unfinished">Profil exportieren</translation>
+        <translation>Profil exportieren</translation>
     </message>
     <message>
         <source>Tox save file (*.tox)</source>
@@ -2222,7 +2222,7 @@ This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
     <message>
         <source>The following files could not be deleted:</source>
         <extracomment>deletion failed text part 1</extracomment>
-        <translation type="unfinished">Die folgenden Dateien konnten nicht gelöscht werden:</translation>
+        <translation>Die folgenden Dateien konnten nicht gelöscht werden:</translation>
     </message>
     <message>
         <source>Please manually remove them.</source>
@@ -2232,7 +2232,11 @@ This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
     <message>
         <source>Are you sure you want to delete your password?</source>
         <extracomment>deletion confirmation text</extracomment>
-        <translation type="unfinished">Bist du sicher, dass du dein Passwort löschen möchtest?</translation>
+        <translation>Bist du sicher, dass du dein Passwort löschen möchtest?</translation>
+    </message>
+    <message>
+        <source>Tox user names cannot exceed %1 characters.</source>
+        <translation type="unfinished">Tox-Benutzernamen können nicht mehr als %1 Schriftzeichen lang sein.</translation>
     </message>
 </context>
 <context>
@@ -2454,7 +2458,7 @@ Sie wird beim nächsten Neustart von qTox automatisch installiert.</translation>
     </message>
     <message>
         <source>Starts new instance and opens the login screen.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Startet eine neue Instanz und öffnet den Anmeldebildschirm.</translation>
     </message>
 </context>
 <context>
@@ -2927,7 +2931,7 @@ Leider führen deine Proxy-Einstellungen zu Problemen. Bitte ändere deine Einst
     <message>
         <source>Add friend</source>
         <comment>title of the window</comment>
-        <translation>Freund hinzufügen</translation>
+        <translation>FreundIn hinzufügen</translation>
     </message>
     <message>
         <source>Group invites</source>

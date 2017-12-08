@@ -29,6 +29,7 @@
 #include "src/persistence/settings.h"
 #include "src/persistence/smileypack.h"
 #include "src/video/genericnetcamview.h"
+#include "src/widget/chatformheader.h"
 #include "src/widget/contentdialog.h"
 #include "src/widget/contentlayout.h"
 #include "src/widget/emoticonswidget.h"
@@ -57,16 +58,10 @@
 
 #define SET_STYLESHEET(x) (x)->setStyleSheet(Style::getStylesheet(":/ui/" #x "/" #x ".css"))
 
-static const QSize AVATAR_SIZE{40, 40};
-static const QSize CALL_BUTTONS_SIZE{50, 40};
-static const QSize VOL_MIC_BUTTONS_SIZE{22, 18};
 static const QSize FILE_FLYOUT_SIZE{24, 24};
 static const short FOOT_BUTTONS_SPACING = 2;
 static const short MESSAGE_EDIT_HEIGHT = 50;
 static const short MAIN_FOOT_LAYOUT_SPACING = 5;
-static const short MIC_BUTTONS_LAYOUT_SPACING = 4;
-static const short HEAD_LAYOUT_SPACING = 5;
-static const short BUTTONS_LAYOUT_HOR_SPACING = 4;
 static const QString FONT_STYLE[]{"normal", "italic", "oblique"};
 
 /**
@@ -109,29 +104,37 @@ QString GenericChatForm::resolveToxPk(const ToxPk& pk)
     return pk.toString();
 }
 
+namespace
+{
+const QString STYLE_PATH = QStringLiteral(":/ui/chatForm/buttons.css");
+}
+
+namespace
+{
+
+template <class T, class Fun>
+QPushButton* createButton(const QString& name, T* self, Fun onClickSlot)
+{
+    QPushButton* btn = new QPushButton();
+    // Fix for incorrect layouts on OS X as per
+    // https://bugreports.qt-project.org/browse/QTBUG-14591
+    btn->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+    btn->setObjectName(name);
+    btn->setProperty("state", "green");
+    btn->setStyleSheet(Style::getStylesheet(STYLE_PATH));
+    QObject::connect(btn, &QPushButton::clicked, self, onClickSlot);
+    return btn;
+}
+
+}
+
 GenericChatForm::GenericChatForm(QWidget* parent)
     : QWidget(parent, Qt::Window)
     , audioInputFlag(false)
     , audioOutputFlag(false)
 {
     curRow = 0;
-    headWidget = new QWidget();
-
-    nameLabel = new CroppingLabel();
-    nameLabel->setObjectName("nameLabel");
-    nameLabel->setMinimumHeight(Style::getFont(Style::Medium).pixelSize());
-    nameLabel->setEditable(true);
-    nameLabel->setTextFormat(Qt::PlainText);
-
-    avatar = new MaskablePixmapWidget(this, AVATAR_SIZE, ":/img/avatar_mask.svg");
-    QHBoxLayout *mainFootLayout = new QHBoxLayout(), *headLayout = new QHBoxLayout();
-
-    QVBoxLayout *mainLayout = new QVBoxLayout(), *footButtonsSmall = new QVBoxLayout(),
-                *micButtonsLayout = new QVBoxLayout();
-    headTextLayout = new QVBoxLayout();
-
-    QGridLayout* buttonsLayout = new QGridLayout();
-
+    headWidget = new ChatFormHeader();
     chatWidget = new ChatLog(this);
     chatWidget->setBusyNotification(ChatMessage::createBusyNotification());
 
@@ -142,22 +145,11 @@ GenericChatForm::GenericChatForm(QWidget* parent)
 
     msgEdit = new ChatTextEdit();
 
-    sendButton = new QPushButton();
-    emoteButton = new QPushButton();
+    sendButton = createButton("sendButton", this, &GenericChatForm::onSendTriggered);
+    emoteButton = createButton("emoteButton", this, &GenericChatForm::onEmoteButtonClicked);
 
-    // Setting the sizes in the CSS doesn't work (glitch with high DPIs)
-    fileButton = new QPushButton();
-    screenshotButton = new QPushButton;
-
-    callButton = new QPushButton();
-    callButton->setFixedSize(CALL_BUTTONS_SIZE);
-    videoButton = new QPushButton();
-    videoButton->setFixedSize(CALL_BUTTONS_SIZE);
-
-    volButton = new QToolButton();
-    volButton->setFixedSize(VOL_MIC_BUTTONS_SIZE);
-    micButton = new QToolButton();
-    micButton->setFixedSize(VOL_MIC_BUTTONS_SIZE);
+    fileButton = createButton("fileButton", this, &GenericChatForm::onSendTriggered);
+    screenshotButton = createButton("screenshotButton", this, &GenericChatForm::onScreenshotClicked);
 
     // TODO: Make updateCallButtons (see ChatForm) abstract
     //       and call here to set tooltips.
@@ -166,8 +158,6 @@ GenericChatForm::GenericChatForm(QWidget* parent)
     QHBoxLayout* fileLayout = new QHBoxLayout(fileFlyout);
     fileLayout->addWidget(screenshotButton);
     fileLayout->setContentsMargins(0, 0, 0, 0);
-
-    footButtonsSmall->setSpacing(FOOT_BUTTONS_SPACING);
     fileLayout->setSpacing(0);
     fileLayout->setMargin(0);
 
@@ -176,74 +166,32 @@ GenericChatForm::GenericChatForm(QWidget* parent)
     msgEdit->setFixedHeight(MESSAGE_EDIT_HEIGHT);
     msgEdit->setFrameStyle(QFrame::NoFrame);
 
-    SET_STYLESHEET(sendButton);
-    SET_STYLESHEET(fileButton);
-    SET_STYLESHEET(screenshotButton);
-    SET_STYLESHEET(emoteButton);
-    SET_STYLESHEET(callButton);
-    SET_STYLESHEET(videoButton);
-    SET_STYLESHEET(volButton);
-    SET_STYLESHEET(micButton);
-
-    callButton->setObjectName("green");
-    videoButton->setObjectName("green");
-    volButton->setObjectName("grey");
-    micButton->setObjectName("grey");
-
-    setLayout(mainLayout);
-
     bodySplitter = new QSplitter(Qt::Vertical, this);
     connect(bodySplitter, &QSplitter::splitterMoved, this, &GenericChatForm::onSplitterMoved);
-
     QWidget* contentWidget = new QWidget(this);
-    QVBoxLayout* contentLayout = new QVBoxLayout(contentWidget);
-    contentLayout->addWidget(chatWidget);
-    contentLayout->addLayout(mainFootLayout);
     bodySplitter->addWidget(contentWidget);
 
+    QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->addWidget(bodySplitter);
     mainLayout->setMargin(0);
 
+    setLayout(mainLayout);
+
+    QVBoxLayout* footButtonsSmall = new QVBoxLayout();
+    footButtonsSmall->setSpacing(FOOT_BUTTONS_SPACING);
     footButtonsSmall->addWidget(emoteButton);
     footButtonsSmall->addWidget(fileButton);
 
+    QHBoxLayout* mainFootLayout = new QHBoxLayout();
     mainFootLayout->addWidget(msgEdit);
     mainFootLayout->addLayout(footButtonsSmall);
     mainFootLayout->addSpacing(MAIN_FOOT_LAYOUT_SPACING);
     mainFootLayout->addWidget(sendButton);
     mainFootLayout->setSpacing(0);
 
-    headTextLayout->addStretch();
-    headTextLayout->addWidget(nameLabel);
-    headTextLayout->addStretch();
-
-    micButtonsLayout->setSpacing(MIC_BUTTONS_LAYOUT_SPACING);
-    micButtonsLayout->addWidget(micButton, Qt::AlignTop | Qt::AlignRight);
-    micButtonsLayout->addWidget(volButton, Qt::AlignTop | Qt::AlignRight);
-
-    buttonsLayout->addLayout(micButtonsLayout, 0, 0, 2, 1, Qt::AlignTop | Qt::AlignRight);
-    buttonsLayout->addWidget(callButton, 0, 1, 2, 1, Qt::AlignTop);
-    buttonsLayout->addWidget(videoButton, 0, 2, 2, 1, Qt::AlignTop);
-    buttonsLayout->setVerticalSpacing(0);
-    buttonsLayout->setHorizontalSpacing(BUTTONS_LAYOUT_HOR_SPACING);
-
-    headLayout->addWidget(avatar);
-    headLayout->addSpacing(HEAD_LAYOUT_SPACING);
-    headLayout->addLayout(headTextLayout);
-    headLayout->addLayout(buttonsLayout);
-
-    headWidget->setLayout(headLayout);
-
-    // Fix for incorrect layouts on OS X as per
-    // https://bugreports.qt-project.org/browse/QTBUG-14591
-    sendButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
-    fileButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
-    screenshotButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
-    emoteButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
-    micButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
-    volButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
-    callButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
-    videoButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+    QVBoxLayout* contentLayout = new QVBoxLayout(contentWidget);
+    contentLayout->addWidget(chatWidget);
+    contentLayout->addLayout(mainFootLayout);
 
     menu.addActions(chatWidget->actions());
     menu.addSeparator();
@@ -258,7 +206,6 @@ GenericChatForm::GenericChatForm(QWidget* parent)
 
     menu.addSeparator();
 
-    connect(emoteButton, &QPushButton::clicked, this, &GenericChatForm::onEmoteButtonClicked);
     connect(chatWidget, &ChatLog::customContextMenuRequested, this,
             &GenericChatForm::onChatContextMenuRequested);
 
@@ -324,9 +271,7 @@ QDate GenericChatForm::getLatestDate() const
 
 void GenericChatForm::setName(const QString& newName)
 {
-    nameLabel->setText(newName);
-    nameLabel->setToolTip(
-        Qt::convertFromPlainText(newName, Qt::WhiteSpaceNormal)); // for overlength names
+    headWidget->setName(newName);
 }
 
 void GenericChatForm::show(ContentLayout* contentLayout)
@@ -709,23 +654,6 @@ void GenericChatForm::copyLink()
 
 void GenericChatForm::retranslateUi()
 {
-    QString callObjectName = callButton->objectName();
-    QString videoObjectName = videoButton->objectName();
-
-    if (callObjectName == QStringLiteral("green"))
-        callButton->setToolTip(tr("Start audio call"));
-    else if (callObjectName == QStringLiteral("yellow"))
-        callButton->setToolTip(tr("Accept audio call"));
-    else if (callObjectName == QStringLiteral("red"))
-        callButton->setToolTip(tr("End audio call"));
-
-    if (videoObjectName == QStringLiteral("green"))
-        videoButton->setToolTip(tr("Start video call"));
-    else if (videoObjectName == QStringLiteral("yellow"))
-        videoButton->setToolTip(tr("Accept video call"));
-    else if (videoObjectName == QStringLiteral("red"))
-        videoButton->setToolTip(tr("End video call"));
-
     sendButton->setToolTip(tr("Send message"));
     emoteButton->setToolTip(tr("Smileys"));
     fileButton->setToolTip(tr("Send file(s)"));

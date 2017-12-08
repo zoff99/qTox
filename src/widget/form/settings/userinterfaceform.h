@@ -23,6 +23,8 @@
 #include "genericsettings.h"
 #include "src/widget/form/settingswidget.h"
 
+#include <memory>
+
 namespace Ui {
 class UserInterfaceSettings;
 }
@@ -54,6 +56,7 @@ private slots:
     void on_cbDontGroupWindows_stateChanged();
     void on_cbGroupchatPosition_stateChanged();
     void on_themeColorCBox_currentIndexChanged(int);
+    void on_cbShowIdenticons_stateChanged();
 
     void on_txtChatFont_currentFontChanged(const QFont& f);
     void on_txtChatFontSize_valueChanged(int arg1);
@@ -65,6 +68,7 @@ private:
 
 private:
     QList<QLabel*> smileLabels;
+    QList<std::shared_ptr<QIcon>> emoticonsIcons;
     SettingsWidget* parent;
     Ui::UserInterfaceSettings* bodyUI;
     const int MAX_FORMAT_LENGTH = 128;

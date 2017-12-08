@@ -27,23 +27,23 @@
 
 #include "genericchatform.h"
 #include "src/core/core.h"
-#include "src/persistence/history.h"
 #include "src/widget/tool/screenshotgrabber.h"
 
-class Friend;
-class FileTransferInstance;
-class QPixmap;
 class CallConfirmWidget;
+class CoreAV;
+class FileTransferInstance;
+class Friend;
+class History;
+class OfflineMsgEngine;
+class QPixmap;
 class QHideEvent;
 class QMoveEvent;
-class OfflineMsgEngine;
-class CoreAV;
 
 class ChatForm : public GenericChatForm
 {
     Q_OBJECT
 public:
-    explicit ChatForm(Friend* chatFriend);
+    ChatForm(Friend* chatFriend, History* history);
     ~ChatForm();
     void setStatusMessage(const QString& newMessage);
     void loadHistory(const QDateTime& since, bool processUndelivered = false);
@@ -57,7 +57,6 @@ public:
     static const QString ACTION_PREFIX;
 
 signals:
-    void aliasChanged(const QString& alias);
     void incomingNotification(uint32_t friendId);
     void outgoingNotification();
     void rejectCall(uint32_t friendId);
@@ -74,12 +73,13 @@ public slots:
 
 private slots:
     void clearChatArea(bool notInForm) override final;
+    void onSendTriggered() override;
+    void onAttachClicked() override;
+    void onScreenshotClicked() override;
 
     void onDeliverOfflineMessages();
     void onLoadChatHistory();
-    void onSendTriggered();
     void onTextEditChanged();
-    void onAttachClicked();
     void onCallTriggered();
     void onVideoCallTriggered();
     void onAnswerCallTriggered(bool video);
@@ -96,7 +96,6 @@ private slots:
     void onReceiptReceived(quint32 friendId, int receipt);
     void onLoadHistory();
     void onUpdateTime();
-    void onScreenshotClicked();
     void sendImage(const QPixmap& pixmap);
     void doScreenshot();
     void onCopyStatusMessage();
@@ -133,9 +132,10 @@ private:
     QAction* copyStatusAction;
     QAction* exportChatAction;
 
+    History* history;
     QHash<uint, FileTransferInstance*> ftransWidgets;
-    QPointer<CallConfirmWidget> callConfirm;
     bool isTyping;
+    bool lastCallIsVideo;
 };
 
 #endif // CHATFORM_H

@@ -21,9 +21,11 @@
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
 
+#include "src/audio/iaudiosettings.h"
 #include "src/core/icoresettings.h"
 #include "src/core/toxencrypt.h"
 #include "src/core/toxfile.h"
+#include "src/video/ivideosettings.h"
 
 #include <QDate>
 #include <QFlags>
@@ -41,7 +43,7 @@ namespace Db {
 enum class syncType;
 }
 
-class Settings : public QObject, public ICoreSettings
+class Settings : public QObject, public ICoreSettings, public IAudioSettings, public IVideoSettings
 {
     Q_OBJECT
 
@@ -73,6 +75,8 @@ class Settings : public QObject, public ICoreSettings
     Q_PROPERTY(QString style READ getStyle WRITE setStyle NOTIFY styleChanged FINAL)
     Q_PROPERTY(bool showSystemTray READ getShowSystemTray WRITE setShowSystemTray NOTIFY
                    showSystemTrayChanged FINAL)
+    Q_PROPERTY(bool showIdenticons READ getShowIdenticons WRITE setShowIdenticons NOTIFY
+                   showIdenticonsChanged FINAL)
 
     // ChatView
     Q_PROPERTY(bool groupchatPosition READ getGroupchatPosition WRITE setGroupchatPosition NOTIFY
@@ -98,6 +102,8 @@ class Settings : public QObject, public ICoreSettings
                    audioInDevEnabledChanged FINAL)
     Q_PROPERTY(qreal audioInGainDecibel READ getAudioInGainDecibel WRITE setAudioInGainDecibel
                    NOTIFY audioInGainDecibelChanged FINAL)
+    Q_PROPERTY(qreal audioThreshold READ getAudioThreshold WRITE setAudioThreshold
+                   NOTIFY audioThresholdChanged FINAL)
     Q_PROPERTY(QString outDev READ getOutDev WRITE setOutDev NOTIFY outDevChanged FINAL)
     Q_PROPERTY(bool audioOutDevEnabled READ getAudioOutDevEnabled WRITE setAudioOutDevEnabled NOTIFY
                    audioOutDevEnabledChanged FINAL)
@@ -205,6 +211,7 @@ signals:
     void styleChanged(const QString& style);
     void themeColorChanged(int color);
     void compactLayoutChanged(bool enabled);
+    void showIdenticonsChanged(bool enabled);
 
     // ChatView
     void useEmoticonsChanged(bool enabled);
@@ -223,24 +230,6 @@ signals:
     void typingNotificationChanged(bool enabled);
     void dbSyncTypeChanged(Db::syncType type);
     void blackListChanged(QStringList& blist);
-
-    // Audio
-    void inDevChanged(const QString& name);
-    void audioInDevEnabledChanged(bool enabled);
-    void audioInGainDecibelChanged(qreal gain);
-    void outDevChanged(const QString& name);
-    void audioOutDevEnabledChanged(bool enabled);
-    void outVolumeChanged(int volume);
-    void audioBitrateChanged(int bitrate);
-    void enableTestSoundChanged(bool enabled);
-    void enableBackend2Changed(bool enabled);
-
-    // Video
-    void videoDevChanged(const QString& name);
-    void camVideoResChanged(const QRect& resolution);
-    void screenRegionChanged(const QRect& region);
-    void screenGrabbedChanged(bool enabled);
-    void camVideoFPSChanged(quint16 fps);
 
 public:
     bool getMakeToxPortable() const;
@@ -350,47 +339,69 @@ public:
     bool getGroupAlwaysNotify() const;
     void setGroupAlwaysNotify(bool newValue);
 
-    QString getInDev() const;
-    void setInDev(const QString& deviceSpecifier);
+    QString getInDev() const override;
+    void setInDev(const QString& deviceSpecifier) override;
 
-    bool getAudioInDevEnabled() const;
-    void setAudioInDevEnabled(bool enabled);
+    bool getAudioInDevEnabled() const override;
+    void setAudioInDevEnabled(bool enabled) override;
 
-    QString getOutDev() const;
-    void setOutDev(const QString& deviceSpecifier);
+    QString getOutDev() const override;
+    void setOutDev(const QString& deviceSpecifier) override;
 
-    bool getAudioOutDevEnabled() const;
-    void setAudioOutDevEnabled(bool enabled);
+    bool getAudioOutDevEnabled() const override;
+    void setAudioOutDevEnabled(bool enabled) override;
 
-    qreal getAudioInGainDecibel() const;
-    void setAudioInGainDecibel(qreal dB);
+    qreal getAudioInGainDecibel() const override;
+    void setAudioInGainDecibel(qreal dB) override;
 
-    int getOutVolume() const;
-    void setOutVolume(int volume);
+    qreal getAudioThreshold() const override;
+    void setAudioThreshold(qreal percent) override;
 
-    int getAudioBitrate() const;
-    void setAudioBitrate(int bitrate);
+    int getOutVolume() const override;
+    void setOutVolume(int volume) override;
 
-    bool getEnableTestSound() const;
-    void setEnableTestSound(bool newValue);
+    int getAudioBitrate() const override;
+    void setAudioBitrate(int bitrate) override;
 
-    bool getEnableBackend2() const;
-    void setEnableBackend2(bool enabled);
+    bool getEnableTestSound() const override;
+    void setEnableTestSound(bool newValue) override;
 
-    QString getVideoDev() const;
-    void setVideoDev(const QString& deviceSpecifier);
+    bool getEnableBackend2() const override;
+    void setEnableBackend2(bool enabled) override;
 
-    QRect getScreenRegion() const;
-    void setScreenRegion(const QRect& value);
+    SIGNAL_IMPL(Settings, inDevChanged, const QString& device)
+    SIGNAL_IMPL(Settings, audioInDevEnabledChanged, bool enabled)
 
-    bool getScreenGrabbed() const;
-    void setScreenGrabbed(bool value);
+    SIGNAL_IMPL(Settings, outDevChanged, const QString& device)
+    SIGNAL_IMPL(Settings, audioOutDevEnabledChanged, bool enabled)
 
-    QRect getCamVideoRes() const;
-    void setCamVideoRes(QRect newValue);
+    SIGNAL_IMPL(Settings, audioInGainDecibelChanged, qreal dB)
+    SIGNAL_IMPL(Settings, audioThresholdChanged, qreal percent)
+    SIGNAL_IMPL(Settings, outVolumeChanged, int volume)
+    SIGNAL_IMPL(Settings, audioBitrateChanged, int bitrate)
+    SIGNAL_IMPL(Settings, enableTestSoundChanged, bool newValue)
+    SIGNAL_IMPL(Settings, enableBackend2Changed, bool enabled)
 
-    unsigned short getCamVideoFPS() const;
-    void setCamVideoFPS(unsigned short newValue);
+    QString getVideoDev() const override;
+    void setVideoDev(const QString& deviceSpecifier) override;
+
+    QRect getScreenRegion() const override;
+    void setScreenRegion(const QRect& value) override;
+
+    bool getScreenGrabbed() const override;
+    void setScreenGrabbed(bool value) override;
+
+    QRect getCamVideoRes() const override;
+    void setCamVideoRes(QRect newValue) override;
+
+    unsigned short getCamVideoFPS() const override;
+    void setCamVideoFPS(unsigned short newValue) override;
+
+    SIGNAL_IMPL(Settings, videoDevChanged, const QString& device)
+    SIGNAL_IMPL(Settings, screenRegionChanged, const QRect& region)
+    SIGNAL_IMPL(Settings, screenGrabbedChanged, bool enabled)
+    SIGNAL_IMPL(Settings, camVideoResChanged, const QRect& region)
+    SIGNAL_IMPL(Settings, camVideoFPSChanged, unsigned short fps)
 
     bool isAnimationEnabled() const;
     void setAnimationEnabled(bool newValue);
@@ -491,9 +502,12 @@ public:
 
     bool getDontGroupWindows() const;
     void setDontGroupWindows(bool value);
-
+    
     bool getGroupchatPosition() const;
     void setGroupchatPosition(bool value);
+    
+    bool getShowIdenticons() const;
+    void setShowIdenticons(bool value);
 
     bool getAutoLogin() const;
     void setAutoLogin(bool state);
@@ -558,6 +572,7 @@ private:
     bool groupchatPosition;
     bool separateWindow;
     bool dontGroupWindows;
+    bool showIdenticons;
     bool enableIPv6;
     QString translation;
     bool makeToxPortable;
@@ -630,6 +645,7 @@ private:
     QString inDev;
     bool audioInDevEnabled;
     qreal audioInGainDecibel;
+    qreal audioThreshold;
     QString outDev;
     bool audioOutDevEnabled;
     int outVolume;

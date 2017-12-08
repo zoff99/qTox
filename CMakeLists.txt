@@ -195,6 +195,7 @@ set(${PROJECT_NAME}_SOURCES
   src/audio/audio.h
   src/audio/backend/openal.cpp
   src/audio/backend/openal.h
+  src/audio/iaudiosettings.h
   src/chatlog/chatlinecontent.cpp
   src/chatlog/chatlinecontent.h
   src/chatlog/chatlinecontentproxy.cpp
@@ -311,6 +312,7 @@ set(${PROJECT_NAME}_SOURCES
   src/video/genericnetcamview.h
   src/video/groupnetcamview.cpp
   src/video/groupnetcamview.h
+  src/video/ivideosettings.h
   src/video/netcamview.cpp
   src/video/netcamview.h
   src/video/videoframe.cpp
@@ -325,6 +327,8 @@ set(${PROJECT_NAME}_SOURCES
   src/widget/about/aboutfriendform.h
   src/widget/categorywidget.cpp
   src/widget/categorywidget.h
+  src/widget/chatformheader.cpp
+  src/widget/chatformheader.h
   src/widget/circlewidget.cpp
   src/widget/circlewidget.h
   src/widget/contentdialog.cpp

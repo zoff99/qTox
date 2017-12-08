@@ -41,11 +41,14 @@ public:
     void peerAudioPlaying(int peer);
 
 private slots:
-    void onSendTriggered();
+    void onSendTriggered() override;
+    void onScreenshotClicked() override;
+    void onAttachClicked() override;
     void onMicMuteToggle();
     void onVolMuteToggle();
     void onCallClicked();
     void onUserListChanged();
+    void onTitleChanged(uint32_t groupId, const QString& author, const QString& title);
 
 protected:
     virtual GenericNetCamView* createNetcam() final override;

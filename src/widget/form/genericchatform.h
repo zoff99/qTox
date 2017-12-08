@@ -32,6 +32,7 @@
  *        - Even a different font is not enough – TODO #1307 ~~zetok
  */
 
+class ChatFormHeader;
 class ChatLog;
 class ChatTextEdit;
 class ContentLayout;
@@ -56,7 +57,7 @@ class GenericChatForm : public QWidget
     Q_OBJECT
 public:
     explicit GenericChatForm(QWidget* parent = nullptr);
-    ~GenericChatForm();
+    ~GenericChatForm() override;
 
     void setName(const QString& newName);
     virtual void show() final
@@ -85,6 +86,9 @@ public slots:
 
 protected slots:
     void onChatContextMenuRequested(QPoint pos);
+    virtual void onScreenshotClicked() = 0;
+    virtual void onSendTriggered() = 0;
+    virtual void onAttachClicked() = 0;
     void onEmoteButtonClicked();
     void onEmoteInsertRequested(QString str);
     void onSaveLogClicked();
@@ -138,28 +142,19 @@ protected:
 
     QMenu menu;
 
-    QPushButton* callButton;
     QPushButton* emoteButton;
     QPushButton* fileButton;
     QPushButton* screenshotButton;
     QPushButton* sendButton;
-    QPushButton* videoButton;
 
     QSplitter* bodySplitter;
 
-    QToolButton* volButton;
-    QToolButton* micButton;
-
-    QVBoxLayout* headTextLayout;
-
-    QWidget* headWidget;
+    ChatFormHeader* headWidget;
 
     ChatLog* chatWidget;
     ChatTextEdit* msgEdit;
-    CroppingLabel* nameLabel;
     FlyoutOverlayWidget* fileFlyout;
     GenericNetCamView* netcam;
-    MaskablePixmapWidget* avatar;
     Widget* parent;
 };
 

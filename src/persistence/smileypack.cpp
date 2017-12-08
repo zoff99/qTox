@@ -25,6 +25,7 @@
 #include <QRegularExpression>
 #include <QStandardPaths>
 #include <QtConcurrent/QtConcurrentRun>
+#include <QTimer>
 
 #if defined(Q_OS_FREEBSD)
 #include <locale.h>
@@ -57,6 +58,8 @@ static const QStringList DEFAULT_PATHS = loadDefaultPaths();
 static const QString RICH_TEXT_PATTERN = QStringLiteral("<img title=\"%1\" src=\"key:%1\"\\>");
 
 static const QString EMOTICONS_FILE_NAME = QStringLiteral("emoticons.xml");
+
+static constexpr int CLEANUP_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 
 /**
  * @brief Construct list of standard directories with "emoticons" sub dir, whether these directories
@@ -101,13 +104,34 @@ QString getAsRichText(const QString& key)
     return RICH_TEXT_PATTERN.arg(key);
 }
 
-
 SmileyPack::SmileyPack()
+    : cleanupTimer{new QTimer(this)}
 {
     loadingMutex.lock();
     QtConcurrent::run(this, &SmileyPack::load, Settings::getInstance().getSmileyPack());
     connect(&Settings::getInstance(), &Settings::smileyPackChanged, this,
             &SmileyPack::onSmileyPackChanged);
+    connect(cleanupTimer, &QTimer::timeout, this, &SmileyPack::cleanupIconsCache);
+    cleanupTimer->start(CLEANUP_TIMEOUT);
+}
+
+SmileyPack::~SmileyPack()
+{
+    delete cleanupTimer;
+}
+
+void SmileyPack::cleanupIconsCache()
+{
+    QMutexLocker locker(&loadingMutex);
+    for (auto it = cachedIcon.begin(); it != cachedIcon.end();) {
+        std::shared_ptr<QIcon>& icon = it->second;
+        if (icon.use_count() == 1) {
+            it = cachedIcon.erase(it);
+            icon.reset();
+        } else {
+            ++it;
+        }
+    }
 }
 
 /**
@@ -202,19 +226,18 @@ bool SmileyPack::load(const QString& filename)
     const QString childName = QStringLiteral("string");
     const int iconsCount = emoticonElements.size();
     emoticons.clear();
-    emoticonToIcon.clear();
-    icons.clear();
-    icons.reserve(iconsCount);
+    emoticonToPath.clear();
+    cachedIcon.clear();
+
     for (int i = 0; i < iconsCount; ++i) {
         QDomNode node = emoticonElements.at(i);
         QString iconName = node.attributes().namedItem(itemName).nodeValue();
         QString iconPath = QDir{path}.filePath(iconName);
-        icons.append(QIcon{iconPath});
         QDomElement stringElement = node.firstChildElement(childName);
         QStringList emoticonList;
         while (!stringElement.isNull()) {
             QString emoticon = stringElement.text().replace("<", "&lt;").replace(">", "&gt;");
-            emoticonToIcon.insert(emoticon, &icons[i]);
+            emoticonToPath.insert(emoticon, iconPath);
             emoticonList.append(emoticon);
             stringElement = stringElement.nextSibling().toElement();
         }
@@ -243,7 +266,7 @@ QString SmileyPack::smileyfied(const QString& msg)
         QString key = match.captured();
         int startPos = match.capturedStart();
         int keyLength = key.length();
-        if (emoticonToIcon.contains(key)) {
+        if (emoticonToPath.find(key) != emoticonToPath.end()) {
             QString imgRichText = getAsRichText(key);
             result.replace(startPos + replaceDiff, keyLength, imgRichText);
             replaceDiff += imgRichText.length() - keyLength;
@@ -267,10 +290,22 @@ QList<QStringList> SmileyPack::getEmoticons() const
  * @param emoticon Passed emoticon
  * @return Returns cached icon according to passed emoticon, null if no icon mapped to this emoticon
  */
-QIcon SmileyPack::getAsIcon(const QString& emoticon)
+std::shared_ptr<QIcon> SmileyPack::getAsIcon(const QString& emoticon) const
 {
     QMutexLocker locker(&loadingMutex);
-    return emoticonToIcon.contains(emoticon) ? *(emoticonToIcon[emoticon]) : QIcon();
+    if (cachedIcon.find(emoticon) != cachedIcon.end()) {
+        return cachedIcon[emoticon];
+    }
+
+    const auto iconPathIt = emoticonToPath.find(emoticon);
+    if (iconPathIt == emoticonToPath.end()) {
+        return std::make_shared<QIcon>();
+    }
+
+    const QString& iconPath = iconPathIt.value();
+    auto icon = std::make_shared<QIcon>(iconPath);
+    cachedIcon[emoticon] = icon;
+    return icon;
 }
 
 void SmileyPack::onSmileyPackChanged()

@@ -28,11 +28,11 @@
 #include "src/core/core.h"
 #include "src/core/coreav.h"
 #include "src/model/friend.h"
-#include "src/nexus.h"
 #include "src/persistence/offlinemsgengine.h"
-#include "src/persistence/profile.h"
 #include "src/persistence/settings.h"
+#include "src/persistence/history.h"
 #include "src/video/netcamview.h"
+#include "src/widget/chatformheader.h"
 #include "src/widget/form/loadhistorydialog.h"
 #include "src/widget/maskablepixmapwidget.h"
 #include "src/widget/style.h"
@@ -57,11 +57,6 @@ static const int CHAT_WIDGET_MIN_HEIGHT = 50;
 static const int DELIVER_OFFLINE_MESSAGES_DELAY = 250;
 static const int SCREENSHOT_GRABBER_OPENING_DELAY = 500;
 static const int TYPING_NOTIFICATION_DURATION = 3000;
-
-static const QString CALL_BTN_STYLESHEET = QStringLiteral(":/ui/callButton/callButton.css");
-static const QString MIC_BTN_STYLESHEET = QStringLiteral(":/ui/micButton/micButton.css");
-static const QString VIDEO_BTN_STYLESHEET = QStringLiteral(":/ui/videoButton/videoButton.css");
-static const QString VOL_BTN_STYLESHEET = QStringLiteral(":/ui/volButton/volButton.css");
 
 const QString ChatForm::ACTION_PREFIX = QStringLiteral("/me ");
 
@@ -113,14 +108,16 @@ QString secondsToDHMS(quint32 duration)
 }
 
 
-ChatForm::ChatForm(Friend* chatFriend)
+ChatForm::ChatForm(Friend* chatFriend, History* history)
     : f(chatFriend)
     , callDuration(new QLabel(this))
     , isTyping(false)
+    , history{history}
+    , lastCallIsVideo{false}
 {
-    nameLabel->setText(f->getDisplayedName());
+    setName(f->getDisplayedName());
 
-    avatar->setPixmap(QPixmap(":/img/contact_dark.svg"));
+    headWidget->setAvatar(QPixmap(":/img/contact_dark.svg"));
 
     statusMessageLabel = new CroppingLabel();
     statusMessageLabel->setObjectName("statusLabel");
@@ -129,7 +126,6 @@ ChatForm::ChatForm(Friend* chatFriend)
     statusMessageLabel->setTextFormat(Qt::PlainText);
     statusMessageLabel->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    callConfirm = nullptr;
     offlineEngine = new OfflineMsgEngine(f);
 
     typingTimer.setSingleShot(true);
@@ -139,10 +135,10 @@ ChatForm::ChatForm(Friend* chatFriend)
     chatWidget->setTypingNotification(ChatMessage::createTypingNotification());
     chatWidget->setMinimumHeight(CHAT_WIDGET_MIN_HEIGHT);
 
-    headTextLayout->addWidget(statusMessageLabel);
-    headTextLayout->addStretch();
     callDuration = new QLabel();
-    headTextLayout->addWidget(callDuration, 1, Qt::AlignCenter);
+    headWidget->addWidget(statusMessageLabel);
+    headWidget->addStretch();
+    headWidget->addWidget(callDuration, 1, Qt::AlignCenter);
     callDuration->hide();
 
     loadHistoryAction = menu.addAction(QString(), this, SLOT(onLoadHistory()));
@@ -168,13 +164,10 @@ ChatForm::ChatForm(Friend* chatFriend)
     connect(av, &CoreAV::avStart, this, &ChatForm::onAvStart);
     connect(av, &CoreAV::avEnd, this, &ChatForm::onAvEnd);
 
-    connect(sendButton, &QPushButton::clicked, this, &ChatForm::onSendTriggered);
-    connect(fileButton, &QPushButton::clicked, this, &ChatForm::onAttachClicked);
-    connect(screenshotButton, &QPushButton::clicked, this, &ChatForm::onScreenshotClicked);
-    connect(callButton, &QAbstractButton::clicked, this, &ChatForm::onCallTriggered);
-    connect(videoButton, &QAbstractButton::clicked, this, &ChatForm::onVideoCallTriggered);
-    connect(micButton, &QAbstractButton::clicked, this, &ChatForm::onMicMuteToggle);
-    connect(volButton, &QAbstractButton::clicked, this, &ChatForm::onVolMuteToggle);
+    connect(headWidget, &ChatFormHeader::callTriggered, this, &ChatForm::onCallTriggered);
+    connect(headWidget, &ChatFormHeader::videoCallTriggered, this, &ChatForm::onVideoCallTriggered);
+    connect(headWidget, &ChatFormHeader::micMuteToggle, this, &ChatForm::onMicMuteToggle);
+    connect(headWidget, &ChatFormHeader::volMuteToggle, this, &ChatForm::onVolMuteToggle);
 
     connect(msgEdit, &ChatTextEdit::enterPressed, this, &ChatForm::onSendTriggered);
     connect(msgEdit, &ChatTextEdit::textChanged, this, &ChatForm::onTextEditChanged);
@@ -192,10 +185,13 @@ ChatForm::ChatForm(Friend* chatFriend)
         isTyping = false;
     });
 
-    connect(nameLabel, &CroppingLabel::editFinished, this, [=](const QString& newName) {
-        nameLabel->setText(newName);
-        emit aliasChanged(newName);
+    connect(headWidget, &ChatFormHeader::nameChanged, this, [=](const QString& newName) {
+        f->setAlias(newName);
     });
+    connect(headWidget, &ChatFormHeader::callAccepted, this, [this] {
+        onAnswerCallTriggered(lastCallIsVideo);
+    });
+    connect(headWidget, &ChatFormHeader::callRejected, this, &ChatForm::onRejectCallTriggered);
 
     updateCallButtons();
     setAcceptDrops(true);
@@ -335,7 +331,6 @@ void ChatForm::onAvInvite(uint32_t friendId, bool video)
         return;
     }
 
-    callConfirm = new CallConfirmWidget(video ? videoButton : callButton);
     QString displayedName = f->getDisplayedName();
     insertChatMessage(ChatMessage::createChatInfoMessage(tr("%1 calling").arg(displayedName),
                                                          ChatMessage::INFO,
@@ -351,10 +346,8 @@ void ChatForm::onAvInvite(uint32_t friendId, bool video)
                                   Q_ARG(uint32_t, friendId), Q_ARG(bool, video));
         onAvStart(friendId, video);
     } else {
-        callConfirm->show();
-        CallConfirmWidget* confirmData = callConfirm.data();
-        connect(confirmData, &CallConfirmWidget::accepted, this, [this, video]{ onAnswerCallTriggered(video); });
-        connect(confirmData, &CallConfirmWidget::rejected, this, &ChatForm::onRejectCallTriggered);
+        headWidget->showCallConfirm(video);
+        lastCallIsVideo = video;
         auto msg = ChatMessage::createChatInfoMessage(tr("%1 calling").arg(displayedName),
                                                       ChatMessage::INFO, QDateTime::currentDateTime());
         insertChatMessage(msg);
@@ -385,8 +378,7 @@ void ChatForm::onAvEnd(uint32_t friendId, bool error)
         return;
     }
 
-    delete callConfirm;
-
+    headWidget->removeCallConfirm();
     // Fixes an OS X bug with ending a call while in full screen
     if (netcam && netcam->isFullScreen()) {
         netcam->showNormal();
@@ -399,10 +391,7 @@ void ChatForm::onAvEnd(uint32_t friendId, bool error)
 
 void ChatForm::showOutgoingCall(bool video)
 {
-    QPushButton* btn = video ? videoButton : callButton;
-    btn->setObjectName("yellow");
-    btn->setStyleSheet(Style::getStylesheet(video ? VIDEO_BTN_STYLESHEET : CALL_BTN_STYLESHEET));
-    btn->setToolTip(video ? tr("Cancel video call") : tr("Cancel audio call"));
+    headWidget->showOutgoingCall(video);
     addSystemInfoMessage(tr("Calling %1").arg(f->getDisplayedName()), ChatMessage::INFO,
                          QDateTime::currentDateTime());
     emit outgoingNotification();
@@ -411,7 +400,7 @@ void ChatForm::showOutgoingCall(bool video)
 
 void ChatForm::onAnswerCallTriggered(bool video)
 {
-    delete callConfirm;
+    headWidget->removeCallConfirm();
     uint32_t friendId = f->getId();
     emit acceptCall(friendId);
 
@@ -429,7 +418,7 @@ void ChatForm::onAnswerCallTriggered(bool video)
 
 void ChatForm::onRejectCallTriggered()
 {
-    delete callConfirm;
+    headWidget->removeCallConfirm();
     emit rejectCall(f->getId());
 }
 
@@ -461,32 +450,10 @@ void ChatForm::onVideoCallTriggered()
 void ChatForm::updateCallButtons()
 {
     CoreAV* av = Core::getInstance()->getAv();
-    bool audio = av->isCallActive(f);
-    bool video = av->isCallVideoEnabled(f);
-    callButton->setEnabled(audio && !video);
-    videoButton->setEnabled(video);
-    if (audio) {
-        videoButton->setObjectName(video ? "red" : "");
-        videoButton->setToolTip(video ? tr("End video call") : tr("Can't start video call"));
-
-        callButton->setObjectName(!video ? "red" : "");
-        callButton->setToolTip(!video ? tr("End audio call") : tr("Can't start audio call"));
-    } else {
-        const Status fs = f->getStatus();
-        bool online = fs != Status::Offline;
-        callButton->setEnabled(online);
-        videoButton->setEnabled(online);
-
-        QString color = online ? "green" : "";
-        callButton->setObjectName(color);
-        callButton->setToolTip(online ? tr("Start audio call") : tr("Can't start audio call"));
-
-        videoButton->setObjectName(color);
-        videoButton->setToolTip(online ? tr("Start video call") : tr("Can't start video call"));
-    }
-
-    callButton->setStyleSheet(Style::getStylesheet(CALL_BTN_STYLESHEET));
-    videoButton->setStyleSheet(Style::getStylesheet(VIDEO_BTN_STYLESHEET));
+    const bool audio = av->isCallActive(f);
+    const bool video = av->isCallVideoEnabled(f);
+    const bool online = f->getStatus() != Status::Offline;
+    headWidget->updateCallButtons(online, audio, video);
     updateMuteMicButton();
     updateMuteVolButton();
 }
@@ -584,7 +551,7 @@ void ChatForm::onAvatarChange(uint32_t friendId, const QPixmap& pic)
         return;
     }
 
-    avatar->setPixmap(pic);
+    headWidget->setAvatar(pic);
 }
 
 GenericNetCamView* ChatForm::createNetcam()
@@ -653,7 +620,7 @@ void ChatForm::onAvatarRemoved(uint32_t friendId)
         return;
     }
 
-    avatar->setPixmap(QPixmap(":/img/contact_dark.svg"));
+    headWidget->setAvatar(QPixmap(":/img/contact_dark.svg"));
 }
 
 void ChatForm::clearChatArea(bool notInForm)
@@ -709,7 +676,6 @@ void ChatForm::loadHistory(const QDateTime& since, bool processUndelivered)
         }
     }
 
-    History* history = Nexus::getProfile()->getHistory();
     QString pk = f->getPublicKey().toString();
     QList<History::HistMessage> msgs = history->getChatHistory(pk, since, now);
 
@@ -817,7 +783,7 @@ void ChatForm::sendImage(const QPixmap& pixmap)
 
 void ChatForm::onLoadHistory()
 {
-    if (!Nexus::getProfile()->isHistoryEnabled()) {
+    if (!history) {
         return;
     }
 
@@ -849,35 +815,17 @@ void ChatForm::onCopyStatusMessage()
 void ChatForm::updateMuteMicButton()
 {
     const CoreAV* av = Core::getInstance()->getAv();
-
-    micButton->setEnabled(av->isCallActive(f));
-    if (micButton->isEnabled()) {
-        bool inputMuted = av->isCallInputMuted(f);
-        micButton->setObjectName(inputMuted ? "red" : "green");
-        micButton->setToolTip(inputMuted ? tr("Unmute microphone") : tr("Mute microphone"));
-    } else {
-        micButton->setObjectName("");
-        micButton->setToolTip(tr("Microphone can be muted only during a call"));
-    }
-
-    micButton->setStyleSheet(Style::getStylesheet(MIC_BTN_STYLESHEET));
+    bool active = av->isCallActive(f);
+    bool inputMuted = av->isCallInputMuted(f);
+    headWidget->updateMuteMicButton(active, inputMuted);
 }
 
 void ChatForm::updateMuteVolButton()
 {
     const CoreAV* av = Core::getInstance()->getAv();
-
-    volButton->setEnabled(av->isCallActive(f));
-    if (volButton->isEnabled()) {
-        bool outputMuted = av->isCallOutputMuted(f);
-        volButton->setObjectName(outputMuted ? "red" : "green");
-        volButton->setToolTip(outputMuted ? tr("Unmute call") : tr("Mute call"));
-    } else {
-        volButton->setObjectName("");
-        volButton->setToolTip(tr("Sound can be disabled only during a call"));
-    }
-
-    volButton->setStyleSheet(Style::getStylesheet(VOL_BTN_STYLESHEET));
+    bool active = av->isCallActive(f);
+    bool outputMuted = av->isCallOutputMuted(f);
+    headWidget->updateMuteVolButton(active, outputMuted);
 }
 
 void ChatForm::startCounter()
@@ -929,26 +877,15 @@ void ChatForm::setFriendTyping(bool isTyping)
 void ChatForm::show(ContentLayout* contentLayout)
 {
     GenericChatForm::show(contentLayout);
-    if (callConfirm) {
-        callConfirm->show();
-    }
 }
 
 void ChatForm::showEvent(QShowEvent* event)
 {
-    if (callConfirm) {
-        callConfirm->show();
-    }
-
     GenericChatForm::showEvent(event);
 }
 
 void ChatForm::hideEvent(QHideEvent* event)
 {
-    if (callConfirm) {
-        callConfirm->hide();
-    }
-
     GenericChatForm::hideEvent(event);
 }
 
@@ -983,13 +920,12 @@ void ChatForm::SendMessageStr(QString msg)
         uint32_t friendId = f->getId();
         int rec = isAction ? core->sendAction(friendId, part) : core->sendMessage(friendId, part);
 
-        Profile* profile = Nexus::getProfile();
-        if (profile->isHistoryEnabled()) {
+        if (history) {
             auto* offMsgEngine = getOfflineMsgEngine();
             QString selfPk = Core::getInstance()->getSelfId().toString();
             QString pk = f->getPublicKey().toString();
             QString name = Core::getInstance()->getUsername();
-            profile->getHistory()->addNewMessage(pk, historyPart, selfPk, timestamp, status, name,
+            history->addNewMessage(pk, historyPart, selfPk, timestamp, status, name,
                                                  [offMsgEngine, rec, ma](int64_t id) {
                                                      offMsgEngine->registerReceipt(rec, id, ma);
                                                  });
@@ -1006,8 +942,6 @@ void ChatForm::SendMessageStr(QString msg)
 
 void ChatForm::retranslateUi()
 {
-    QString volObjectName = volButton->objectName();
-    QString micObjectName = micButton->objectName();
     loadHistoryAction->setText(tr("Load chat history..."));
     copyStatusAction->setText(tr("Copy"));
     exportChatAction->setText(tr("Export to file"));
@@ -1022,7 +956,6 @@ void ChatForm::retranslateUi()
 
 void ChatForm::onExportChat()
 {
-    History* history = Nexus::getProfile()->getHistory();
     QString pk = f->getPublicKey().toString();
     QDateTime epochStart = QDateTime::fromMSecsSinceEpoch(0);
     QDateTime now = QDateTime::currentDateTime();

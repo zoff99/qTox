@@ -218,8 +218,8 @@ strip_all()
 # OpenSSL
 
 OPENSSL_PREFIX_DIR="$DEP_DIR/libopenssl"
-OPENSSL_VERSION=1.0.2l
-OPENSSL_HASH="ce07195b659e75f4e1db43552860070061f156a98bb37b672b101ba6e3ddf30c"
+OPENSSL_VERSION=1.0.2m
+OPENSSL_HASH="8c6ff15ec6b319b50788f42c7abc2890c08ba5a1cdcd3810eb9092deada37b0f"
 if [ ! -f "$OPENSSL_PREFIX_DIR/done" ]
 then
   rm -rf "$OPENSSL_PREFIX_DIR"
@@ -259,17 +259,15 @@ fi
 QT_PREFIX_DIR="$DEP_DIR/libqt5"
 QT_MAJOR=5
 QT_MINOR=9
-QT_PATCH=2
+QT_PATCH=3
 QT_VERSION=$QT_MAJOR.$QT_MINOR.$QT_PATCH
-QT_HASH="6c6171a4d1ea3fbd4212d6a04899650218583df3ec583a8a6a4a589fe18620ff"
+QT_HASH="57acd8f03f830c2d7dc29fbe28aaa96781b2b9bdddce94196e6761a0f88c6046"
 if [ ! -f "$QT_PREFIX_DIR/done" ]
 then
   rm -rf "$QT_PREFIX_DIR"
   mkdir -p "$QT_PREFIX_DIR"
 
-  QT_MIRROR=http://qt.mirror.constant.com
-
-  wget $QT_MIRROR/official_releases/qt/$QT_MAJOR.$QT_MINOR/$QT_VERSION/single/qt-everywhere-opensource-src-$QT_VERSION.tar.xz
+  wget https://download.qt.io/official_releases/qt/$QT_MAJOR.$QT_MINOR/$QT_VERSION/single/qt-everywhere-opensource-src-$QT_VERSION.tar.xz
   check_sha256 "$QT_HASH" "qt-everywhere-opensource-src-$QT_VERSION.tar.xz"
   bsdtar -xf qt*.tar.xz
   rm qt*.tar.xz
@@ -439,8 +437,8 @@ fi
 # FFmpeg
 
 FFMPEG_PREFIX_DIR="$DEP_DIR/libffmpeg"
-FFMPEG_VERSION=3.2.8
-FFMPEG_HASH="42e7362692318afc666f14378dd445effa9a1b09787504a6ab5811fe442674cd"
+FFMPEG_VERSION=3.2.9
+FFMPEG_HASH="1131d37890ed3dcbc3970452b200a56ceb36b73eaa51d1c23c770c90f928537f"
 if [ ! -f "$FFMPEG_PREFIX_DIR/done" ]
 then
   rm -rf "$FFMPEG_PREFIX_DIR"

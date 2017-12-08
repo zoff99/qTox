@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="hu_HU">
+<TS version="2.1" language="hu_HU">
 <context>
     <name>AVForm</name>
     <message>
@@ -97,7 +97,7 @@ ami a videóhívások problémáihoz vezethet.</translation>
     </message>
     <message>
         <source>Audio quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Hangminőség</translation>
     </message>
     <message>
         <source>Transmitted audio quality. Lower this setting if your bandwidth is not high enough or if you want to lower the internet usage.</source>
@@ -105,19 +105,19 @@ ami a videóhívások problémáihoz vezethet.</translation>
     </message>
     <message>
         <source>High (64 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Magas (64 kbps)</translation>
     </message>
     <message>
         <source>Medium (32 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Közepes (32 kbps)</translation>
     </message>
     <message>
         <source>Low (16 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alacsony (16 kbps)</translation>
     </message>
     <message>
         <source>Very low (8 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagyon alacsony (8 kbps)</translation>
     </message>
 </context>
 <context>
@@ -162,16 +162,6 @@ ami a videóhívások problémáihoz vezethet.</translation>
         <translation>Az összes ismert probléma listája megtalálható a Github-on %1. Ha észrevesz egy hibát vagy biztonsági sérülékenységet a qTox-ban, kérjük jelentse azt a %2 wiki cikkünkben leírtaknak megfelelően.</translation>
     </message>
     <message>
-        <source>bug-tracker</source>
-        <comment>Replaces `%1` in the `A list of all knownâ¦`</comment>
-        <translation>hibakövető</translation>
-    </message>
-    <message>
-        <source>Writing Useful Bug Reports</source>
-        <comment>Replaces `%2` in the `A list of all knownâ¦`</comment>
-        <translation>Hasznos hibajelentések írása</translation>
-    </message>
-    <message>
         <source>Click here to report a bug.</source>
         <translation>Kattintson ide egy hiba bejelentéséért.</translation>
     </message>
@@ -181,9 +171,19 @@ ami a videóhívások problémáihoz vezethet.</translation>
         <translation>%1 teljes listája Github-on</translation>
     </message>
     <message>
+        <source>bug-tracker</source>
+        <comment>Replaces `%1` in the `A list of all known…`</comment>
+        <translation type="unfinished">hibakövető</translation>
+    </message>
+    <message>
+        <source>Writing Useful Bug Reports</source>
+        <comment>Replaces `%2` in the `A list of all known…`</comment>
+        <translation type="unfinished">Hasznos hibajelentések írása</translation>
+    </message>
+    <message>
         <source>contributors</source>
-        <comment>Replaces `%1` in `See a full list ofâ¦`</comment>
-        <translation>hozzájárulók</translation>
+        <comment>Replaces `%1` in `See a full list of…`</comment>
+        <translation type="unfinished">hozzájárulók</translation>
     </message>
 </context>
 <context>
@@ -250,7 +250,7 @@ ami a videóhívások problémáihoz vezethet.</translation>
     </message>
     <message>
         <source>Auto accept group invites</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport meghívások automatikus elfogadása</translation>
     </message>
     <message>
         <source>Remove history (operation can not be undone!)</source>
@@ -358,7 +358,7 @@ ami a videóhívások problémáihoz vezethet.</translation>
     <message>
         <source>%1 Tox ID is invalid or does not exist</source>
         <comment>Toxme error</comment>
-        <translation type="unfinished"></translation>
+        <translation>A(z) %1 Tox ID érvénytelen, vagy nem létezik</translation>
     </message>
     <message>
         <source>You can&apos;t add yourself as a friend!</source>
@@ -371,7 +371,7 @@ ami a videóhívások problémáihoz vezethet.</translation>
     </message>
     <message>
         <source>Couldn&apos;t open file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fájl megnyitása sikertelen</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the contact file</source>
@@ -380,7 +380,7 @@ ami a videóhívások problémáihoz vezethet.</translation>
     </message>
     <message>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvénytelen fájl</translation>
     </message>
     <message>
         <source>We couldn&apos;t find any contacts to import in this file!</source>
@@ -404,11 +404,11 @@ ami a videóhívások problémáihoz vezethet.</translation>
     <message>
         <source>Open</source>
         <extracomment>Button to choose a file with a list of contacts to import</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Megnyitás</translation>
     </message>
     <message>
         <source>Send friend requests</source>
-        <translation type="unfinished"></translation>
+        <translation>Barátkérelmek küldése</translation>
     </message>
     <message>
         <source>%1 here! Tox me maybe?</source>
@@ -421,14 +421,13 @@ ami a videóhívások problémáihoz vezethet.</translation>
     </message>
     <message numerus="yes">
         <source>Ready to import %n contact(s), click send to confirm</source>
-        <extracomment>Shows the number of contacts we&apos;re about to import from a file (at least one)</extracomment>
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
     </message>
     <message>
         <source>Import contacts</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kapcsolatok importálása</translation>
     </message>
 </context>
 <context>
@@ -700,15 +699,15 @@ ami a videóhívások problémáihoz vezethet.</translation>
     </message>
     <message>
         <source>Can&apos;t start video call</source>
-        <translation type="unfinished"></translation>
+        <translation>A videohívás nem indítható el</translation>
     </message>
     <message>
         <source>Can&apos;t start audio call</source>
-        <translation type="unfinished"></translation>
+        <translation>A hívás nem indítható el</translation>
     </message>
     <message>
         <source>Microphone can be muted only during a call</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mikrofon némítása csak hívás közben lehetséges</translation>
     </message>
     <message>
         <source>Sound can be disabled only during a call</source>
@@ -716,7 +715,7 @@ ami a videóhívások problémáihoz vezethet.</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportálás fájlba</translation>
     </message>
     <message>
         <source>Save chat log</source>
@@ -1613,7 +1612,7 @@ A profil nem tartalmazza az Ön előzményeit.</translation>
     </message>
     <message>
         <source>%1 messages</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 üzenet</translation>
     </message>
 </context>
 <context>
@@ -1914,10 +1913,9 @@ Lehet, hogy új profilt szükséges létrehozni.</translation>
     <name>NotificationEdgeWidget</name>
     <message numerus="yes">
         <source>Unread message(s)</source>
-        <translation>
-            <numerusform>Olvasatlan üzenet(ek)</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Olvasatlan üzenet</numerusform>
+        <numerusform>Olvasatlan üzenetek</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>PasswordEdit</name>
@@ -1992,7 +1990,7 @@ Ha kéretlen partnerfelkérésekkel bombázzák, változtassa meg a NoSpam-ot.</
     </message>
     <message>
         <source>BlackList</source>
-        <translation type="unfinished"></translation>
+        <translation>Feketelista</translation>
     </message>
     <message>
         <source>Filter group message by group member&apos;s public key. Put public key here, one per line.</source>
@@ -2159,7 +2157,7 @@ Válasszon egy másik képet.</translation>
     </message>
     <message>
         <source>Couldn&apos;t change password</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelszó módosítása sikertelen</translation>
     </message>
     <message>
         <source>This bunch of characters tells other Tox clients how to contact you.
@@ -2186,11 +2184,11 @@ This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
     </message>
     <message>
         <source>Empty name</source>
-        <translation type="unfinished"></translation>
+        <translation>Üres név</translation>
     </message>
     <message>
         <source>Empty name is unavaliable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Üres név érvénytelen</translation>
     </message>
     <message>
         <source>Empty path</source>
@@ -2223,6 +2221,10 @@ This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
         <source>Are you sure you want to delete your password?</source>
         <extracomment>deletion confirmation text</extracomment>
         <translation type="unfinished">Biztosan törli a jelszavát?</translation>
+    </message>
+    <message>
+        <source>Tox user names cannot exceed %1 characters.</source>
+        <translation>A Tox felhasználónevek nem haladhatják meg a %1 karaktert.</translation>
     </message>
 </context>
 <context>
@@ -2440,7 +2442,7 @@ A frissítés a qTox újraindítása után fog települni.</translation>
     </message>
     <message>
         <source>Reformatting text in progress..</source>
-        <translation type="unfinished"></translation>
+        <translation>Szöveg formázása folyamatban..</translation>
     </message>
     <message>
         <source>Starts new instance and opens the login screen.</source>
@@ -2813,10 +2815,9 @@ A frissítés a qTox újraindítása után fog települni.</translation>
     </message>
     <message numerus="yes">
         <source>%n New Friend Request(s)</source>
-        <translation>
-            <numerusform>%n új partnerkérelem</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n új barátkérelem</numerusform>
+        <numerusform>%n új barátkérelem</numerusform>
+        </translation></message>
     <message numerus="yes">
         <source>%n New Group Invite(s)</source>
         <translation>
@@ -2933,7 +2934,7 @@ A frissítés a qTox újraindítása után fog települni.</translation>
     <message>
         <source>My profile</source>
         <comment>title of the window</comment>
-        <translation type="unfinished"></translation>
+        <translation>Saját profil</translation>
     </message>
 </context>
 </TS>
