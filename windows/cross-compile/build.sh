@@ -39,6 +39,11 @@
 
 set -euo pipefail
 
+# ---------- CONFIG ----------
+# TOXCORE_GIT_REPO="https://github.com/TokTok/c-toxcore" # original repo
+TOXCORE_GIT_REPO="https://github.com/zoff99/c-toxcore"
+TOXCORE_VERSION="zoff99/_0.1.10_2017_video_fix_05"
+# ---------- CONFIG ----------
 
 # Common directory paths
 
@@ -882,20 +887,26 @@ fi
 # Toxcore
 
 TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
-TOXCORE_VERSION=0.1.10
-TOXCORE_HASH=4e9a2881dd0ea8e65a35fc9621644ccf500c1797a2d37983b0057ed3be971299
+# TOXCORE_VERSION=0.1.10
+# TOXCORE_HASH=4e9a2881dd0ea8e65a35fc9621644ccf500c1797a2d37983b0057ed3be971299
 if [ ! -f "$TOXCORE_PREFIX_DIR/done" ]
 then
   rm -rf "$TOXCORE_PREFIX_DIR"
   mkdir -p "$TOXCORE_PREFIX_DIR"
 
-  wget https://github.com/TokTok/c-toxcore/releases/download/v$TOXCORE_VERSION/c-toxcore-$TOXCORE_VERSION.tar.gz
-  check_sha256 "$TOXCORE_HASH" "c-toxcore-$TOXCORE_VERSION.tar.gz"
-  set +euo pipefail
-  bsdtar -xf c-toxcore*.tar.gz
-  set -euo pipefail
-  rm c-toxcore*.tar.gz
-  cd c-toxcore*
+  # wget https://github.com/TokTok/c-toxcore/releases/download/v$TOXCORE_VERSION/c-toxcore-$TOXCORE_VERSION.tar.gz
+  # check_sha256 "$TOXCORE_HASH" "c-toxcore-$TOXCORE_VERSION.tar.gz"
+  # set +euo pipefail
+  # bsdtar -xf c-toxcore*.tar.gz
+  # set -euo pipefail
+  # rm c-toxcore*.tar.gz
+  # cd c-toxcore*
+
+  # set +euo pipefail
+  git clone "$TOXCORE_GIT_REPO"
+  cd c-toxcore
+  git checkout $TOXCORE_VERSION
+  # set -euo pipefail
 
   mkdir -p build
   cd build
