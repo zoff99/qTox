@@ -924,15 +924,18 @@ then
       SET(CMAKE_FIND_ROOT_PATH /usr/$ARCH-w64-mingw32 $OPUS_PREFIX_DIR $SODIUM_PREFIX_DIR $VPX_PREFIX_DIR)
   " > toolchain.cmake
 
+  export CFLAGS=" -D_GNU_SOURCE "
   cmake -DCMAKE_INSTALL_PREFIX=$TOXCORE_PREFIX_DIR \
         -DBOOTSTRAP_DAEMON=OFF \
         -DWARNINGS=OFF \
         -DCMAKE_BUILD_TYPE=Release \
         -DENABLE_STATIC=ON \
         -DENABLE_SHARED=OFF \
+        -D_GNU_SOURCE=1 \
         -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake \
         ..
 
+  unset CFLAGS
   make
   make install
   echo -n $TOXCORE_VERSION > $TOXCORE_PREFIX_DIR/done
