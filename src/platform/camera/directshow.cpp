@@ -234,15 +234,16 @@ QVector<VideoMode> DirectShow::getDeviceModes(QString devName)
 
                 mode.width = vcaps->MaxOutputSize.cx;
                 mode.height = vcaps->MaxOutputSize.cy;
-                mode.FPS = 25; // 25 fps // 1e7 / vcaps->MinFrameInterval;
+                // TODO: make a user setting for this in the GUI
+                mode.FPS = 20; // 20 fps // 1e7 / vcaps->MinFrameInterval;
                 if (!modes.contains(mode))
                     modes.append(std::move(mode));
 
                 // Zoff - actually set the wanted framerate ---------
-                // VIDEOINFOHEADER *pVih = (VIDEOINFOHEADER*)type.pbFormat;
-		VIDEOINFOHEADER *pVih = reinterpret_cast<VIDEOINFOHEADER*>(type->pbFormat);
-                pVih->AvgTimePerFrame = (1e7 / mode.FPS);
-                config->SetFormat(type);
+                // TODO: fix me. it does not compile now
+		// VIDEOINFOHEADER *pVih = reinterpret_cast<VIDEOINFOHEADER*>(type->pbFormat);
+                // pVih->AvgTimePerFrame = (1e7 / mode.FPS);
+                // config->SetFormat(type);
                 // Zoff - actually set the wanted framerate ---------
 
             nextformat:
