@@ -147,7 +147,7 @@ void CameraSource::setupDefault()
         mode.FPS = Settings::getInstance().getCamVideoFPS();
     }
     else {
-        mode.FPS = 25;
+        // mode.FPS = 25;
     }
 
     setupDevice(deviceName, mode);
