@@ -239,8 +239,10 @@ QVector<VideoMode> DirectShow::getDeviceModes(QString devName)
                     modes.append(std::move(mode));
 
                 // Zoff - actually set the wanted framerate ---------
-                vcaps->AvgTimePerFrame = (1e7 / mode.FPS);
-                config->SetFormat((BYTE*)vcaps);
+                // VIDEOINFOHEADER *pVih = (VIDEOINFOHEADER*)type.pbFormat;
+		VIDEOINFOHEADER *pVih = reinterpret_cast<VIDEOINFOHEADER*>(type->pbFormat);
+                pVih->AvgTimePerFrame = (1e7 / mode.FPS);
+                config->SetFormat(type);
                 // Zoff - actually set the wanted framerate ---------
 
             nextformat:
