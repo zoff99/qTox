@@ -146,6 +146,10 @@ void CameraSource::setupDefault()
         mode = VideoMode(Settings::getInstance().getCamVideoRes());
         mode.FPS = Settings::getInstance().getCamVideoFPS();
     }
+    else {
+        // TODO: make a user setting for this in the GUI
+        mode.FPS = 20;
+    }
 
     setupDevice(deviceName, mode);
 }
