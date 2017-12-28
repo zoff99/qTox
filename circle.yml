@@ -12,7 +12,7 @@ dependencies:
     - sudo apt-get update
     - sudo apt-get install zip
     - sudo apt-get install docker.io ; exit 0
-    - docker info
+    - docker info ; exit 0
 compile:
   override:
     - mkdir -p ~/workspace
