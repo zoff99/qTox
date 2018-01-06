@@ -34,3 +34,6 @@ compile:
 test:
   override:
     - echo "no tests yet"
+    - df -hu /home/ubuntu/workspace
+    - df -hu /home/ubuntu/workspace/
+
