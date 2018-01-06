@@ -889,8 +889,8 @@ fi
 TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
 # TOXCORE_VERSION=0.1.10
 # TOXCORE_HASH=4e9a2881dd0ea8e65a35fc9621644ccf500c1797a2d37983b0057ed3be971299
-if [ ! -f "$TOXCORE_PREFIX_DIR/done" ]
-then
+# if [ ! -f "$TOXCORE_PREFIX_DIR/done" ]
+# then
   rm -rf "$TOXCORE_PREFIX_DIR"
   mkdir -p "$TOXCORE_PREFIX_DIR"
 
@@ -944,9 +944,9 @@ then
 
   cd ..
   rm -rf ./c-toxcore*
-else
-  echo "Using cached build of Toxcore `cat $TOXCORE_PREFIX_DIR/done`"
-fi
+# else
+#  echo "Using cached build of Toxcore `cat $TOXCORE_PREFIX_DIR/done`"
+# fi
 
 
 # mingw-w64-debug-scripts
