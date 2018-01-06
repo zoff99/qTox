@@ -43,6 +43,6 @@ test:
   override:
     - mkdir -p $CIRCLE_ARTIFACTS/"$BUILD__"/cache/
     - cd /home/ubuntu/ ; tar -czvf $CIRCLE_ARTIFACTS/"$BUILD__"/cache/workspace.tar workspace/
-    - df -hu /home/ubuntu/workspace
-    - df -hu /home/ubuntu/workspace/*
+    - du -hs /home/ubuntu/workspace ; exit 0
+    - du -hs /home/ubuntu/workspace/* ; exit 0
 
