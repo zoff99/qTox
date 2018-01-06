@@ -12,9 +12,15 @@ dependencies:
     - sudo apt-get update
     - sudo apt-get install zip
     - docker info ; exit 0
-compile:
-  override:
+
     - mkdir -p ~/workspace
+    #### try to restore cache from last successful build of same branch ####
+    - wget -O ~/cache1.tar
+      'https://circleci.com/api/v1/project/'"$CIRCLE_PROJECT_USERNAME"'/'"$CIRCLE_PROJECT_REPONAME"'/latest/artifacts/0/$CIRCLE_ARTIFACTS/'"$BUILD__"'/cache/workspace.tar?filter=successful&branch='"$CIRCLE_BRANCH"
+    - ls -hal ~/cache1.tar
+    - cd /home/ubuntu/ ; tar -xzvf ~/cache1.tar ; exit 0 # allow to fail
+  compile:
+  override:
     - mkdir -p ~/script
     - cp -av ./windows/cross-compile/build.sh ~/script/
 
@@ -36,5 +42,5 @@ test:
     - mkdir -p $CIRCLE_ARTIFACTS/"$BUILD__"/cache/
     - cd /home/ubuntu/ ; tar -czvf $CIRCLE_ARTIFACTS/"$BUILD__"/cache/workspace.tar workspace/
     - df -hu /home/ubuntu/workspace
-    - df -hu /home/ubuntu/workspace/
+    - df -hu /home/ubuntu/workspace/*
 
