@@ -15,9 +15,10 @@ dependencies:
 
     - mkdir -p ~/workspace
     #### try to restore cache from last successful build of same branch ####
-    -  wget -O ~/cache1.tar
-      'https://circleci.com/api/v1/project/'"$CIRCLE_PROJECT_USERNAME"'/'"$CIRCLE_PROJECT_REPONAME"'/latest/artifacts/0/$CIRCLE_ARTIFACTS/'"$BUILD__"'/cache/workspace.tar?filter=successful&branch='"$CIRCLE_BRANCH"
-      ; exit 0
+    - branch=$(echo "$CIRCLE_BRANCH"|sed  -e 's#/#%2F#g') ;
+      wget -O ~/cache1.tar
+      'https://circleci.com/api/v1/project/'"$CIRCLE_PROJECT_USERNAME"'/'"$CIRCLE_PROJECT_REPONAME"'/latest/artifacts/0/$CIRCLE_ARTIFACTS/'"$BUILD__"'/cache/workspace.tar?filter=successful&branch='"$branch" ;
+      exit 0
     - ls -hal ~/cache1.tar
     - cd /home/ubuntu/ ; tar -xzvf ~/cache1.tar ; exit 0 # allow to fail
   compile:
