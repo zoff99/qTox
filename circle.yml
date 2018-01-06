@@ -33,7 +33,8 @@ compile:
     - cd /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"/ ; zip -r $CIRCLE_ARTIFACTS/"$BUILD__"/qtox_"$BUILD__"_"$BTYPE__".zip *
 test:
   override:
-    - echo "no tests yet"
+    - mkdir -p $CIRCLE_ARTIFACTS/"$BUILD__"/cache/
+    - cd /home/ubuntu/ ; tar -czvf $CIRCLE_ARTIFACTS/"$BUILD__"/cache/workspace.tar workspace/
     - df -hu /home/ubuntu/workspace
     - df -hu /home/ubuntu/workspace/
 
