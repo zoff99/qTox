@@ -904,6 +904,7 @@ fi
   mkdir -p "$TOXCORE_PREFIX_DIR"
   git clone "$TOXCORE_REPO"
   cd c-toxcore
+  git checkout "$TOXCORE_VERSION"
 
   mkdir -p build
   cd build
