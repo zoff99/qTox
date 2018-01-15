@@ -14,7 +14,7 @@ machine:
 # ----- toxcore version and repo -----
 dependencies:
   cache_directories:
-    - /home/ubuntu/cache
+    - "~/cache"
   pre:
     - sudo apt-get update
     - sudo apt-get install zip
