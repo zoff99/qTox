@@ -8,7 +8,7 @@ machine:
     BUILD__: "x86_64"
     BTYPE__: "release"
 # ----- toxcore version and repo -----
-    TOXCORE_CUSTOM_VERSION: "n"
+    TOXCORE_CUSTOM_VERSION:
 # ----- toxcore version and repo -----
 dependencies:
   cache_directories:
