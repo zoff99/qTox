@@ -894,8 +894,8 @@ else
   echo "Using custom c-toxcore repo:$TOXCORE_REPO version:$TOXCORE_VERSION"
 fi
 
-if [ ! -f "$TOXCORE_PREFIX_DIR/done" ]
-then
+#if [ ! -f "$TOXCORE_PREFIX_DIR/done" ]
+#then
   rm -rf "$TOXCORE_PREFIX_DIR"
   mkdir -p "$TOXCORE_PREFIX_DIR"
   git clone "$TOXCORE_REPO"
@@ -937,9 +937,9 @@ then
 
   cd ..
   rm -rf ./c-toxcore
-else
-  echo "Using cached build of Toxcore `cat $TOXCORE_PREFIX_DIR/done`"
-fi
+#else
+#  echo "Using cached build of Toxcore `cat $TOXCORE_PREFIX_DIR/done`"
+#fi
 
 
 # mingw-w64-debug-scripts
