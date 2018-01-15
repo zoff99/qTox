@@ -11,8 +11,8 @@ machine:
 # ----- if you want to build with custom c-toxcore version -----
 # --------------------------------------------------------------
 #    TOXCORE_CUSTOM_VERSION: y
-#    TOXCORE_REPO: "https://github.com/user/c-toxcore/"
-#    TOXCORE_VERSION: "custom_branch"
+#    TOXCORE_REPO: "https://github.com/my_user/c-toxcore/"
+#    TOXCORE_VERSION: "my_branch"
 # --------------------------------------------------------------
 # ------------------ use ONLY for TESTING !! -------------------
 # --------------------------------------------------------------
@@ -38,7 +38,7 @@ compile:
     - cp -av /home/ubuntu/qTox/workspace/"$BUILD__"/qtox/"$BTYPE__"/qtox.exe $CIRCLE_ARTIFACTS/"$BUILD__"/qtox_"$BTYPE__".exe
     - cd /home/ubuntu/qTox/workspace/"$BUILD__"/qtox/"$BTYPE__"/ ; zip -r $CIRCLE_ARTIFACTS/"$BUILD__"/qtox_"$BUILD__"_"$BTYPE__".zip *
 # --------- mark if custom c-toxcore version was used ----------
-    - if [ "$TOXCORE_CUSTOM_VERSION""x" != "x" ] then touch $CIRCLE_ARTIFACTS/"$BUILD__"/__CUSTOM_TOXCORE_VERSION__ fi
+    - if [ "$TOXCORE_CUSTOM_VERSION""x" != "x" ]; then touch $CIRCLE_ARTIFACTS/"$BUILD__"/__CUSTOM_TOXCORE_VERSION__ fi
 # --------------------------------------------------------------
 test:
   override:
