@@ -886,7 +886,7 @@ TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
 TOXCORE_HASH=not_used
 TOXCORE_CUSTOM_VERSION=${TOXCORE_CUSTOM_VERSION:-}
 
-env|sort|grep -i tox
+# env|sort|grep -i tox
 
 if [ "$TOXCORE_CUSTOM_VERSION""x" == "x" ]; then
   TOXCORE_REPO="https://github.com/TokTok/c-toxcore"
