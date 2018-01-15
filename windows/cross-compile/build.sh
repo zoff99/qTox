@@ -886,11 +886,11 @@ TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
 TOXCORE_HASH=not_used
 TOXCORE_CUSTOM_VERSION=${TOXCORE_CUSTOM_VERSION:-}
 
-# env|sort|grep -i tox
+# env|sort
 
 if [ "$TOXCORE_CUSTOM_VERSION""x" == "x" ]; then
   TOXCORE_REPO="https://github.com/TokTok/c-toxcore"
-  TOXCORE_VERSION="0.1.11"
+  TOXCORE_VERSION="v0.1.11"
 else
   echo "Using custom c-toxcore repo:$TOXCORE_REPO version:$TOXCORE_VERSION"
 fi
