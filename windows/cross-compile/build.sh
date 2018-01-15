@@ -883,18 +883,21 @@ fi
 # Toxcore
 
 TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
-TOXCORE_VERSION=0.1.11
-TOXCORE_HASH=56a4566a5cdd201ef27d3a884c0f9aa17e99a300f08ace6323306d24928e727f
+TOXCORE_HASH=not_used
+
+if [ "$TOXCORE_CUSTOM_VERSION""x" == "x" ]; then
+  TOXCORE_REPO="https://github.com/TokTok/c-toxcore"
+  TOXCORE_VERSION="0.1.11"
+else
+  echo "Using custom c-toxcore repo:$TOXCORE_REPO version:$TOXCORE_VERSION"
+fi
+
 if [ ! -f "$TOXCORE_PREFIX_DIR/done" ]
 then
   rm -rf "$TOXCORE_PREFIX_DIR"
   mkdir -p "$TOXCORE_PREFIX_DIR"
-
-  wget https://github.com/TokTok/c-toxcore/releases/download/v$TOXCORE_VERSION/c-toxcore-$TOXCORE_VERSION.tar.gz
-  check_sha256 "$TOXCORE_HASH" "c-toxcore-$TOXCORE_VERSION.tar.gz"
-  bsdtar --no-same-owner --no-same-permissions -xf c-toxcore*.tar.gz
-  rm c-toxcore*.tar.gz
-  cd c-toxcore*
+  git clone "$TOXCORE_REPO"
+  cd c-toxcore
 
   mkdir -p build
   cd build
@@ -931,7 +934,7 @@ then
   cd ..
 
   cd ..
-  rm -rf ./c-toxcore*
+  rm -rf ./c-toxcore
 else
   echo "Using cached build of Toxcore `cat $TOXCORE_PREFIX_DIR/done`"
 fi
