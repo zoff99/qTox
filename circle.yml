@@ -7,6 +7,11 @@ machine:
     MAKEFLAGS: "j4"
     BUILD__: "x86_64"
     BTYPE__: "release"
+# ----- toxcore version and repo -----
+    TOXCORE_CUSTOM_VERSION: "y"
+    TOXCORE_REPO: "https://github.com/zoff99/c-toxcore/"
+    TOXCORE_VERSION: "zoff99/_0.1.10_2017_video_fix_07a"
+# ----- toxcore version and repo -----
 dependencies:
   cache_directories:
     - "~/cache"
