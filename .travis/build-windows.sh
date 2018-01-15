@@ -113,7 +113,7 @@ sudo docker run --rm \
 ls -lbh workspace/"$ARCH"/dep-cache/
 
 # If we were building deps and it's any of the dependency building stages (Stage 1 or 2), copy over all the built dependencies to Travis cache
-if ( 1 == 2 )
+if [ 1 == 2 ]
 then
   # Clear out the cache
   rm -rf "$CACHE_DIR"/*
