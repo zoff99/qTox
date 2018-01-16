@@ -18,17 +18,22 @@ machine:
 # --------------------------------------------------------------
 dependencies:
   cache_directories:
-    - "~/cache"
+    - cache
   pre:
+    - ls -al ./cache
+    - hu -h ./cache
+    - find ./cache
     - sudo apt-get update
     - sudo apt-get install zip
     - docker info
-    - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ~/cache/"$BUILD__" stage1
-    - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ~/cache/"$BUILD__" stage2
-    - ls -al ~/cache
+    - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ./cache/"$BUILD__" stage1
+    - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ./cache/"$BUILD__" stage2
+    - ls -al ./cache
+    - hu -h ./cache
+    - find ./cache
 compile:
   override:
-    - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ~/cache/"$BUILD__" stage3
+    - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ./cache/"$BUILD__" stage3
     - ls -al ~/
 
     - ls -al /home/ubuntu/qTox/workspace/"$BUILD__"/qtox/"$BTYPE__"/
