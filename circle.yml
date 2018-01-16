@@ -20,9 +20,9 @@ dependencies:
   cache_directories:
     - cache
   pre:
-    - ls -al ./cache
-    - hu -h ./cache
-    - find ./cache
+    - ls -al ./cache ; exit 0
+    - hu -h ./cache ; exit 0
+    - find ./cache ; exit 0
     - sudo apt-get update
     - sudo apt-get install zip
     - docker info
