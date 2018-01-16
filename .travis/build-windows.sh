@@ -84,7 +84,7 @@ ls -lbh "$CACHE_DIR"
 
 # If build.sh has changed, i.e. its hash doesn't match the previously stored one, and it's Stage 1
 # Then we want to rebuild everything from scratch
-if [ 1 == 2 ]
+if [ "`cat $CACHE_DIR/hash`" != "`sha256sum windows/cross-compile/build.sh`" ] && [ "$STAGE" == "stage1" ]
 then
   # Clear the cache, removing all the pre-built dependencies
   rm -rf "$CACHE_DIR"/*
@@ -121,7 +121,7 @@ sudo docker run --rm \
 ls -lbh workspace/"$ARCH"/dep-cache/
 
 # If we were building deps and it's any of the dependency building stages (Stage 1 or 2), copy over all the built dependencies to Travis cache
-if [ 1 == 2 ]
+if [ "`cat $CACHE_DIR/hash`" != "`sha256sum windows/cross-compile/build.sh`" ] && ( [ "$STAGE" == "stage1" ] || [ "$STAGE" == "stage2" ] )
 then
   # Clear out the cache
   rm -rf "$CACHE_DIR"/*
