@@ -28,17 +28,17 @@ dependencies:
     - docker info
     - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ./cache/"$BUILD__" stage1
     - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ./cache/"$BUILD__" stage2
-    - ls -al ./cache
-    - hu -h ./cache
-    - find ./cache
+    - ls -al ./cache ; exit 0
+    - du -h ./cache ; exit 0
+    - find ./cache ; exit 0
 compile:
   override:
     - ls -al ./cache
-    - hu -h ./cache
+    - du -h ./cache
     - find ./cache
     - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ./cache/"$BUILD__" stage3
     - ls -al ./cache
-    - hu -h ./cache
+    - du -h ./cache
     - find ./cache
 
     - ls -al ~/
