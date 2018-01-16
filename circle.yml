@@ -33,7 +33,14 @@ dependencies:
     - find ./cache
 compile:
   override:
+    - ls -al ./cache
+    - hu -h ./cache
+    - find ./cache
     - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ./cache/"$BUILD__" stage3
+    - ls -al ./cache
+    - hu -h ./cache
+    - find ./cache
+
     - ls -al ~/
 
     - ls -al /home/ubuntu/qTox/workspace/"$BUILD__"/qtox/"$BTYPE__"/
