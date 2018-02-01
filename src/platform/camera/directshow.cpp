@@ -213,7 +213,7 @@ QVector<VideoMode> DirectShow::getDeviceModes(QString devName)
         {
             IAMStreamConfig* config = nullptr;
             VIDEO_STREAM_CONFIG_CAPS* vcaps = nullptr;
-            VIDEOINFOHEADER* pvih = NULL;
+            VIDEOINFOHEADER* pVih = NULL;
 
             int size, n;
             if (pin->QueryInterface(IID_IAMStreamConfig, (void**)&config) != S_OK)
