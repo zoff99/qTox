@@ -27,6 +27,7 @@
 #include <memory>
 #include <tox/toxav.h>
 
+
 class Friend;
 class Group;
 class QTimer;
