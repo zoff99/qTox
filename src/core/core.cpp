@@ -111,7 +111,7 @@ CoreAV* Core::getAv()
 }
 
 // Zoff --
-void Core::ontoxlog(Tox *tox, TOX_LOG_LEVEL level, const char *file, uint32_t line, const char *func,
+void ontoxlog(Tox *tox, TOX_LOG_LEVEL level, const char *file, uint32_t line, const char *func,
                         const char *message, void *user_data)
 {
     qDebug() << "TOXCORE-LOG: " << message;
