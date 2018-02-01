@@ -113,6 +113,7 @@ CoreAV::~CoreAV()
     coreavThread->exit(0);
     while (coreavThread->isRunning()) {
         qApp->processEvents();
+        qDebug() << "CoreAV::coreavThread";
         coreavThread->wait(100);
     }
 }
@@ -371,6 +372,9 @@ bool CoreAV::sendCallAudio(uint32_t callId, const int16_t* pcm, size_t samples, 
 
 void CoreAV::sendCallVideo(uint32_t callId, std::shared_ptr<VideoFrame> vframe)
 {
+
+    qDebug() << "CoreAV::sendCallVideo";
+
     // We might be running in the FFmpeg thread and holding the CameraSource lock
     // So be careful not to deadlock with anything while toxav locks in toxav_video_send_frame
     if (calls.find(callId) == calls.end()) {
