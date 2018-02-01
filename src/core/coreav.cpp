@@ -819,7 +819,7 @@ void CoreAV::bitrateCallback(ToxAV* toxav, uint32_t friendNum, uint32_t arate, u
                                                Q_ARG(void*, vSelf));
     }
     // ignore bitrate suggestions -----------
-#endf
+#endif
 
     qDebug() << "Recommended bitrate with" << friendNum << " is now " << arate << "/" << vrate
              << ", ignoring it";
