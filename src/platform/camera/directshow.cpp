@@ -213,6 +213,8 @@ QVector<VideoMode> DirectShow::getDeviceModes(QString devName)
         {
             IAMStreamConfig* config = nullptr;
             VIDEO_STREAM_CONFIG_CAPS* vcaps = nullptr;
+            VIDEOINFOHEADER* pvih = NULL;
+
             int size, n;
             if (pin->QueryInterface(IID_IAMStreamConfig, (void**)&config) != S_OK)
                 goto next;
@@ -241,7 +243,6 @@ QVector<VideoMode> DirectShow::getDeviceModes(QString devName)
 
                 // Zoff - actually set the wanted framerate ---------
                 // TODO: fix me. it does not compile now
-                VIDEOINFOHEADER* pvih = NULL;
                 // pVih = reinterpret_cast<VIDEOINFOHEADER*>(type->pbFormat);
                 // pVih->AvgTimePerFrame = (1e7 / mode.FPS);
                 config->SetFormat(type);
