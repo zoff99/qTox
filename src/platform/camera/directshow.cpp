@@ -241,9 +241,10 @@ QVector<VideoMode> DirectShow::getDeviceModes(QString devName)
 
                 // Zoff - actually set the wanted framerate ---------
                 // TODO: fix me. it does not compile now
-		// VIDEOINFOHEADER *pVih = reinterpret_cast<VIDEOINFOHEADER*>(type->pbFormat);
+                VIDEOINFOHEADER* pvih = NULL;
+                // pVih = reinterpret_cast<VIDEOINFOHEADER*>(type->pbFormat);
                 // pVih->AvgTimePerFrame = (1e7 / mode.FPS);
-                // config->SetFormat(type);
+                config->SetFormat(type);
                 // Zoff - actually set the wanted framerate ---------
 
             nextformat:
