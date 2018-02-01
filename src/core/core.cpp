@@ -110,6 +110,13 @@ CoreAV* Core::getAv()
     return av;
 }
 
+// Zoff --
+void Core::ontoxlog(Tox *tox, TOX_LOG_LEVEL level, const char *file, uint32_t line, const char *func,
+                        const char *message, void *user_data)
+{
+    qDebug() << "TOXCORE-LOG: " << message;
+}
+
 /**
  * @brief Initializes Tox_Options instance
  * @param savedata Previously saved Tox data
@@ -145,6 +152,9 @@ Tox_Options initToxOptions(const QByteArray& savedata, const ICoreSettings* s)
     toxOptions.savedata_type = !savedata.isNull() ? TOX_SAVEDATA_TYPE_TOX_SAVE : TOX_SAVEDATA_TYPE_NONE;
     toxOptions.savedata_data = reinterpret_cast<const uint8_t*>(savedata.data());
     toxOptions.savedata_length = savedata.size();
+
+    // Zoff --
+    toxOptions.log_callback = ontoxlog;
 
     if (proxyType != ICoreSettings::ProxyType::ptNone) {
         if (proxyAddr.length() > MAX_PROXY_ADDRESS_LENGTH) {
