@@ -205,7 +205,7 @@ CameraDevice* CameraDevice::open(QString devName, VideoMode mode)
         // av_dict_set(&options, "framerate", framerate.c_str(), 0);
         
         // zoff ------
-        av_dict_set(&options,"framerate","10",0);
+        av_dict_set(&options,"framerate","8",0);
         // zoff ------
         
         av_dict_set(&options, "offset_x", offsetX.c_str(), 0);
