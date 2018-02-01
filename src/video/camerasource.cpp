@@ -410,8 +410,11 @@ void CameraSource::stream()
     auto streamLoop = [=]() {
         AVPacket packet;
         if (av_read_frame(device->context, &packet) != 0) {
+            QThread::usleep(500 * 1000); // dont run full throttle
             return;
         }
+
+        QThread::usleep(500 * 1000); // dont run full throttle
 
 #if LIBAVCODEC_VERSION_INT < 3747941
         AVFrame* frame = av_frame_alloc();
