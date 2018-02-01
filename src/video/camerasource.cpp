@@ -148,7 +148,7 @@ void CameraSource::setupDefault()
     }
     else {
         // TODO: make a user setting for this in the GUI
-        // mode.FPS = 2; screen caputre
+        mode.FPS = 15; // screen caputre
     }
 
     setupDevice(deviceName, mode);

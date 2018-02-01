@@ -237,7 +237,7 @@ QVector<VideoMode> DirectShow::getDeviceModes(QString devName)
                 mode.width = vcaps->MaxOutputSize.cx;
                 mode.height = vcaps->MaxOutputSize.cy;
                 // TODO: make a user setting for this in the GUI
-                mode.FPS = 20; // 20 fps // 1e7 / vcaps->MinFrameInterval;
+                mode.FPS = 15; // 20 fps // 1e7 / vcaps->MinFrameInterval;
                 if (!modes.contains(mode))
                     modes.append(std::move(mode));
 
