@@ -153,7 +153,8 @@ CameraDevice* CameraDevice::open(QString devName, VideoMode mode)
         return nullptr;
     }
 
-    int FPS = 15; // TODO: make a user setting in the GUI for this
+    // HINT: x-FPS-x
+    int FPS = 25; // TODO: make a user setting in the GUI for this
     if (mode.FPS) {
         FPS = mode.FPS;
     }
