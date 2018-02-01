@@ -804,6 +804,9 @@ void CoreAV::bitrateCallback(ToxAV* toxav, uint32_t friendNum, uint32_t arate, u
 {
     CoreAV* self = static_cast<CoreAV*>(vSelf);
 
+#if 0
+    // ignore bitrate suggestions -----------
+
     // Run this slow path callback asynchronously on the AV thread to avoid deadlocks
     if (QThread::currentThread() != self->coreavThread.get()) {
         return (void)QMetaObject::invokeMethod(self, "bitrateCallback", Qt::QueuedConnection,
@@ -811,6 +814,8 @@ void CoreAV::bitrateCallback(ToxAV* toxav, uint32_t friendNum, uint32_t arate, u
                                                Q_ARG(uint32_t, arate), Q_ARG(uint32_t, vrate),
                                                Q_ARG(void*, vSelf));
     }
+    // ignore bitrate suggestions -----------
+#endf
 
     qDebug() << "Recommended bitrate with" << friendNum << " is now " << arate << "/" << vrate
              << ", ignoring it";
