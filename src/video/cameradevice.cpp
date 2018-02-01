@@ -200,7 +200,10 @@ CameraDevice* CameraDevice::open(QString devName, VideoMode mode)
 
         const std::string offsetX = QString().setNum(mode.x).toStdString();
         const std::string offsetY = QString().setNum(mode.y).toStdString();
-        av_dict_set(&options, "framerate", framerate.c_str(), 0);
+        // av_dict_set(&options, "framerate", framerate.c_str(), 0);
+        
+        av_dict_set(&options,"framerate","2",0);
+        
         av_dict_set(&options, "offset_x", offsetX.c_str(), 0);
         av_dict_set(&options, "offset_y", offsetY.c_str(), 0);
         av_dict_set(&options, "video_size", videoSize.c_str(), 0);
