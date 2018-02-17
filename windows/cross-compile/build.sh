@@ -844,17 +844,17 @@ fi
 # VPX
 
 VPX_PREFIX_DIR="$DEP_DIR/libvpx"
-VPX_VERSION=1.6.1
-VPX_HASH="1c2c0c2a97fba9474943be34ee39337dee756780fc12870ba1dc68372586a819"
+VPX_VERSION=1.7.0
+VPX_HASH="1fec931eb5c94279ad219a5b6e0202358e94a93a90cfb1603578c326abfc1238"
 if [ ! -f "$VPX_PREFIX_DIR/done" ]
 then
   rm -rf "$VPX_PREFIX_DIR"
   mkdir -p "$VPX_PREFIX_DIR"
 
-  wget http://storage.googleapis.com/downloads.webmproject.org/releases/webm/libvpx-$VPX_VERSION.tar.bz2
-  check_sha256 "$VPX_HASH" "libvpx-$VPX_VERSION.tar.bz2"
-  bsdtar -xf libvpx-*.tar.bz2
-  rm libvpx*.tar.bz2
+  wget https://github.com/webmproject/libvpx/archive/v$VPX_VERSION.tar.gz
+  check_sha256 "$VPX_HASH" "v$VPX_VERSION.tar.gz"
+  bsdtar -xf v$VPX_VERSION.tar.gz
+  rm v$VPX_VERSION.tar.gz
   cd libvpx*
 
   if [[ "$ARCH" == "x86_64" ]]
@@ -867,12 +867,23 @@ then
 
   CROSS="$ARCH-w64-mingw32-" ./configure --target="$VPX_TARGET" \
                                          --prefix="$VPX_PREFIX_DIR" \
-                                         --disable-shared \
-                                         --enable-static \
                                          --disable-examples \
                                          --disable-tools \
                                          --disable-docs \
-                                         --disable-unit-tests
+                                         --enable-static \
+                                         --disable-shared \
+                                         --disable-unit-tests \
+                                         --size-limit=16384x16384 \
+                                         --enable-onthefly-bitpacking \
+                                         --enable-runtime-cpu-detect \
+                                         --enable-multi-res-encoding \
+                                         --enable-error-concealment \
+                                         --enable-better-hw-compatibility \
+                                         --enable-postproc \
+                                         --enable-vp9-postproc
+                                         --enable-temporal-denoising \
+                                         --enable-vp9-temporal-denoising
+
   make
   make install
   echo -n $VPX_VERSION > $VPX_PREFIX_DIR/done
