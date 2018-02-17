@@ -880,7 +880,7 @@ then
                                          --enable-error-concealment \
                                          --enable-better-hw-compatibility \
                                          --enable-postproc \
-                                         --enable-vp9-postproc
+                                         --enable-vp9-postproc \
                                          --enable-temporal-denoising \
                                          --enable-vp9-temporal-denoising
 
