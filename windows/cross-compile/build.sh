@@ -42,7 +42,7 @@ set -euo pipefail
 # ---------- CONFIG ----------
 # TOXCORE_GIT_REPO="https://github.com/TokTok/c-toxcore" # original repo
 TOXCORE_GIT_REPO="https://github.com/zoff99/c-toxcore"
-TOXCORE_VERSION="zoff99/_0.1.10_2017_video_fix_09"
+TOXCORE_VERSION="zoff99/_0.1.10_2017_video_fix_10p"
 # ---------- CONFIG ----------
 
 # Common directory paths
