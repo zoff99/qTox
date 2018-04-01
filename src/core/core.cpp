@@ -380,7 +380,7 @@ void Core::process()
 
     // Zoff ---
     // unsigned sleeptime = qMin(tox_iteration_interval(tox), CoreFile::corefileIterationInterval());
-    unsigned sleeptime = 1; // sleep 1ms
+    unsigned sleeptime = 4; // sleep 4ms
     // Zoff ---
     toxTimer->start(sleeptime);
 }

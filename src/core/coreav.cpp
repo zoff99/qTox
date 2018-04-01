@@ -162,7 +162,7 @@ void CoreAV::process()
     toxav_iterate(toxav);
     // Zoff ---
     // iterateTimer->start(toxav_iteration_interval(toxav));
-    iterateTimer->start(2); // sleep 2ms
+    iterateTimer->start(4); // sleep 4ms
     // Zoff ---
 }
 
