@@ -378,7 +378,10 @@ void Core::process()
         tolerance = 3 * CORE_DISCONNECT_TOLERANCE;
     }
 
-    unsigned sleeptime = qMin(tox_iteration_interval(tox), CoreFile::corefileIterationInterval());
+    // Zoff ---
+    // unsigned sleeptime = qMin(tox_iteration_interval(tox), CoreFile::corefileIterationInterval());
+    unsigned sleeptime = 1; // sleep 1ms
+    // Zoff ---
     toxTimer->start(sleeptime);
 }
 

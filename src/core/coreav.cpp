@@ -160,7 +160,10 @@ void CoreAV::killTimerFromThread()
 void CoreAV::process()
 {
     toxav_iterate(toxav);
-    iterateTimer->start(toxav_iteration_interval(toxav));
+    // Zoff ---
+    // iterateTimer->start(toxav_iteration_interval(toxav));
+    iterateTimer->start(2); // sleep 2ms
+    // Zoff ---
 }
 
 /**
