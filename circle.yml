@@ -45,4 +45,3 @@ test:
     - cd /home/ubuntu/ ; tar -czvf $CIRCLE_ARTIFACTS/"$BUILD__"/cache/workspace.tar workspace/
     - du -hs /home/ubuntu/workspace ; exit 0
     - du -hs /home/ubuntu/workspace/* ; exit 0
-
