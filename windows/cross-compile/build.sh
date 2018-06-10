@@ -41,8 +41,8 @@ set -euo pipefail
 
 # ---------- CONFIG ----------
 # TOXCORE_GIT_REPO="https://github.com/TokTok/c-toxcore" # original repo
-TOXCORE_GIT_REPO="https://github.com/zoff99/c-toxcore"
-TOXCORE_VERSION="zoff99/_0.1.10_2017_video_fix_10p"
+TOXCORE_GIT_REPO="https://github.com/zoff99/c-toxcore_team"
+TOXCORE_VERSION="zoff99/toxcore_v1.0.10__toxav_h264_001"
 # ---------- CONFIG ----------
 
 # Common directory paths
@@ -895,23 +895,12 @@ fi
 # Toxcore
 
 TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
-# TOXCORE_VERSION=0.1.10
-# TOXCORE_HASH=4e9a2881dd0ea8e65a35fc9621644ccf500c1797a2d37983b0057ed3be971299
-# if [ ! -f "$TOXCORE_PREFIX_DIR/done" ]
-# then
+
   rm -rf "$TOXCORE_PREFIX_DIR"
   mkdir -p "$TOXCORE_PREFIX_DIR"
 
-  # wget https://github.com/TokTok/c-toxcore/releases/download/v$TOXCORE_VERSION/c-toxcore-$TOXCORE_VERSION.tar.gz
-  # check_sha256 "$TOXCORE_HASH" "c-toxcore-$TOXCORE_VERSION.tar.gz"
   # set +euo pipefail
-  # bsdtar -xf c-toxcore*.tar.gz
-  # set -euo pipefail
-  # rm c-toxcore*.tar.gz
-  # cd c-toxcore*
-
-  # set +euo pipefail
-  git clone "$TOXCORE_GIT_REPO"
+  git clone "$TOXCORE_GIT_REPO" c-toxcore
   cd c-toxcore
   git checkout $TOXCORE_VERSION
   # set -euo pipefail
@@ -919,29 +908,39 @@ TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
   mkdir -p build
   cd build
 
+
+#  echo "
+#      SET(CMAKE_SYSTEM_NAME Windows)
+#
+#      SET(CMAKE_C_COMPILER $ARCH-w64-mingw32-gcc)
+#      SET(CMAKE_CXX_COMPILER $ARCH-w64-mingw32-g++)
+#      SET(CMAKE_RC_COMPILER $ARCH-w64-mingw32-windres)
+#
+#      SET(CMAKE_FIND_ROOT_PATH /usr/$ARCH-w64-mingw32 $OPUS_PREFIX_DIR $SODIUM_PREFIX_DIR $VPX_PREFIX_DIR)
+#  " > toolchain.cmake
+
+#  cmake -DCMAKE_INSTALL_PREFIX=$TOXCORE_PREFIX_DIR \
+#        -DBOOTSTRAP_DAEMON=OFF \
+#        -DWARNINGS=OFF \
+#        -DCMAKE_BUILD_TYPE=Release \
+#        -DENABLE_STATIC=ON \
+#        -DENABLE_SHARED=OFF \
+#        -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake \
+#        ..
+
   export PKG_CONFIG_PATH="$OPUS_PREFIX_DIR/lib/pkgconfig:$SODIUM_PREFIX_DIR/lib/pkgconfig:$VPX_PREFIX_DIR/lib/pkgconfig"
   export PKG_CONFIG_LIBDIR="/usr/$ARCH-w64-mingw32"
 
-  echo "
-      SET(CMAKE_SYSTEM_NAME Windows)
-
-      SET(CMAKE_C_COMPILER $ARCH-w64-mingw32-gcc)
-      SET(CMAKE_CXX_COMPILER $ARCH-w64-mingw32-g++)
-      SET(CMAKE_RC_COMPILER $ARCH-w64-mingw32-windres)
-
-      SET(CMAKE_FIND_ROOT_PATH /usr/$ARCH-w64-mingw32 $OPUS_PREFIX_DIR $SODIUM_PREFIX_DIR $VPX_PREFIX_DIR)
-  " > toolchain.cmake
-
-  cmake -DCMAKE_INSTALL_PREFIX=$TOXCORE_PREFIX_DIR \
-        -DBOOTSTRAP_DAEMON=OFF \
-        -DWARNINGS=OFF \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DENABLE_STATIC=ON \
-        -DENABLE_SHARED=OFF \
-        -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake \
-        ..
-
-  make
+  export LIBSODIUM_CFLAGS="-I$SODIUM_PREFIX_DIR/include/"
+  export LIBSODIUM_LIBS="-L$SODIUM_PREFIX_DIR/lib"
+  export CFLAGS=" -g -O3 -fomit-frame-pointer -I/usr/share/mingw-w64/include/ "
+  export CXXFLAGS=" -g -O3 -fomit-frame-pointer -I/usr/share/mingw-w64/include/ "
+  CROSS=x86_64-w64-mingw32- ../configure --prefix=$TOXCORE_PREFIX_DIR --enable-logging \
+  --disable-soname-versions --host="x86_64-w64-mingw32" \
+  --with-sysroot="/usr/$ARCH-w64-mingw32/" --disable-testing \
+  --disable-rt --disable-shared
+ 
+  make VERBOSE=1 V=1 -j8
   make install
   echo -n $TOXCORE_VERSION > $TOXCORE_PREFIX_DIR/done
 
@@ -952,9 +951,6 @@ TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
 
   cd ..
   rm -rf ./c-toxcore*
-# else
-#  echo "Using cached build of Toxcore `cat $TOXCORE_PREFIX_DIR/done`"
-# fi
 
 
 # mingw-w64-debug-scripts
