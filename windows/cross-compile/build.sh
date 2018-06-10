@@ -899,11 +899,11 @@ TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
   rm -rf "$TOXCORE_PREFIX_DIR"
   mkdir -p "$TOXCORE_PREFIX_DIR"
 
-  # set +euo pipefail
   git clone "$TOXCORE_GIT_REPO" c-toxcore
   cd c-toxcore
   git checkout $TOXCORE_VERSION
-  # set -euo pipefail
+
+  ./autogen.sh
 
   mkdir -p build
   cd build
