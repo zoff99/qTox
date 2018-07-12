@@ -7,6 +7,8 @@
 cmake_minimum_required(VERSION 2.8.11)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+# set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
+
 option(PLATFORM_EXTENSIONS "Enable platform specific extensions, requires extra dependencies" ON)
 option(USE_FILTERAUDIO "Enable the echo canceling backend" ON)
 
@@ -65,6 +67,10 @@ if (UNIX AND NOT APPLE)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,relro")
 endif()
 
+#if (MINGW)
+#  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Lws2_32 -lws2_32")
+#  add_cflag("-lws2_32")
+#endif()
 
 # Use ccache when available to speed up builds.
 find_program(CCACHE_FOUND ccache)
@@ -596,7 +602,7 @@ add_executable(${PROJECT_NAME}
   src/main.cpp)
 target_link_libraries(${PROJECT_NAME}
   ${PROJECT_NAME}_static
-  ${ALL_LIBRARIES})
+  ${ALL_LIBRARIES} wsock32 ws2_32 iphlpapi)
 
 include(Testing)
 include(Installation)

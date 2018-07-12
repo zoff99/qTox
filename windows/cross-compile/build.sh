@@ -444,8 +444,8 @@ fi
 FFMPEG_PREFIX_DIR="$DEP_DIR/libffmpeg"
 FFMPEG_VERSION=3.2.9
 FFMPEG_HASH="1131d37890ed3dcbc3970452b200a56ceb36b73eaa51d1c23c770c90f928537f"
-if [ ! -f "$FFMPEG_PREFIX_DIR/done" ]
-then
+#if [ ! -f "$FFMPEG_PREFIX_DIR/done" ]
+#then
   rm -rf "$FFMPEG_PREFIX_DIR"
   mkdir -p "$FFMPEG_PREFIX_DIR"
 
@@ -518,9 +518,9 @@ then
 
   cd ..
   rm -rf ./ffmpeg*
-else
-  echo "Using cached build of FFmpeg `cat $FFMPEG_PREFIX_DIR/done`"
-fi
+#else
+#  echo "Using cached build of FFmpeg `cat $FFMPEG_PREFIX_DIR/done`"
+#fi
 
 
 # Openal-soft (irungentoo's fork)
@@ -892,6 +892,114 @@ else
 fi
 
 
+
+
+
+
+
+# =============================
+# =============================
+
+
+NASM_PREFIX_DIR="$DEP_DIR/nasm"
+rm -rf "$NASM_PREFIX_DIR"
+mkdir -p "$NASM_PREFIX_DIR"
+
+mkdir nasm
+cd nasm
+wget 'https://www.nasm.us/pub/nasm/releasebuilds/2.13.02/nasm-2.13.02.tar.bz2' -O nasm.tar.bz2
+echo '8d3028d286be7c185ba6ae4c8a692fc5438c129b2a3ffad60cbdcedd2793bbbe  nasm.tar.bz2'|sha256sum -c
+
+res=$?
+
+if [ $res -ne 0 ]; then
+    echo "checksum error in nasm source code!!"
+    exit 2
+fi
+
+tar -xjvf nasm.tar.bz2
+cd nasm-*
+
+bash autogen.sh
+./configure
+make -j8
+make install
+nasm -v
+
+cd ..
+cd ..
+
+
+# ============================
+
+X264_PREFIX_DIR="$DEP_DIR/x264"
+rm -rf "$X264_PREFIX_DIR"
+mkdir -p "$X264_PREFIX_DIR"
+
+
+git clone git://git.videolan.org/x264.git
+
+cd x264
+git checkout stable
+
+./configure --host=x86_64-w64-mingw32 --cross-prefix=x86_64-w64-mingw32- \
+    --prefix="$X264_PREFIX_DIR" \
+    --disable-opencl --disable-shared \
+    --enable-static --disable-avs --disable-cli
+
+make -j8
+make install
+
+cd ..
+
+
+
+# =============================
+# =============================
+
+LIBAV_PREFIX_DIR="$DEP_DIR/libav"
+rm -rf "$LIBAV_PREFIX_DIR"
+mkdir -p "$LIBAV_PREFIX_DIR"
+
+
+git clone https://github.com/libav/libav
+
+cd libav
+git checkout v12.3
+
+CROSS=x86_64-w64-mingw32-  ./configure \
+          --arch=x86_64 \
+          --target-os=mingw32 \
+          --cross-prefix=x86_64-w64-mingw32- \
+          --enable-cross-compile \
+          --prefix="$LIBAV_PREFIX_DIR" \
+          --disable-devices --disable-programs \
+          --disable-doc --disable-avdevice --disable-avformat \
+          --disable-swscale \
+          --disable-avfilter --disable-network --disable-everything \
+          --disable-bzlib \
+          --disable-libxcb-shm \
+          --disable-libxcb-xfixes \
+          --enable-parser=h264 \
+          --enable-runtime-cpudetect \
+          --enable-gpl --enable-decoder=h264
+
+make -j8
+make install
+
+cd ..
+
+
+# =============================
+# =============================
+
+
+
+
+
+
+
+
 # Toxcore
 
 TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
@@ -908,34 +1016,14 @@ TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
   mkdir -p build
   cd build
 
-
-#  echo "
-#      SET(CMAKE_SYSTEM_NAME Windows)
-#
-#      SET(CMAKE_C_COMPILER $ARCH-w64-mingw32-gcc)
-#      SET(CMAKE_CXX_COMPILER $ARCH-w64-mingw32-g++)
-#      SET(CMAKE_RC_COMPILER $ARCH-w64-mingw32-windres)
-#
-#      SET(CMAKE_FIND_ROOT_PATH /usr/$ARCH-w64-mingw32 $OPUS_PREFIX_DIR $SODIUM_PREFIX_DIR $VPX_PREFIX_DIR)
-#  " > toolchain.cmake
-
-#  cmake -DCMAKE_INSTALL_PREFIX=$TOXCORE_PREFIX_DIR \
-#        -DBOOTSTRAP_DAEMON=OFF \
-#        -DWARNINGS=OFF \
-#        -DCMAKE_BUILD_TYPE=Release \
-#        -DENABLE_STATIC=ON \
-#        -DENABLE_SHARED=OFF \
-#        -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake \
-#        ..
-
-  export PKG_CONFIG_PATH="$OPUS_PREFIX_DIR/lib/pkgconfig:$SODIUM_PREFIX_DIR/lib/pkgconfig:$VPX_PREFIX_DIR/lib/pkgconfig"
+  export PKG_CONFIG_PATH="$OPUS_PREFIX_DIR/lib/pkgconfig:$SODIUM_PREFIX_DIR/lib/pkgconfig:$VPX_PREFIX_DIR/lib/pkgconfig:$LIBAV_PREFIX_DIR/lib/pkgconfig:$X264_PREFIX_DIR/lib/pkgconfig"
   export PKG_CONFIG_LIBDIR="/usr/$ARCH-w64-mingw32"
 
   export LIBSODIUM_CFLAGS="-I$SODIUM_PREFIX_DIR/include/"
-  export LIBSODIUM_LIBS="-L$SODIUM_PREFIX_DIR/lib"
+  export LIBSODIUM_LIBS="-L$SODIUM_PREFIX_DIR/lib "
   export CFLAGS=" -g -O3 -fomit-frame-pointer -I/usr/share/mingw-w64/include/ "
   export CXXFLAGS=" -g -O3 -fomit-frame-pointer -I/usr/share/mingw-w64/include/ "
-  CROSS=x86_64-w64-mingw32- ../configure --prefix=$TOXCORE_PREFIX_DIR --enable-logging \
+  CROSS=x86_64-w64-mingw32- ../configure --prefix="$TOXCORE_PREFIX_DIR" --enable-logging \
   --disable-soname-versions --host="x86_64-w64-mingw32" \
   --with-sysroot="/usr/$ARCH-w64-mingw32/" --disable-testing \
   --disable-rt --disable-shared
@@ -943,6 +1031,25 @@ TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
   make VERBOSE=1 V=1 -j8
   make install
   echo -n $TOXCORE_VERSION > $TOXCORE_PREFIX_DIR/done
+
+  # find . -name '*tox*pc'
+  # find / -name '*tox*pc'
+
+  echo "+++++++++++++++++++++++"
+  echo "+++++++++++++++++++++++"
+  echo "+++++++++++++++++++++++"
+  echo "+++++++++++++++++++++++"
+  pwd
+  echo "+++++++++++++++++++++++"
+  echo "+++++++++++++++++++++++"
+  echo "+++++++++++++++++++++++"
+  echo "+++++++++++++++++++++++"
+
+  # HINT: hmm its not installed correctly. below is a hack to fix that
+  mkdir -p "$TOXCORE_PREFIX_DIR"/lib/pkgconfig/
+  mv ./libtoxav.pc "$TOXCORE_PREFIX_DIR"/lib/pkgconfig/
+  mv ./libtoxcore.pc "$TOXCORE_PREFIX_DIR"/lib/pkgconfig/
+
 
   unset PKG_CONFIG_PATH
   unset PKG_CONFIG_LIBDIR
@@ -952,6 +1059,12 @@ TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
   cd ..
   rm -rf ./c-toxcore*
 
+
+rm -Rf $DEP_DIR/libav/
+mv -v $DEP_DIR/libffmpeg $DEP_DIR/libav
+ln -s $DEP_DIR/libav $DEP_DIR/libffmpeg
+
+ls -ald $DEP_DIR/libav $DEP_DIR/libffmpeg
 
 # mingw-w64-debug-scripts
 
@@ -997,6 +1110,18 @@ set -u
 strip_all
 
 
+
+
+
+
+## =================================================
+## =================================================
+## =================================================
+## =================================================
+## =================================================
+
+
+
 # qTox
 
 QTOX_PREFIX_DIR="$WORKSPACE_DIR/$ARCH/qtox/$BUILD_TYPE"
@@ -1018,6 +1143,9 @@ CMAKE_FIND_ROOT_PATH=""
 for PREFIX_DIR in $DEP_DIR/*; do
   if [ -d $PREFIX_DIR/lib/pkgconfig ]
   then
+    echo "--------"
+    echo "$PREFIX_DIR"
+    echo "--------"
     export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PREFIX_DIR/lib/pkgconfig"
     export PKG_CONFIG_LIBDIR="$PKG_CONFIG_LIBDIR:$PREFIX_DIR/lib/pkgconfig"
   fi
@@ -1041,19 +1169,28 @@ then
 fi
 set -u
 
-if [[ "$BUILD_TYPE" == "release" ]]
-then
+# export LD_FLAGS=" -lws2_32 "
+
+#if [[ "$BUILD_TYPE" == "release" ]]
+#then
+
   cmake -DCMAKE_TOOLCHAIN_FILE=./toolchain.cmake \
         -DCMAKE_BUILD_TYPE=Release \
         ..
-elif [[ "$BUILD_TYPE" == "debug" ]]
-then
-  cmake -DCMAKE_TOOLCHAIN_FILE=./toolchain.cmake \
-        -DCMAKE_BUILD_TYPE=Debug \
-        ..
-fi
 
-make
+#        -DLIBTOX_LIBRARIES="toxcore -ltoxencryptsave -ltoxav -ltoxdns -lws2_32 " \
+
+#elif [[ "$BUILD_TYPE" == "debug" ]]
+#then
+#  cmake -DCMAKE_TOOLCHAIN_FILE=./toolchain.cmake \
+#        -DCMAKE_BUILD_TYPE=Debug \
+#        ..
+#fi
+
+
+# cat /build/qtox/build/CMakeFiles/CMakeOutput.log
+
+make VERBOSE=1 V=1 -j2
 
 cp qtox.exe $QTOX_PREFIX_DIR
 cp $QT_PREFIX_DIR/bin/Qt5Core.dll \
@@ -1122,3 +1259,4 @@ rm -rf ./qtox
 
 # Chmod since everything is root:root
 chmod 777 -R "$WORKSPACE_DIR"
+
