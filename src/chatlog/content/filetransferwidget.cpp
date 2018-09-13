@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -507,8 +507,7 @@ void FileTransferWidget::handleButton(QPushButton* btn)
                 QFileDialog::getSaveFileName(Q_NULLPTR,
                                              tr("Save a file", "Title of the file saving dialog"),
                                              Settings::getInstance().getGlobalAutoAcceptDir() + "/"
-                                                 + fileInfo.fileName,
-                                             0, 0);
+                                                 + fileInfo.fileName);
             acceptTransfer(path);
         }
     }

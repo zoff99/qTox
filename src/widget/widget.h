@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -48,10 +48,13 @@ class ContentLayout;
 class Core;
 class FilesForm;
 class Friend;
+class FriendChatroom;
 class FriendListWidget;
 class FriendWidget;
 class GenericChatroomWidget;
 class Group;
+class GroupChatForm;
+class GroupChatroom;
 class GroupInvite;
 class GroupInviteForm;
 class GroupWidget;
@@ -156,6 +159,7 @@ public slots:
     void addFriendFailed(const ToxPk& userId, const QString& errorInfo = QString());
     void onFriendStatusChanged(int friendId, Status status);
     void onFriendStatusMessageChanged(int friendId, const QString& message);
+    void onFriendDisplayedNameChanged(const QString& displayed);
     void onFriendUsernameChanged(int friendId, const QString& username);
     void onFriendAliasChanged(uint32_t friendId, const QString& alias);
     void onFriendMessageReceived(int friendId, const QString& message, bool isAction);
@@ -167,7 +171,9 @@ public slots:
     void onGroupInviteReceived(const GroupInvite& inviteInfo);
     void onGroupInviteAccepted(const GroupInvite& inviteInfo);
     void onGroupMessageReceived(int groupnumber, int peernumber, const QString& message, bool isAction);
-    void onGroupNamelistChanged(int groupnumber, int peernumber, uint8_t change);
+    void onGroupNamelistChangedOld(int groupnumber, int peernumber, uint8_t change);
+    void onGroupPeerlistChanged(int groupnumber);
+    void onGroupPeerNameChanged(int groupnumber, int peernumber, const QString& newName);
     void onGroupTitleChanged(int groupnumber, const QString& author, const QString& title);
     void onGroupPeerAudioPlaying(int groupnumber, int peernumber);
     void onGroupSendFailed(int groupId);
@@ -208,17 +214,16 @@ private slots:
     void onTryCreateTrayIcon();
     void onSetShowSystemTray(bool newValue);
     void onSplitterMoved(int pos, int index);
-    void processOfflineMsgs();
     void friendListContextMenu(const QPoint& pos);
     void friendRequestsUpdate();
     void groupInvitesUpdate();
     void groupInvitesClear();
     void onDialogShown(GenericChatroomWidget* widget);
     void outgoingNotification();
+    void onCallEnd();
     void incomingNotification(uint32_t friendId);
     void onRejectCall(uint32_t friendId);
-    void onAcceptCall(uint32_t friendId);
-    void onCallEnd(uint32_t friendId);
+    void onStopNotification();
 
 private:
     // QMainWindow overrides
@@ -290,7 +295,7 @@ private:
     MaskablePixmapWidget* profilePicture;
     bool notify(QObject* receiver, QEvent* event);
     bool autoAwayActive = false;
-    QTimer *timer, *offlineMsgTimer;
+    QTimer *timer;
     QRegExp nameMention, sanitizedNameMention;
     bool eventFlag;
     bool eventIcon;
@@ -300,9 +305,13 @@ private:
     unsigned int unreadGroupInvites;
     int icon_size;
 
-    QMap<uint32_t, GroupWidget*> groupWidgets;
     QMap<uint32_t, FriendWidget*> friendWidgets;
+    QMap<uint32_t, std::shared_ptr<FriendChatroom>> friendChatrooms;
     QMap<uint32_t, ChatForm*> chatForms;
+
+    QMap<uint32_t, GroupWidget*> groupWidgets;
+    QMap<uint32_t, std::shared_ptr<GroupChatroom>> groupChatrooms;
+    QMap<uint32_t, GroupChatForm*> groupChatForms;
 
 #ifdef Q_OS_MAC
     QAction* fileMenu;

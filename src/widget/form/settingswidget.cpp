@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -51,7 +51,7 @@ SettingsWidget::SettingsWidget(QWidget* parent)
 
     setAttribute(Qt::WA_DeleteOnClose);
 
-    QVBoxLayout* bodyLayout = new QVBoxLayout();
+    bodyLayout = std::unique_ptr<QVBoxLayout>(new QVBoxLayout());
 
     settingsWidgets = std::unique_ptr<QTabWidget>(new QTabWidget(this));
     settingsWidgets->setTabPosition(QTabWidget::North);

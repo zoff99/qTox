@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -197,8 +197,14 @@ void ChatLog::mousePressEvent(QMouseEvent* ev)
         clearSelection();
     }
 
-    // Counts only single clicks and first click of doule click
-    clickCount++;
+    if (lastClickButton == ev->button()) {
+        // Counts only single clicks and first click of doule click
+        clickCount++;
+    }
+    else {
+        clickCount = 1; // restarting counter
+        lastClickButton = ev->button();
+    }
     lastClickPos = ev->pos();
 
     // Triggers on odd click counts
@@ -380,10 +386,10 @@ void ChatLog::insertChatlineOnTop(ChatLine::Ptr l)
     if (!l.get())
         return;
 
-    insertChatlineOnTop(QList<ChatLine::Ptr>() << l);
+    insertChatlinesOnTop(QList<ChatLine::Ptr>() << l);
 }
 
-void ChatLog::insertChatlineOnTop(const QList<ChatLine::Ptr>& newLines)
+void ChatLog::insertChatlinesOnTop(const QList<ChatLine::Ptr>& newLines)
 {
     if (newLines.isEmpty())
         return;
@@ -477,8 +483,14 @@ void ChatLog::mouseDoubleClickEvent(QMouseEvent* ev)
         emit selectionChanged();
     }
 
-    // Counts the second click of double click
-    clickCount++;
+    if (lastClickButton == ev->button()) {
+        // Counts the second click of double click
+        clickCount++;
+    }
+    else {
+        clickCount = 1; // restarting counter
+        lastClickButton = ev->button();
+    }
     lastClickPos = ev->pos();
 
     // Triggers on even click counts
@@ -815,6 +827,8 @@ void ChatLog::onWorkerTimeout()
 
         // hidden during busy screen
         verticalScrollBar()->show();
+
+        emit workerTimeoutFinished();
     }
 }
 

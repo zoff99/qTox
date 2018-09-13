@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -56,6 +56,7 @@ private:
     void retranslateUi();
 
 private:
+    std::unique_ptr<QVBoxLayout> bodyLayout;
     std::unique_ptr<QTabWidget> settingsWidgets;
     std::array<std::unique_ptr<GenericForm>, 6> cfgForms;
     int currentIndex;

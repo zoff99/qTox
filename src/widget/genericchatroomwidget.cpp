@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -179,12 +179,20 @@ void GenericChatroomWidget::reloadTheme()
     setPalette(p);
 }
 
+void GenericChatroomWidget::activate()
+{
+    emit chatroomWidgetClicked(this);
+}
+
 void GenericChatroomWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::LeftButton)
+    if (event->button() == Qt::LeftButton) {
         emit chatroomWidgetClicked(this);
-    else
+    } else if (event->button() == Qt::MiddleButton) {
+        emit middleMouseClicked();
+    } else {
         event->ignore();
+    }
 }
 
 void GenericChatroomWidget::enterEvent(QEvent*)

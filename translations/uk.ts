@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="uk_UA">
+<TS version="2.0" language="uk_UA">
 <context>
     <name>AVForm</name>
     <message>
@@ -14,14 +14,6 @@
     <message>
         <source>Disabled</source>
         <translation>Вимкнений</translation>
-    </message>
-    <message>
-        <source>Play a test sound while changing the output volume.</source>
-        <translation>Відтворювати тестовий звук при зміні гучності.</translation>
-    </message>
-    <message>
-        <source>Use slider to set the gain of your input device ranging from %1dB to %2dB.</source>
-        <translation>Використовуйте повзунок для налаштування підсилення вашого мікрофону в діапазоні від %1дБ до %2дБ.</translation>
     </message>
     <message>
         <source>Select region</source>
@@ -89,35 +81,39 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Enables the experimental audio backend with echo cancelling support, needs qTox restart to take effect.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вмикає експерментальну звукову систему з підтримкою ехо пригнічування, потребує перезавантаження qTox.</translation>
     </message>
     <message>
         <source>Enable experimental audio backend</source>
-        <translation type="unfinished"></translation>
+        <translation>Увімкнути експерментальний аудіо бекенд</translation>
     </message>
     <message>
         <source>Audio quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Якість аудіо</translation>
     </message>
     <message>
         <source>Transmitted audio quality. Lower this setting if your bandwidth is not high enough or if you want to lower the internet usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Якість передаваємого звуку. Зменшіть цей параметр якщо пропускна здатність з&apos;єднання недостатня або ви хочете зменшити використання Інтернет трафіку.</translation>
     </message>
     <message>
         <source>High (64 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Висока (64 кбіт)</translation>
     </message>
     <message>
         <source>Medium (32 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Середня (32 кбіт)</translation>
     </message>
     <message>
         <source>Low (16 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Низька (16 кбіт)</translation>
     </message>
     <message>
         <source>Very low (8 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Дуже низька (8 кбіт)</translation>
+    </message>
+    <message>
+        <source>Threshold</source>
+        <translation>Поріг</translation>
     </message>
 </context>
 <context>
@@ -141,7 +137,7 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>You are using qTox version %1.</source>
-        <translation type="unfinished">Ви використовуєте qTox версії %1.</translation>
+        <translation>Ви використовуєте qTox версії %1.</translation>
     </message>
     <message>
         <source>Commit hash: %1</source>
@@ -149,11 +145,11 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>toxcore version: %1</source>
-        <translation type="unfinished">Версія toxcore: %1</translation>
+        <translation>Версія toxcore: %1</translation>
     </message>
     <message>
         <source>Qt version: %1</source>
-        <translation type="unfinished">Версія Qt: %1</translation>
+        <translation>Версія Qt: %1</translation>
     </message>
     <message>
         <source>A list of all known issues may be found at our %1 at Github. If you discover a bug or security vulnerability within qTox, please report it according to the guidelines in our %2 wiki article.</source>
@@ -172,17 +168,17 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>bug-tracker</source>
-        <comment>Replaces `%1` in the `A list of all known…`</comment>
-        <translation type="unfinished">баг-трекері</translation>
+        <comment>Replaces `%1` in the `A list of all knownâ¦`</comment>
+        <translation>баг-трекері</translation>
     </message>
     <message>
         <source>Writing Useful Bug Reports</source>
-        <comment>Replaces `%2` in the `A list of all known…`</comment>
+        <comment>Replaces `%2` in the `A list of all knownâ¦`</comment>
         <translation type="unfinished">Writing Useful Bug Reports</translation>
     </message>
     <message>
         <source>contributors</source>
-        <comment>Replaces `%1` in `See a full list of…`</comment>
+        <comment>Replaces `%1` in `See a full list ofâ¦`</comment>
         <translation type="unfinished">Співавтори</translation>
     </message>
 </context>
@@ -234,7 +230,7 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Ручне</translation>
     </message>
     <message>
         <source>Audio</source>
@@ -246,11 +242,11 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Automatically accept group chat invitations from this contact if set.</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматично приймати запрошення в груповий чат від цього контакту якщо встановлено.</translation>
     </message>
     <message>
         <source>Auto accept group invites</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматично приймати запрошення в групи</translation>
     </message>
     <message>
         <source>Remove history (operation can not be undone!)</source>
@@ -269,17 +265,17 @@ which may lead to problems with video calls.</source>
         <translation type="unfinished">Ви можете залишити коментар про даний контакт тут.</translation>
     </message>
     <message>
-        <source>Choose an auto accept directory</source>
-        <comment>popup title</comment>
-        <translation type="unfinished">Оберіть теку, для автоматичного отримання файлів</translation>
-    </message>
-    <message>
         <source>History removed</source>
         <translation type="unfinished">Історію видалено</translation>
     </message>
     <message>
         <source>Chat history with %1 removed!</source>
         <translation type="unfinished">Історію переписки з %1 видалено!</translation>
+    </message>
+    <message>
+        <source>Choose an auto accept directory</source>
+        <extracomment>popup title</extracomment>
+        <translation type="unfinished">Оберіть теку, для автоматичного отримання файлів</translation>
     </message>
 </context>
 <context>
@@ -358,7 +354,7 @@ which may lead to problems with video calls.</source>
     <message>
         <source>%1 Tox ID is invalid or does not exist</source>
         <comment>Toxme error</comment>
-        <translation type="unfinished"></translation>
+        <translation>%1 Tox ID є неприйнятним або не існує</translation>
     </message>
     <message>
         <source>You can&apos;t add yourself as a friend!</source>
@@ -367,44 +363,44 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Open contact list</source>
-        <translation type="unfinished"></translation>
+        <translation>Відрити список контактів</translation>
     </message>
     <message>
         <source>Couldn&apos;t open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка відкриття файлу</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the contact file</source>
         <extracomment>Error message when trying to open a contact list file to import</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Помилка відкриття файлу контактів</translation>
     </message>
     <message>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправильний файл</translation>
     </message>
     <message>
         <source>We couldn&apos;t find any contacts to import in this file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Контактів для імпорту не знайдено!</translation>
     </message>
     <message>
         <source>Tox ID</source>
         <extracomment>Tox ID of the person you&apos;re sending a friend request to</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Ідентифікатор Tox</translation>
     </message>
     <message>
         <source>either 76 hexadecimal characters or name@example.com</source>
         <extracomment>Tox ID format description</extracomment>
-        <translation type="unfinished">76 шістнадцяткових цифр або name@example.com</translation>
+        <translation>76 шістнадцяткових символів або name@example.com</translation>
     </message>
     <message>
         <source>Message</source>
         <extracomment>The message you send in friend requests</extracomment>
-        <translation type="unfinished">Повідомлення</translation>
+        <translation>Повідомлення</translation>
     </message>
     <message>
         <source>Open</source>
         <extracomment>Button to choose a file with a list of contacts to import</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити</translation>
     </message>
     <message>
         <source>Send friend requests</source>
@@ -417,10 +413,11 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Import a list of contacts, one Tox ID per line</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортувати список контактів, один Ідентифікатор Tox на рядок</translation>
     </message>
     <message numerus="yes">
         <source>Ready to import %n contact(s), click send to confirm</source>
+        <extracomment>Shows the number of contacts we&apos;re about to import from a file (at least one)</extracomment>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -429,14 +426,14 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Import contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортувати контакти</translation>
     </message>
 </context>
 <context>
     <name>AdvancedForm</name>
     <message>
         <source>Advanced</source>
-        <translation>Додатково</translation>
+        <translation>Більше</translation>
     </message>
     <message>
         <source>Unless you %1 know what you are doing, please do %2 change anything here. Changes made here may lead to problems with qTox, and even to loss of your data, e.g. history.</source>
@@ -444,7 +441,7 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>really</source>
-        <translation>впевнені</translation>
+        <translation>дійсно</translation>
     </message>
     <message>
         <source>not</source>
@@ -464,11 +461,11 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Так</translation>
+        <translation>Так</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Ні</translation>
+        <translation>Ні</translation>
     </message>
     <message>
         <source>Call active</source>
@@ -486,7 +483,7 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Logs (*.log)</source>
-        <translation type="unfinished"></translation>
+        <translation>Логи (*.log)</translation>
     </message>
 </context>
 <context>
@@ -515,7 +512,7 @@ which may lead to problems with video calls.</source>
     <message>
         <source>Enable IPv6 (recommended)</source>
         <extracomment>Text on a checkbox to enable IPv6</extracomment>
-        <translation type="unfinished">Дозволити IPv6 (рекомендовано)</translation>
+        <translation>Увімкнути IPv6 (рекомендовано)</translation>
     </message>
     <message>
         <source>Disabling this allows, e.g., toxing over Tor. It adds load to the Tox network however, so uncheck only when necessary.</source>
@@ -525,21 +522,21 @@ which may lead to problems with video calls.</source>
     <message>
         <source>Enable UDP (recommended)</source>
         <extracomment>Text on checkbox to disable UDP</extracomment>
-        <translation type="unfinished">Дозволити UDP (рекомендовано)</translation>
+        <translation>Увімкнути UDP (рекомендовано)</translation>
     </message>
     <message>
         <source>Proxy type:</source>
-        <translation type="unfinished">Тип проксі:</translation>
+        <translation>Тип проксі:</translation>
     </message>
     <message>
         <source>Address:</source>
         <extracomment>Text on proxy addr label</extracomment>
-        <translation type="unfinished">Адреса проксі:</translation>
+        <translation>Адреса:</translation>
     </message>
     <message>
         <source>Port:</source>
         <extracomment>Text on proxy port label</extracomment>
-        <translation type="unfinished">Порт:</translation>
+        <translation>Порт:</translation>
     </message>
     <message>
         <source>None</source>
@@ -547,28 +544,28 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>SOCKS5</source>
-        <translation type="unfinished">SOCKS5</translation>
+        <translation>SOCKS5</translation>
     </message>
     <message>
         <source>HTTP</source>
-        <translation type="unfinished">HTTP</translation>
+        <translation>HTTP</translation>
     </message>
     <message>
         <source>Reconnect</source>
         <comment>reconnect button</comment>
-        <translation type="unfinished">Повторно під&apos;єднатись</translation>
+        <translation>Перепідключитись</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished">Налагодження</translation>
+        <translation>Відладка</translation>
     </message>
     <message>
         <source>Export Debug Log</source>
-        <translation type="unfinished">Вивантажити логи налагодження</translation>
+        <translation>Експортувати логи відладки</translation>
     </message>
     <message>
         <source>Copy Debug Log</source>
-        <translation type="unfinished">Скопіювати логи налагодження</translation>
+        <translation>Скопіювати логи відладки</translation>
     </message>
 </context>
 <context>
@@ -590,31 +587,6 @@ which may lead to problems with video calls.</source>
         <translation>Дзвінок від %1</translation>
     </message>
     <message>
-        <source>End video call</source>
-        <translation>Завершити відеодзвінок</translation>
-    </message>
-    <message>
-        <source>End audio call</source>
-        <translation>Завершити аудіодзвінок</translation>
-    </message>
-    <message>
-        <source>Mute microphone</source>
-        <translation>Вимкнути мікрофон</translation>
-    </message>
-    <message>
-        <source>Mute call</source>
-        <translatorcomment>(переклад може бути неточний)</translatorcomment>
-        <translation>Призупинити дзвінок</translation>
-    </message>
-    <message>
-        <source>Cancel video call</source>
-        <translation>Скинути відеодзвінок</translation>
-    </message>
-    <message>
-        <source>Cancel audio call</source>
-        <translation>Скинути аудіодзвінок</translation>
-    </message>
-    <message>
         <source>Unable to open</source>
         <translation>Неможливо відкрити</translation>
     </message>
@@ -627,38 +599,21 @@ which may lead to problems with video calls.</source>
         <translation>Дзінок до %1</translation>
     </message>
     <message>
-        <source>Start audio call</source>
-        <translation>Почати аудіодзвінок</translation>
-    </message>
-    <message>
-        <source>Start video call</source>
-        <translation>Почати відеодзвінок</translation>
-    </message>
-    <message>
-        <source>Unmute microphone</source>
-        <translation>Увімкнути мікрофон</translation>
-    </message>
-    <message>
-        <source>Unmute call</source>
-        <translatorcomment>(переклад може бути неточний)</translatorcomment>
-        <translation>Відновити дзвінок</translation>
-    </message>
-    <message>
         <source>Failed to send file &quot;%1&quot;</source>
-        <translation>Не вдалось відправити файл «%1»</translation>
+        <translation>Не вдалось відправити файл &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Failed to open temporary file</source>
         <comment>Temporary file for screenshot</comment>
-        <translation>Помилка під час відкриття тимчасового файлу</translation>
+        <translation>Помилка відкриття тимчасового файлу</translation>
     </message>
     <message>
         <source>qTox wasn&apos;t able to save the screenshot</source>
-        <translation>qTox не може зберегти снімок екрану</translation>
+        <translation>qTox не зміг зберегти скриншот</translation>
     </message>
     <message>
         <source>Call with %1 ended. %2</source>
-        <translation>Виклик із %1 завершено. %2</translation>
+        <translation>Дзвінок з %1 завершено. %2</translation>
     </message>
     <message>
         <source>Call duration: </source>
@@ -702,22 +657,6 @@ which may lead to problems with video calls.</source>
         <translation type="unfinished">%1 тепер вже відомий як %2</translation>
     </message>
     <message>
-        <source>Can&apos;t start video call</source>
-        <translation>Не можу розпочати відеодзвінок</translation>
-    </message>
-    <message>
-        <source>Can&apos;t start audio call</source>
-        <translation>Не можу розпочати аудіодзвінок</translation>
-    </message>
-    <message>
-        <source>Microphone can be muted only during a call</source>
-        <translation>Вимкнути мікрофон можна лише під час дзвінка</translation>
-    </message>
-    <message>
-        <source>Sound can be disabled only during a call</source>
-        <translation>Звук можливо вимкнути лише під час дзвінка</translation>
-    </message>
-    <message>
         <source>Export to file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -728,6 +667,73 @@ which may lead to problems with video calls.</source>
     <message>
         <source>Call with %1 ended unexpectedly. %2</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ChatFormHeader</name>
+    <message>
+        <source>Can&apos;t start audio call</source>
+        <translation type="unfinished">Не можу розпочати аудіодзвінок</translation>
+    </message>
+    <message>
+        <source>Start audio call</source>
+        <translation type="unfinished">Почати аудіодзвінок</translation>
+    </message>
+    <message>
+        <source>End audio call</source>
+        <translation type="unfinished">Завершити аудіодзвінок</translation>
+    </message>
+    <message>
+        <source>Cancel audio call</source>
+        <translation type="unfinished">Скинути аудіодзвінок</translation>
+    </message>
+    <message>
+        <source>Accept audio call</source>
+        <translation type="unfinished">Прийняти аудіо дзвінок</translation>
+    </message>
+    <message>
+        <source>Can&apos;t start video call</source>
+        <translation type="unfinished">Не можу розпочати відеодзвінок</translation>
+    </message>
+    <message>
+        <source>Start video call</source>
+        <translation type="unfinished">Почати відеодзвінок</translation>
+    </message>
+    <message>
+        <source>End video call</source>
+        <translation type="unfinished">Завершити відеодзвінок</translation>
+    </message>
+    <message>
+        <source>Cancel video call</source>
+        <translation type="unfinished">Скинути відеодзвінок</translation>
+    </message>
+    <message>
+        <source>Accept video call</source>
+        <translation type="unfinished">Прийняти відеодзвінок</translation>
+    </message>
+    <message>
+        <source>Sound can be disabled only during a call</source>
+        <translation type="unfinished">Звук можливо вимкнути лише під час дзвінка</translation>
+    </message>
+    <message>
+        <source>Unmute call</source>
+        <translation type="unfinished">Відновити дзвінок</translation>
+    </message>
+    <message>
+        <source>Mute call</source>
+        <translation type="unfinished">Призупинити дзвінок</translation>
+    </message>
+    <message>
+        <source>Microphone can be muted only during a call</source>
+        <translation type="unfinished">Вимкнути мікрофон можна лише під час дзвінка</translation>
+    </message>
+    <message>
+        <source>Unmute microphone</source>
+        <translation type="unfinished">Увімкнути мікрофон</translation>
+    </message>
+    <message>
+        <source>Mute microphone</source>
+        <translation type="unfinished">Вимкнути мікрофон</translation>
     </message>
 </context>
 <context>
@@ -1207,30 +1213,6 @@ instead of system taskbar.</source>
         <translation>Зберегти чат</translation>
     </message>
     <message>
-        <source>Start audio call</source>
-        <translation>Почати аудіодзвінок</translation>
-    </message>
-    <message>
-        <source>Accept audio call</source>
-        <translation>Прийняти аудіо дзвінок</translation>
-    </message>
-    <message>
-        <source>End audio call</source>
-        <translation>Завершити аудіодзвінок</translation>
-    </message>
-    <message>
-        <source>Start video call</source>
-        <translation>Почати відеодзвінок</translation>
-    </message>
-    <message>
-        <source>Accept video call</source>
-        <translation>Прийняти відеодзвінок</translation>
-    </message>
-    <message>
-        <source>End video call</source>
-        <translation>Завершити відеодзвінок</translation>
-    </message>
-    <message>
         <source>Clear displayed messages</source>
         <translation>Очистити показані повідомлення</translation>
     </message>
@@ -1287,28 +1269,8 @@ instead of system taskbar.</source>
         <translation>1 користувач в чаті</translation>
     </message>
     <message>
-        <source>Start audio call</source>
-        <translation>Почати аудіодзвінок</translation>
-    </message>
-    <message>
-        <source>Mute microphone</source>
-        <translation>Вимкнути мікрофон</translation>
-    </message>
-    <message>
-        <source>Unmute microphone</source>
-        <translation>Увімкнути мікрофон</translation>
-    </message>
-    <message>
-        <source>Mute call</source>
-        <translation>Призупинити дзвінок</translation>
-    </message>
-    <message>
-        <source>Unmute call</source>
-        <translation>Відновити дзвінок</translation>
-    </message>
-    <message>
-        <source>End audio call</source>
-        <translation>Завершити аудіодзвінок</translation>
+        <source>%1 has set the title to %2</source>
+        <translation type="unfinished">%1 встановив тему %2</translation>
     </message>
 </context>
 <context>
@@ -2230,10 +2192,6 @@ This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
         <extracomment>deletion confirmation text</extracomment>
         <translation type="unfinished">Ви дійсно бажаєте видалити Ваш пароль?</translation>
     </message>
-    <message>
-        <source>Tox user names cannot exceed %1 characters.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ProfileImporter</name>
@@ -2746,6 +2704,15 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
         <source>Date format:</source>
         <translation type="unfinished">Формат дати:</translation>
     </message>
+    <message>
+        <source>If enabled every contact without an avatar set will have a generated avatar based on their Tox ID instead of a default picture. Requires restart to apply.</source>
+        <comment>toolTip for show identicons</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use identicons instead of empty avatars</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Widget</name>
@@ -2884,10 +2851,6 @@ It&apos;s difficult to translate &quot;Tox me maybe&quot; because in Ukrainian n
     <message>
         <source>Your status</source>
         <translation>Ваш статус</translation>
-    </message>
-    <message>
-        <source>%1 has set the title to %2</source>
-        <translation>%1 встановив тему %2</translation>
     </message>
     <message>
         <source>Message failed to send</source>

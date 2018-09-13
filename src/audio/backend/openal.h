@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2017 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -48,6 +48,8 @@ public:
     OpenAL();
     virtual ~OpenAL();
 
+    qreal maxOutputVolume() const { return 1; }
+    qreal minOutputVolume() const { return 0; }
     qreal outputVolume() const;
     void setOutputVolume(qreal volume);
 
@@ -61,13 +63,10 @@ public:
     void setInputGain(qreal dB);
 
     qreal minInputThreshold() const;
-    void setMinInputThreshold(qreal percent);
-
     qreal maxInputThreshold() const;
-    void setMaxInputThreshold(qreal percent);
 
     qreal getInputThreshold() const;
-    void setInputThreshold(qreal percent);
+    void setInputThreshold(qreal normalizedThreshold);
 
     void reinitInput(const QString& inDevDesc);
     bool reinitOutput(const QString& outDevDesc);
@@ -105,38 +104,45 @@ protected:
 
     bool initInput(const QString& deviceName, uint32_t channels);
 
+    void doAudio();
+
+    virtual void doInput();
+    virtual void doOutput();
+    virtual void captureSamples(ALCdevice* device, int16_t* buffer, ALCsizei samples);
+
 private:
     virtual bool initInput(const QString& deviceName);
     virtual bool initOutput(const QString& outDevDescr);
     void playMono16SoundCleanup();
-    float getVolume(int16_t *buf);
-    void doCapture();
+    float getVolume();
 
 protected:
     QThread* audioThread;
     mutable QMutex audioLock;
 
-    ALCdevice* alInDev;
-    quint32 inSubscriptions;
+    ALCdevice* alInDev = nullptr;
+    quint32 inSubscriptions = 0;
     QTimer captureTimer, playMono16Timer;
 
-    ALCdevice* alOutDev;
-    ALCcontext* alOutContext;
-    ALuint alMainSource;
-    ALuint alMainBuffer;
-    bool outputInitialized;
+    ALCdevice* alOutDev = nullptr;
+    ALCcontext* alOutContext = nullptr;
+    ALuint alMainSource = 0;
+    ALuint alMainBuffer = 0;
+    bool outputInitialized = false;
 
     QList<ALuint> peerSources;
-    qreal gain;
-    qreal gainFactor;
+    int channels = 0;
+    qreal gain = 0;
+    qreal gainFactor = 1;
     qreal minInGain = -30;
     qreal maxInGain = 30;
-    qreal inputThreshold;
+    qreal inputThreshold = 0;
     qreal voiceHold = 250;
     bool isActive = false;
     QTimer voiceTimer;
-    qreal minInThreshold = 0.0;
-    qreal maxInThreshold = 0.4;
+    const qreal minInThreshold = 0.0;
+    const qreal maxInThreshold = 0.4;
+    int16_t* inputBuffer = nullptr;
 };
 
 #endif // OPENAL_H

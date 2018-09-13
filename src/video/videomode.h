@@ -1,5 +1,5 @@
 /*
-    Copyright © 2015 by The qTox Project Contributors
+    Copyright © 2015-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -27,10 +27,10 @@ struct VideoMode
 {
     int width, height;
     int x, y;
-    float FPS;
-    uint32_t pixel_format;
+    float FPS = -1.0f;
+    uint32_t pixel_format = 0;
 
-    VideoMode(int width = 0, int height = 0, int x = 0, int y = 0, int FPS = 0, int format = 0);
+    VideoMode(int width = 0, int height = 0, int x = 0, int y = 0, float FPS = -1.0f);
 
     explicit VideoMode(QRect rect);
 
@@ -39,6 +39,7 @@ struct VideoMode
     operator bool() const;
     bool operator==(const VideoMode& other) const;
     uint32_t norm(const VideoMode& other) const;
+    uint32_t tolerance() const;
 };
 
 #endif // VIDEOMODE_H

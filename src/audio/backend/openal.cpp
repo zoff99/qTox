@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2017 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -32,6 +32,18 @@
 
 #include <cassert>
 
+namespace {
+    void applyGain(int16_t* buffer, uint32_t bufferSize, qreal gainFactor)
+    {
+        for (quint32 i = 0; i < bufferSize; ++i) {
+            // gain amplification with clipping to 16-bit boundaries
+            buffer[i] = qBound<int16_t>(std::numeric_limits<int16_t>::min(),
+                                   qRound(buffer[i] * gainFactor),
+                                   std::numeric_limits<int16_t>::max());
+        }
+    }
+}
+
 /**
  * @class OpenAL
  * @brief Provides the OpenAL audio backend
@@ -48,38 +60,34 @@ static const uint32_t AUDIO_CHANNELS = 2;
 
 OpenAL::OpenAL()
     : audioThread{new QThread}
-    , alInDev{nullptr}
-    , inSubscriptions{0}
-    , alOutDev{nullptr}
-    , alOutContext{nullptr}
-    , alMainSource{0}
-    , alMainBuffer{0}
-    , outputInitialized{false}
-    , minInGain{-30}
-    , maxInGain{30}
-    , minInThreshold{0.0f}
-    , maxInThreshold{0.4f}
-    , isActive{false}
 {
     // initialize OpenAL error stack
     alGetError();
     alcGetError(nullptr);
 
     audioThread->setObjectName("qTox Audio");
+    QObject::connect(audioThread, &QThread::finished, &voiceTimer, &QTimer::stop);
+    QObject::connect(audioThread, &QThread::finished, &captureTimer, &QTimer::stop);
+    QObject::connect(audioThread, &QThread::finished, &playMono16Timer, &QTimer::stop);
     QObject::connect(audioThread, &QThread::finished, audioThread, &QThread::deleteLater);
 
     moveToThread(audioThread);
 
     voiceTimer.setSingleShot(true);
+    voiceTimer.moveToThread(audioThread);
     connect(this, &Audio::startActive, &voiceTimer, static_cast<void (QTimer::*)(int)>(&QTimer::start));
     connect(&voiceTimer, &QTimer::timeout, this, &Audio::stopActive);
 
-    connect(&captureTimer, &QTimer::timeout, this, &OpenAL::doCapture);
+    connect(&captureTimer, &QTimer::timeout, this, &OpenAL::doAudio);
     captureTimer.setInterval(AUDIO_FRAME_DURATION / 2);
     captureTimer.setSingleShot(false);
-    captureTimer.start();
+    captureTimer.moveToThread(audioThread);
+    // TODO for Qt 5.6+: use qOverload
+    connect(audioThread, &QThread::started, &captureTimer, static_cast<void (QTimer::*)(void)>(&QTimer::start));
+
     connect(&playMono16Timer, &QTimer::timeout, this, &OpenAL::playMono16SoundCleanup);
     playMono16Timer.setSingleShot(true);
+    playMono16Timer.moveToThread(audioThread);
 
     audioThread->start();
 }
@@ -185,7 +193,7 @@ void OpenAL::setMaxInputGain(qreal dB)
 /**
  * @brief The minimum threshold value for an input device.
  *
- * @return minimum threshold percentage
+ * @return minimum normalized threshold
  */
 qreal OpenAL::minInputThreshold() const
 {
@@ -194,36 +202,14 @@ qreal OpenAL::minInputThreshold() const
 }
 
 /**
- * @brief Set the minimum allowed threshold percentage
+ * @brief The maximum normalized threshold value for an input device.
  *
- * @note Default is 0%; usually you don't need to alter this value;
- */
-void OpenAL::setMinInputThreshold(qreal percent)
-{
-    QMutexLocker locker(&audioLock);
-    minInThreshold = percent;
-}
-
-/**
- * @brief The maximum threshold value for an input device.
- *
- * @return maximum threshold percentage
+ * @return maximum normalized threshold
  */
 qreal OpenAL::maxInputThreshold() const
 {
     QMutexLocker locker(&audioLock);
     return maxInThreshold;
-}
-
-/**
- * @brief Set the maximum allowed threshold percentage
- *
- * @note Default is 40%; usually you don't need to alter this value.
- */
-void OpenAL::setMaxInputThreshold(qreal percent)
-{
-    QMutexLocker locker(&audioLock);
-    maxInThreshold = percent;
 }
 
 void OpenAL::reinitInput(const QString& inDevDesc)
@@ -313,14 +299,17 @@ bool OpenAL::initInput(const QString& deviceName, uint32_t channels)
     assert(!alInDev);
 
     // TODO: Try to actually detect if our audio source is stereo
-    int stereoFlag = AUDIO_CHANNELS == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-    const uint32_t sampleRate = AUDIO_SAMPLE_RATE;
-    const uint16_t frameDuration = AUDIO_FRAME_DURATION;
-    const ALCsizei bufSize = (frameDuration * sampleRate * 4) / 1000 * channels;
+    this->channels = channels;
+    int stereoFlag = channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+    const int bytesPerSample = 2;
+    const int safetyFactor = 2; // internal OpenAL ring buffer. must be larger than our inputBuffer to avoid the ring
+                                // from overwriting itself between captures.
+    AUDIO_FRAME_SAMPLE_COUNT_TOTAL = AUDIO_FRAME_SAMPLE_COUNT_PER_CHANNEL * channels;
+    const ALCsizei ringBufSize = AUDIO_FRAME_SAMPLE_COUNT_TOTAL * bytesPerSample * safetyFactor;
 
     const QByteArray qDevName = deviceName.toUtf8();
     const ALchar* tmpDevName = qDevName.isEmpty() ? nullptr : qDevName.constData();
-    alInDev = alcCaptureOpenDevice(tmpDevName, sampleRate, stereoFlag, bufSize);
+    alInDev = alcCaptureOpenDevice(tmpDevName, AUDIO_SAMPLE_RATE, stereoFlag, ringBufSize);
 
     // Restart the capture if necessary
     if (!alInDev) {
@@ -328,6 +317,7 @@ bool OpenAL::initInput(const QString& deviceName, uint32_t channels)
         return false;
     }
 
+    inputBuffer = new int16_t[AUDIO_FRAME_SAMPLE_COUNT_TOTAL];
     setInputGain(Settings::getInstance().getAudioInGainDecibel());
     setInputThreshold(Settings::getInstance().getAudioThreshold());
 
@@ -423,7 +413,7 @@ void OpenAL::playMono16Sound(const QByteArray& data)
     alSourcePlay(alMainSource);
 
     int durationMs = data.size() * 1000 / 2 / 44100;
-    playMono16Timer.start(durationMs + 50);
+    QMetaObject::invokeMethod(&playMono16Timer, "start", Q_ARG(int, durationMs + 50));
 }
 
 void OpenAL::playAudioBuffer(uint sourceId, const int16_t* data, int samples, unsigned channels,
@@ -476,10 +466,13 @@ void OpenAL::cleanupInput()
 
     qDebug() << "Closing audio input";
     alcCaptureStop(alInDev);
-    if (alcCaptureCloseDevice(alInDev) == ALC_TRUE)
+    if (alcCaptureCloseDevice(alInDev) == ALC_TRUE) {
         alInDev = nullptr;
-    else
+    } else {
         qWarning() << "Failed to close input";
+    }
+
+    delete[] inputBuffer;
 }
 
 /**
@@ -528,6 +521,10 @@ void OpenAL::playMono16SoundCleanup()
         alSourcei(alMainSource, AL_BUFFER, AL_NONE);
         alDeleteBuffers(1, &alMainBuffer);
         alMainBuffer = 0;
+        // close the audio device if no other sources active
+        if (peerSources.isEmpty()) {
+            cleanupOutput();
+        }
     } else {
         // the audio didn't finish, try again later
         playMono16Timer.start(10);
@@ -539,21 +536,22 @@ void OpenAL::playMono16SoundCleanup()
  *
  * @param[in] buf   the current audio buffer
  *
- * @return volume in percent of max volume
+ * @return normalized volume between 0-1
  */
-float OpenAL::getVolume(int16_t *buf)
+float OpenAL::getVolume()
 {
-    quint32 samples = AUDIO_FRAME_SAMPLE_COUNT * AUDIO_CHANNELS;
-    float sum = 0.0;
+    const quint32 samples = AUDIO_FRAME_SAMPLE_COUNT_TOTAL;
+    const float rootTwo = 1.414213562; // sqrt(2), but sqrt is not constexpr
+    // calculate volume as the root mean squared of amplitudes in the sample
+    float sumOfSquares = 0;
     for (quint32 i = 0; i < samples; i++) {
-        float sample = (float)buf[i] / (float)std::numeric_limits<int16_t>::max();
-        if (sample > 0) {
-            sum += sample;
-        } else {
-            sum -= sample;
-        }
+        float sample = static_cast<float>(inputBuffer[i]) / std::numeric_limits<int16_t>::max();
+        sumOfSquares += std::pow(sample , 2);
     }
-    return sum/samples;
+    const float rms = std::sqrt(sumOfSquares/samples);
+    // our calculated normalized volume could possibly be above 1 because our RMS assumes a sinusoidal wave
+    const float normalizedVolume = std::min(rms * rootTwo, 1.0f);
+    return normalizedVolume;
 }
 
 /**
@@ -565,46 +563,62 @@ void OpenAL::stopActive()
 }
 
 /**
- * @brief Called on the captureTimer events to capture audio
+ * @brief handles recording of audio frames
  */
-void OpenAL::doCapture()
+void OpenAL::doInput()
 {
-    QMutexLocker lock(&audioLock);
-
-    if (!alInDev || !inSubscriptions)
-        return;
-
     ALint curSamples = 0;
     alcGetIntegerv(alInDev, ALC_CAPTURE_SAMPLES, sizeof(curSamples), &curSamples);
-    if (static_cast<ALuint>(curSamples) < AUDIO_FRAME_SAMPLE_COUNT)
+    if (curSamples < static_cast<ALint>(AUDIO_FRAME_SAMPLE_COUNT_PER_CHANNEL)) {
         return;
+    }
 
-    int16_t buf[AUDIO_FRAME_SAMPLE_COUNT * AUDIO_CHANNELS];
-    alcCaptureSamples(alInDev, buf, AUDIO_FRAME_SAMPLE_COUNT);
+    captureSamples(alInDev, inputBuffer, AUDIO_FRAME_SAMPLE_COUNT_PER_CHANNEL);
 
-    float volume = getVolume(buf);
-    if (volume >= inputThreshold)
-    {
+    applyGain(inputBuffer, AUDIO_FRAME_SAMPLE_COUNT_TOTAL, gainFactor);
+
+    float volume = getVolume();
+    if (volume >= inputThreshold) {
         isActive = true;
         emit startActive(voiceHold);
+    } else if (!isActive) {
+        volume = 0;
     }
 
     emit Audio::volumeAvailable(volume);
-    if (!isActive)
-    {
+    if (!isActive) {
         return;
     }
 
-    for (quint32 i = 0; i < AUDIO_FRAME_SAMPLE_COUNT * AUDIO_CHANNELS; ++i) {
-        // gain amplification with clipping to 16-bit boundaries
-        int ampPCM =
-            qBound<int>(std::numeric_limits<int16_t>::min(), qRound(buf[i] * inputGainFactor()),
-                        std::numeric_limits<int16_t>::max());
+    emit Audio::frameAvailable(inputBuffer, AUDIO_FRAME_SAMPLE_COUNT_PER_CHANNEL, channels, AUDIO_SAMPLE_RATE);
+}
 
-        buf[i] = static_cast<int16_t>(ampPCM);
+void OpenAL::doOutput()
+{
+    // Nothing
+}
+
+/**
+ * @brief Called on the captureTimer events to capture audio
+ */
+void OpenAL::doAudio()
+{
+    QMutexLocker lock(&audioLock);
+
+    // Output section
+    if (outputInitialized && !peerSources.isEmpty()) {
+        doOutput();
     }
 
-    emit Audio::frameAvailable(buf, AUDIO_FRAME_SAMPLE_COUNT, AUDIO_CHANNELS, AUDIO_SAMPLE_RATE);
+    // Input section
+    if (alInDev && inSubscriptions) {
+        doInput();
+    }
+}
+
+void OpenAL::captureSamples(ALCdevice* device, int16_t* buffer, ALCsizei samples)
+{
+    alcCaptureSamples(device, buffer, samples);
 }
 
 /**
@@ -739,8 +753,7 @@ void OpenAL::setInputGain(qreal dB)
     gainFactor = qPow(10.0, (gain / 20.0));
 }
 
-void OpenAL::setInputThreshold(qreal percent)
+void OpenAL::setInputThreshold(qreal normalizedThreshold)
 {
-    inputThreshold = percent;
+    inputThreshold = normalizedThreshold;
 }
-

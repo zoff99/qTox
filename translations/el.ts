@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="el">
+<TS version="2.0" language="el">
 <context>
     <name>AVForm</name>
     <message>
@@ -14,14 +14,6 @@
     <message>
         <source>Disabled</source>
         <translation>Απενεργοποιημένο</translation>
-    </message>
-    <message>
-        <source>Play a test sound while changing the output volume.</source>
-        <translation>Αναπαράγετε έναν ήχο δοκιμής καθώς αλλάζετε την ένταση εξόδου.</translation>
-    </message>
-    <message>
-        <source>Use slider to set the gain of your input device ranging from %1dB to %2dB.</source>
-        <translation>Χρησιμοποιήστε την μπάρα για να ρυθμίσετε την απολαβή της συσκευής εισόδου σας μεταξύ %1dB έως %2dB.</translation>
     </message>
     <message>
         <source>Select region</source>
@@ -45,7 +37,7 @@
     </message>
     <message>
         <source>Use slider to set volume of your speakers.</source>
-        <translation>Χρησιμοποιήστε την μπάρα για να ρυθμίσετε την ένταση των ηχείων σας.</translation>
+        <translation>Χρησιμοποιήστε το ρυθμιστικό για να αυξομειώσετε την ένταση των ηχείων σας.</translation>
     </message>
     <message>
         <source>Capture device</source>
@@ -71,7 +63,7 @@ Sometimes your connection may not be good enough to handle higher video quality,
 which may lead to problems with video calls.</source>
         <translation>Ορίστε την ανάλυση της κάμερας σας.
 Όσο υψηλότερη η ανάλυση, τόσο καλύτερη η ποιότητα του βίντεο που θα βλέπουν οι φίλοι σας.
-Έχετε υπόψη, όμως, ότι μια καλύτερη ποιότητα βίντεο χρειάζεται καλύτερη σύνδεση στο διαδίκτυο.
+Έχετε υπόψη όμως, ότι μια καλύτερη ποιότητα βίντεο χρειάζεται καλύτερη σύνδεση στο διαδίκτυο.
 Μερικές φορές η σύνδεση σας μπορεί να μην επαρκεί για να υποστηρίξει υψηλότερη ποιότητα βίντεο,
 κάτι το οποίο μπορεί να οδηγήσει σε προβλήματα με τις βιντεοκλήσεις.</translation>
     </message>
@@ -89,35 +81,39 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Enables the experimental audio backend with echo cancelling support, needs qTox restart to take effect.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ενεργοποιεί την ακύρωση ηχούς (πειραματικό στάδιο), απαιτείται επανεκκίνηση του qTox .</translation>
     </message>
     <message>
         <source>Enable experimental audio backend</source>
-        <translation type="unfinished"></translation>
+        <translation>Ενεργοποιεί το backend ήχου (πειραματικό στάδιο)</translation>
     </message>
     <message>
         <source>Audio quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Ποιότητα ήχου</translation>
     </message>
     <message>
         <source>Transmitted audio quality. Lower this setting if your bandwidth is not high enough or if you want to lower the internet usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ποιότητα μεταδιδόμενου ήχου. Μειώστε εάν το εύρος ζώνης δεν είναι αρκετό ή εάν θέλετε να ελαχιστοποιήσετε τη μεταφορά του όγκου των δεδομένων.</translation>
     </message>
     <message>
         <source>High (64 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Υψηλή (64 kbps)</translation>
     </message>
     <message>
         <source>Medium (32 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Μέτρια (32 kbps)</translation>
     </message>
     <message>
         <source>Low (16 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Χαμηλή (16 kbps)</translation>
     </message>
     <message>
         <source>Very low (8 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Πολύ χαμηλή (8 kbps)</translation>
+    </message>
+    <message>
+        <source>Threshold</source>
+        <translation>Όριο</translation>
     </message>
 </context>
 <context>
@@ -172,114 +168,114 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>bug-tracker</source>
-        <comment>Replaces `%1` in the `A list of all known…`</comment>
-        <translation type="unfinished">εντοπιστής-σφαλμάτων</translation>
+        <comment>Replaces `%1` in the `A list of all knownâ¦`</comment>
+        <translation>ανιχνευτής - σφαλμάτων</translation>
     </message>
     <message>
         <source>Writing Useful Bug Reports</source>
-        <comment>Replaces `%2` in the `A list of all known…`</comment>
-        <translation type="unfinished">Γράφοντας Χρήσιμες Αναφορές Σφαλμάτων</translation>
+        <comment>Replaces `%2` in the `A list of all knownâ¦`</comment>
+        <translation>Σύνταξη Χρήσιμης Αναφοράς Σφαλμάτων</translation>
     </message>
     <message>
         <source>contributors</source>
-        <comment>Replaces `%1` in `See a full list of…`</comment>
-        <translation type="unfinished">συνεισφέροντες</translation>
+        <comment>Replaces `%1` in `See a full list ofâ¦`</comment>
+        <translation>συντελεστές</translation>
     </message>
 </context>
 <context>
     <name>AboutFriendForm</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Παράθυρο διαλόγου</translation>
+        <translation>Παράθυρο διαλόγου</translation>
     </message>
     <message>
         <source>username</source>
-        <translation type="unfinished">όνομα χρήστη</translation>
+        <translation>συνθηματικό χρήστη</translation>
     </message>
     <message>
         <source>status message</source>
-        <translation type="unfinished">μήνυμα κατάστασης</translation>
+        <translation>μήνυμα κατάστασης</translation>
     </message>
     <message>
         <source>Public key:</source>
-        <translation type="unfinished">Δημόσιο κλειδί:</translation>
+        <translation>Δημόσιο κλειδί κρυπτογράφησης :</translation>
     </message>
     <message>
         <source>Used aliases:</source>
-        <translation type="unfinished">Χρησιμοποιημένα ψευδώνυμα:</translation>
+        <translation>Χρησιμοποιούμενα ψευδώνυμα:</translation>
     </message>
     <message>
         <source>HISTORY OF ALIASES</source>
-        <translation type="unfinished">ΙΣΤΟΡΙΚΟ ΨΕΥΔΩΝΥΜΩΝ</translation>
+        <translation>ΙΣΤΟΡΙΚΟ ΨΕΥΔΩΝΥΜΩΝ</translation>
     </message>
     <message>
         <source>Automatically accept files from contact if set</source>
-        <translation type="unfinished">Αυτόματη λήψη αρχείων από μια επαφή, εάν είναι ορισμένο</translation>
+        <translation>Αυτόματη λήψη αρχείων από μια επαφή, εάν είναι επιλεγμένο</translation>
     </message>
     <message>
         <source>Auto accept files</source>
-        <translation type="unfinished">Αυτόματη αποδοχή αρχείων</translation>
+        <translation>Αυτόματη αποδοχή αρχείων</translation>
     </message>
     <message>
         <source>Default directory to save files:</source>
-        <translation type="unfinished">Προεπιλεγμένος κατάλογος για την αποθήκευση αρχείων:</translation>
+        <translation>Προεπιλεγμένος κατάλογος για την αποθήκευση αρχείων:</translation>
     </message>
     <message>
         <source>Auto accept for this contact is disabled</source>
-        <translation type="unfinished">Η αυτόματη αποδοχή είναι απενεργοποιημένη για αυτήν την επαφή</translation>
+        <translation>Η αυτόματη αποδοχή είναι απενεργοποιημένη για αυτήν την επαφή</translation>
     </message>
     <message>
         <source>Auto accept call:</source>
-        <translation type="unfinished">Αυτόματη αποδοχή κλήσης:</translation>
+        <translation>Αυτόματη αποδοχή κλήσης:</translation>
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished">Εγχειρίδιο</translation>
+        <translation>Όχι αυτόματα</translation>
     </message>
     <message>
         <source>Audio</source>
-        <translation type="unfinished">Ήχος</translation>
+        <translation>Ήχος</translation>
     </message>
     <message>
         <source>Audio + Video</source>
-        <translation type="unfinished">Ήχος + Βίντεο</translation>
+        <translation>Ήχος + Βίντεο</translation>
     </message>
     <message>
         <source>Automatically accept group chat invitations from this contact if set.</source>
-        <translation type="unfinished">Αυτόματη αποδοχή προσκλήσεων συνομιλίας ομάδας από αυτήν την επαφή, αν έχει οριστεί.</translation>
+        <translation>Αυτόματη αποδοχή προσκλήσεων ομαδικής συνομιλίας από αυτήν την επαφή, εάν είναι επιλεγμένο.</translation>
     </message>
     <message>
         <source>Auto accept group invites</source>
-        <translation type="unfinished">Αυτόματη αποδοχή προσκλήσεων ομάδας</translation>
+        <translation>Αυτόματη αποδοχή προσκλήσεων ομάδας</translation>
     </message>
     <message>
         <source>Remove history (operation can not be undone!)</source>
-        <translation type="unfinished">Αφαίρεση του ιστορικού (η λειτουργία δεν μπορεί να αναιρεθεί!)</translation>
+        <translation>Διαγραφή του ιστορικού (η ενέργεια αυτή δεν μπορεί να αναιρεθεί!)</translation>
     </message>
     <message>
         <source>Notes</source>
-        <translation type="unfinished">Σημειώσεις</translation>
+        <translation>Σημειώσεις</translation>
     </message>
     <message>
         <source>Input field for notes about the contact</source>
-        <translation type="unfinished">Πεδίο εισαγωγής για σημειώσεις σχετικά με την επαφή</translation>
+        <translation>Πεδίο εισαγωγής σημειώσεων σχετικών με την επαφή</translation>
     </message>
     <message>
         <source>You can save comment about this contact here.</source>
-        <translation type="unfinished">Μπορείτε να αποθηκεύσετε ένα σχόλιο σχετικά με αυτήν την επαφή εδώ.</translation>
-    </message>
-    <message>
-        <source>Choose an auto accept directory</source>
-        <comment>popup title</comment>
-        <translation type="unfinished"></translation>
+        <translation>Μπορείτε να αποθηκεύσετε ένα σχόλιο σχετικά με αυτήν την επαφή εδώ.</translation>
     </message>
     <message>
         <source>History removed</source>
-        <translation type="unfinished">Το ιστορικό αφαιρέθηκε</translation>
+        <translation>Το ιστορικό διεγράφη</translation>
     </message>
     <message>
         <source>Chat history with %1 removed!</source>
-        <translation type="unfinished">Το ιστορικό της συνομιλίας με τον/την %1 αφαιρέθηκε!</translation>
+        <translation>Το ιστορικό της συνομιλίας με τον/την %1 διεγράφη !</translation>
+    </message>
+    <message>
+        <source>Choose an auto accept directory</source>
+        <extracomment>popup title</extracomment>
+        <translation>Επιλέξτε κατάλογο για την αυτόματη αποδοχή</translation>
     </message>
 </context>
 <context>
@@ -358,77 +354,76 @@ which may lead to problems with video calls.</source>
     <message>
         <source>%1 Tox ID is invalid or does not exist</source>
         <comment>Toxme error</comment>
-        <translation type="unfinished"></translation>
+        <translation>Το %1 Tox ID δεν είναι έγκυρο ή δεν υπάρχει</translation>
     </message>
     <message>
         <source>You can&apos;t add yourself as a friend!</source>
         <extracomment>When trying to add your own Tox ID as friend</extracomment>
-        <translation type="unfinished">Δεν μπορείτε να προσθέσετε τον εαυτό σας ως φίλο!</translation>
+        <translation>Δεν μπορείτε να προσθέσετε τον εαυτό σας ως επαφή !</translation>
     </message>
     <message>
         <source>Open contact list</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα της λίστας επαφών</translation>
     </message>
     <message>
         <source>Couldn&apos;t open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία ανοίγματος του αρχείου</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the contact file</source>
         <extracomment>Error message when trying to open a contact list file to import</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Αδυναμία ανοίγματος του αρχείου λίστας επαφών</translation>
     </message>
     <message>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>Μη έγκυρο αρχείο</translation>
     </message>
     <message>
         <source>We couldn&apos;t find any contacts to import in this file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν βρέθηκαν επαφές προς εισαγωγή σε αυτό το αρχείο !</translation>
     </message>
     <message>
         <source>Tox ID</source>
         <extracomment>Tox ID of the person you&apos;re sending a friend request to</extracomment>
-        <translation type="unfinished">Tox Ταυτότητα (ID)</translation>
+        <translation>Tox Ταυτότητα (ID)</translation>
     </message>
     <message>
         <source>either 76 hexadecimal characters or name@example.com</source>
         <extracomment>Tox ID format description</extracomment>
-        <translation type="unfinished">είτε 76 δεκαεξαδικούς χαρακτήρες ή name@example.com</translation>
+        <translation>είτε 76 δεκαεξαδικοί χαρακτήρες ή name@example.com</translation>
     </message>
     <message>
         <source>Message</source>
         <extracomment>The message you send in friend requests</extracomment>
-        <translation type="unfinished">Μήνυμα</translation>
+        <translation>Μήνυμα</translation>
     </message>
     <message>
         <source>Open</source>
         <extracomment>Button to choose a file with a list of contacts to import</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα αρχείου</translation>
     </message>
     <message>
         <source>Send friend requests</source>
-        <translation type="unfinished"></translation>
+        <translation>Στείλτε αίτημα αποδοχής</translation>
     </message>
     <message>
         <source>%1 here! Tox me maybe?</source>
         <extracomment>Default message in friend requests if the field is left blank. Write something appropriate!</extracomment>
-        <translation type="unfinished">%1 εδώ! Θέλεις να μιλήσουμε στο Tox;</translation>
+        <translation>%1 εδώ! Θέλεις να συνομιλήσουμε στο Tox;</translation>
     </message>
     <message>
         <source>Import a list of contacts, one Tox ID per line</source>
-        <translation type="unfinished"></translation>
+        <translation>Εισαγωγή λίστας επαφών, ένα Tox ID ανά γραμμή</translation>
     </message>
     <message numerus="yes">
         <source>Ready to import %n contact(s), click send to confirm</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <extracomment>Shows the number of contacts we&apos;re about to import from a file (at least one)</extracomment>
+        <translation><numerusform>Έτοιμοι προς εισαγωγή %n επαφής, πατήστε αποστολή προς επιβεβαίωση</numerusform>
+        <numerusform>Έτοιμοι προς εισαγωγή %n επαφών, πατήστε αποστολή προς επιβεβαίωση</numerusform>
+        </translation></message>
     <message>
         <source>Import contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Εισαγωγή επαφών</translation>
     </message>
 </context>
 <context>
@@ -593,46 +588,6 @@ which may lead to problems with video calls.</source>
         <translation>Κλήση από τον/ην %1</translation>
     </message>
     <message>
-        <source>End video call</source>
-        <translation>Τερματισμός βιντεοκλήσης</translation>
-    </message>
-    <message>
-        <source>End audio call</source>
-        <translation>Τερματισμός κλήσης ήχου</translation>
-    </message>
-    <message>
-        <source>Mute microphone</source>
-        <translation>Σίγαση μικροφώνου</translation>
-    </message>
-    <message>
-        <source>Mute call</source>
-        <translation>Σίγαση κλήσης</translation>
-    </message>
-    <message>
-        <source>Cancel video call</source>
-        <translation>Ακύρωση βιντεοκλήσης</translation>
-    </message>
-    <message>
-        <source>Cancel audio call</source>
-        <translation>Ακύρωση κλήσης ήχου</translation>
-    </message>
-    <message>
-        <source>Start audio call</source>
-        <translation>Έναρξη κλήσης ήχου</translation>
-    </message>
-    <message>
-        <source>Start video call</source>
-        <translation>Έναρξη βιντεοκλήσης</translation>
-    </message>
-    <message>
-        <source>Unmute microphone</source>
-        <translation>Κατάργηση σίγασης μικροφώνου</translation>
-    </message>
-    <message>
-        <source>Unmute call</source>
-        <translation>Κατάργηση σίγασης κλήσης</translation>
-    </message>
-    <message>
         <source>Failed to send file &quot;%1&quot;</source>
         <translation>Αποτυχία αποστολής αρχείου &quot;%1&quot;</translation>
     </message>
@@ -699,32 +654,83 @@ which may lead to problems with video calls.</source>
         <translation>Ο/η %1 είναι τώρα %2</translation>
     </message>
     <message>
-        <source>Can&apos;t start video call</source>
-        <translation>Δεν είναι δυνατή η έναρξη της βιντεοκλήσης</translation>
+        <source>Export to file</source>
+        <translation>Εξαγωγή σε αρχείο</translation>
     </message>
+    <message>
+        <source>Save chat log</source>
+        <translation>Αποθήκευση αρχείου καταγραφής της συνομιλίας</translation>
+    </message>
+    <message>
+        <source>Call with %1 ended unexpectedly. %2</source>
+        <translation>Η κλήση προς %1 τερματίσθηκε απροσδόκητα. %2</translation>
+    </message>
+</context>
+<context>
+    <name>ChatFormHeader</name>
     <message>
         <source>Can&apos;t start audio call</source>
-        <translation>Δεν είναι δυνατή η έναρξη της κλήσης</translation>
+        <translation>Αδυναμία έναρξης ηχητικής κλήσης</translation>
     </message>
     <message>
-        <source>Microphone can be muted only during a call</source>
-        <translation>Το μικρόφωνο μπορεί να είναι σε σίγαση μόνο κατά τη διάρκεια μιας κλήσης</translation>
+        <source>Start audio call</source>
+        <translation>Έναρξη ηχητικής κλήσης</translation>
+    </message>
+    <message>
+        <source>End audio call</source>
+        <translation>Τερματισμός ηχητικής κλήσης</translation>
+    </message>
+    <message>
+        <source>Cancel audio call</source>
+        <translation>Ματαίωση ηχητικής κλήσης</translation>
+    </message>
+    <message>
+        <source>Accept audio call</source>
+        <translation>Αποδοχή ηχητικής κλήσης</translation>
+    </message>
+    <message>
+        <source>Can&apos;t start video call</source>
+        <translation>Αδυναμία έναρξης της βιντεοκλήσης</translation>
+    </message>
+    <message>
+        <source>Start video call</source>
+        <translation>Έναρξη βιντεοκλήσης</translation>
+    </message>
+    <message>
+        <source>End video call</source>
+        <translation>Τερματισμός βιντεοκλήσης</translation>
+    </message>
+    <message>
+        <source>Cancel video call</source>
+        <translation>Ματαίωση βιντεοκλήσης</translation>
+    </message>
+    <message>
+        <source>Accept video call</source>
+        <translation>Αποδοχή βιντεοκλήσης</translation>
     </message>
     <message>
         <source>Sound can be disabled only during a call</source>
         <translation>Ο ήχος μπορεί να απενεργοποιηθεί μόνο κατά τη διάρκεια μιας κλήσης</translation>
     </message>
     <message>
-        <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <source>Unmute call</source>
+        <translation>Κατάργηση σίγασης κλήσης</translation>
     </message>
     <message>
-        <source>Save chat log</source>
-        <translation type="unfinished">Αποθήκευση αρχείου καταγραφής της συνομιλίας</translation>
+        <source>Mute call</source>
+        <translation>Σίγαση κλήσης</translation>
     </message>
     <message>
-        <source>Call with %1 ended unexpectedly. %2</source>
-        <translation type="unfinished"></translation>
+        <source>Microphone can be muted only during a call</source>
+        <translation>Το μικρόφωνο μπορεί να απενεργοποιηθεί (κατάσταση σίγασης) μόνο κατά τη διάρκεια μιας κλήσης</translation>
+    </message>
+    <message>
+        <source>Unmute microphone</source>
+        <translation>Ενεργοποίηση (κατάργηση σίγασης) μικροφώνου</translation>
+    </message>
+    <message>
+        <source>Mute microphone</source>
+        <translation>Απενεργοποίηση (σίγαση) μικροφώνου</translation>
     </message>
 </context>
 <context>
@@ -1196,30 +1202,6 @@ instead of closing itself.</source>
         <translation>Εκκαθαρίστηκε</translation>
     </message>
     <message>
-        <source>Start audio call</source>
-        <translation>Έναρξη κλήσης ήχου</translation>
-    </message>
-    <message>
-        <source>Accept audio call</source>
-        <translation>Αποδοχή κλήσης ήχου</translation>
-    </message>
-    <message>
-        <source>End audio call</source>
-        <translation>Τερματισμός κλήσης ήχου</translation>
-    </message>
-    <message>
-        <source>Start video call</source>
-        <translation>Έναρξη βιντεοκλήσης</translation>
-    </message>
-    <message>
-        <source>Accept video call</source>
-        <translation>Αποδοχή βιντεοκλήσης</translation>
-    </message>
-    <message>
-        <source>End video call</source>
-        <translation>Τερματισμός βιντεοκλήσης</translation>
-    </message>
-    <message>
         <source>Send message</source>
         <translation>Στείλτε μήνυμα</translation>
     </message>
@@ -1284,28 +1266,8 @@ instead of closing itself.</source>
         <translation>%1 χρήστες στη συνομιλία</translation>
     </message>
     <message>
-        <source>Start audio call</source>
-        <translation>Έναρξη κλήσης ήχου</translation>
-    </message>
-    <message>
-        <source>Mute microphone</source>
-        <translation>Σίγαση μικροφώνου</translation>
-    </message>
-    <message>
-        <source>Unmute microphone</source>
-        <translation>Κατάργηση σίγασης μικροφώνου</translation>
-    </message>
-    <message>
-        <source>Mute call</source>
-        <translation>Σίγαση κλήσης</translation>
-    </message>
-    <message>
-        <source>Unmute call</source>
-        <translation>Κατάργηση σίγασης κλήσης</translation>
-    </message>
-    <message>
-        <source>End audio call</source>
-        <translation>Τερματισμός κλήσης ήχου</translation>
+        <source>%1 has set the title to %2</source>
+        <translation>Ο/η %1 όρισε το θέμα σε %2</translation>
     </message>
 </context>
 <context>
@@ -1611,7 +1573,7 @@ Profile does not contain your history.</source>
     </message>
     <message>
         <source>%1 messages</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 μηνύματα</translation>
     </message>
 </context>
 <context>
@@ -1973,7 +1935,7 @@ People will be unable to add you with your old ID, but you will keep your curren
     </message>
     <message>
         <source>NoSpam</source>
-        <translation>Ανεπιθύμητη Αλληλογραφία (NoSpam)</translation>
+        <translation>Ανεπιθύμητη επικοινωνία (NoSpam)</translation>
     </message>
     <message>
         <source>NoSpam is a part of your ID that can be changed at will.
@@ -1991,11 +1953,11 @@ If you are getting spammed with friend requests, change the NoSpam.</source>
     </message>
     <message>
         <source>BlackList</source>
-        <translation type="unfinished"></translation>
+        <translation>Λίστα ανεπιθύμητων (Black list)</translation>
     </message>
     <message>
         <source>Filter group message by group member&apos;s public key. Put public key here, one per line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ταξινόμηση μηνυμάτων ομάδας βάσει του δημοσίου κλειδιού του μέλους. Βάλτε το δημόσιο κλειδί εδώ, ένα ανά γραμμή.</translation>
     </message>
 </context>
 <context>
@@ -2165,67 +2127,66 @@ Please use another image.</source>
 Share it with your friends to communicate.
 
 This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
-        <translation type="unfinished"></translation>
+        <translation>Αυτή η ακολουθία χαρακτήρων βοηθά άλλους χρήστες Tox να έρθουν σε επαφή μαζί σας.
+Κοινοποιήστε την στους φίλους σας για να επικοινωνήσετε.
+
+Το αναγνωριστικό ID περιλαμβάνει τον κωδικό AntiSpam (μπλέ), και τον κωδικό επαλήθευσης (checksum) (γκρι).</translation>
     </message>
     <message>
         <source>Empty path is unavaliable</source>
-        <translation type="unfinished"></translation>
+        <translation>Κενή διαδρομή μη διαθέσιμη</translation>
     </message>
     <message>
         <source>Failed to rename</source>
-        <translation type="unfinished">Απέτυχε η μετονομασία</translation>
+        <translation>Αποτυχία μετονομασίας</translation>
     </message>
     <message>
         <source>Profile already exists</source>
-        <translation type="unfinished">Το προφίλ υπάρχει ήδη</translation>
+        <translation>Αυτό το προφίλ υπάρχει ήδη</translation>
     </message>
     <message>
         <source>A profile named &quot;%1&quot; already exists.</source>
-        <translation type="unfinished">Υπάρχει ήδη ένα προφίλ με το όνομα &quot;%1&quot;.</translation>
+        <translation>Υπάρχει ήδη ένα προφίλ με το όνομα &quot;%1&quot; .</translation>
     </message>
     <message>
         <source>Empty name</source>
-        <translation type="unfinished"></translation>
+        <translation>Κενό όνομα</translation>
     </message>
     <message>
         <source>Empty name is unavaliable</source>
-        <translation type="unfinished"></translation>
+        <translation>Κενό όνομα μη διαθέσιμο</translation>
     </message>
     <message>
         <source>Empty path</source>
-        <translation type="unfinished"></translation>
+        <translation>Κενή διαδρομή</translation>
     </message>
     <message>
         <source>Couldn&apos;t change password on the database, it might be corrupted or use the old password.</source>
-        <translation type="unfinished">Δεν ήταν δυνατή η αλλαγή του κωδικού πρόσβασης στη βάση δεδομένων, ενδέχεται να είναι κατεστραμμένο ή να χρησιμοποιεί τον παλιό κωδικό πρόσβασης.</translation>
+        <translation>Δεν ήταν δυνατή η αλλαγή του κωδικού πρόσβασης στη βάση δεδομένων, ενδέχεται να είναι κατεστραμμένη ή να χρησιμοποιεί τον παλιό κωδικό πρόσβασης.</translation>
     </message>
     <message>
         <source>Export profile</source>
-        <translation type="unfinished">Εξαγωγή προφίλ</translation>
+        <translation>Εξαγωγή προφίλ</translation>
     </message>
     <message>
         <source>Tox save file (*.tox)</source>
         <extracomment>save dialog filter</extracomment>
-        <translation type="unfinished">Αποθήκευση αρχείου Tox (*.tox)</translation>
+        <translation>Αποθήκευση αρχείου Tox (*.tox)</translation>
     </message>
     <message>
         <source>The following files could not be deleted:</source>
         <extracomment>deletion failed text part 1</extracomment>
-        <translation type="unfinished">Τα ακόλουθα αρχεία δεν μπορούν να διαγραφούν:</translation>
+        <translation>Τα ακόλουθα αρχεία δεν μπορούν να διαγραφούν:</translation>
     </message>
     <message>
         <source>Please manually remove them.</source>
         <extracomment>deletion failed text part 2</extracomment>
-        <translation type="unfinished">Παρακαλώ αφαιρέστε τα χειροκίνητα.</translation>
+        <translation>Παρακαλώ διαγράψτε τα χειροκίνητα.</translation>
     </message>
     <message>
         <source>Are you sure you want to delete your password?</source>
         <extracomment>deletion confirmation text</extracomment>
-        <translation type="unfinished">Είστε βέβαιοι ότι θέλετε να διαγράψετε τον κωδικό πρόσβασης σας;</translation>
-    </message>
-    <message>
-        <source>Tox user names cannot exceed %1 characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Είστε βέβαιοι ότι θέλετε να διαγράψετε τον κωδικό πρόσβασής σας;</translation>
     </message>
 </context>
 <context>
@@ -2447,7 +2408,7 @@ It will be installed when qTox restarts.</source>
     </message>
     <message>
         <source>Starts new instance and opens the login screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Εκκινεί μία νέα συνεδρία και ανοίγει το παράθυρο διαλόγου σύνδεσης.</translation>
     </message>
 </context>
 <context>
@@ -2736,6 +2697,15 @@ It will be installed when qTox restarts.</source>
         <source>Date format:</source>
         <translation>Μορφή ημερομηνίας:</translation>
     </message>
+    <message>
+        <source>If enabled every contact without an avatar set will have a generated avatar based on their Tox ID instead of a default picture. Requires restart to apply.</source>
+        <comment>toolTip for show identicons</comment>
+        <translation>Εάν είναι ενεργοποιημένο, κάθε επαφή χωρίς εικονίδιο (avatar), θα εμφανίζεται με ένα αυτόματα παραγόμενο βάσει του Tox ID, αντί για την προκαθορισμένη εικόνα. Απαιτείται επανεκκίνηση για να τεθεί σε εφαρμογή.</translation>
+    </message>
+    <message>
+        <source>Use identicons instead of empty avatars</source>
+        <translation>Χρήση εικονιδίων αντί κενών avatars</translation>
+    </message>
 </context>
 <context>
     <name>Widget</name>
@@ -2773,10 +2743,6 @@ It will be installed when qTox restarts.</source>
     <message>
         <source>Couldn&apos;t request friendship</source>
         <translation>Το αίτημα φιλίας δεν μπόρεσε να σταλεί</translation>
-    </message>
-    <message>
-        <source>%1 has set the title to %2</source>
-        <translation>Ο/η %1 όρισε τον τίτλο σε %2</translation>
     </message>
     <message>
         <source>Message failed to send</source>

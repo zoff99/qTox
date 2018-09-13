@@ -8,40 +8,27 @@ machine:
     BUILD__: "x86_64"
     BTYPE__: "release"
 dependencies:
+  cache_directories:
+    - "~/cache"
   pre:
     - sudo apt-get update
     - sudo apt-get install zip
-    - docker info ; exit 0
-
-    - mkdir -p ~/workspace
-    #### try to restore cache from last successful build of same branch ####
-    - branch=$(echo "$CIRCLE_BRANCH"|sed  -e 's#/#%2F#g') ;
-      wget -O ~/cache1.tar
-      'https://circleci.com/api/v1/project/'"$CIRCLE_PROJECT_USERNAME"'/'"$CIRCLE_PROJECT_REPONAME"'/latest/artifacts/0/$CIRCLE_ARTIFACTS/'"$BUILD__"'/cache/workspace.tar?filter=successful&branch='"$branch" ;
-      exit 0
-    - ls -hal ~/cache1.tar
-    - cd /home/ubuntu/ ; tar -xzvf ~/cache1.tar ; exit 0 # allow to fail
-  compile:
+    - docker info
+    - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ~/cache/"$BUILD__" stage1
+    - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ~/cache/"$BUILD__" stage2
+    - ls -al ~/cache
+compile:
   override:
-    - mkdir -p ~/script
-    - cp -av ./windows/cross-compile/build.sh ~/script/
+    - ./.travis/build-windows.sh "$BUILD__" "$BTYPE__" ~/cache/"$BUILD__" stage3
+    - ls -al ~/
 
-    - docker run --rm
-      -v /home/ubuntu/workspace:/workspace
-      -v /home/ubuntu/script:/script
-      -v /home/ubuntu/qTox:/qtox
-      debian:stretch-slim
-      /bin/bash /script/build.sh "$BUILD__" "$BTYPE__"
-
-    - ls -al /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"/
-    - ls -al /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"/qtox.exe
+    - ls -al /home/ubuntu/qTox/workspace/"$BUILD__"/qtox/"$BTYPE__"/
+    - ls -al /home/ubuntu/qTox/workspace/"$BUILD__"/qtox/"$BTYPE__"/qtox.exe
     
     - mkdir -p $CIRCLE_ARTIFACTS/"$BUILD__"/
-    - cp -av /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"/qtox.exe $CIRCLE_ARTIFACTS/"$BUILD__"/qtox_"$BTYPE__".exe
-    - cd /home/ubuntu/workspace/"$BUILD__"/qtox/"$BTYPE__"/ ; zip -r $CIRCLE_ARTIFACTS/"$BUILD__"/qtox_"$BUILD__"_"$BTYPE__".zip *
+    - cp -av /home/ubuntu/qTox/workspace/"$BUILD__"/qtox/"$BTYPE__"/qtox.exe $CIRCLE_ARTIFACTS/"$BUILD__"/qtox_"$BTYPE__".exe
+    - cd /home/ubuntu/qTox/workspace/"$BUILD__"/qtox/"$BTYPE__"/ ; zip -r $CIRCLE_ARTIFACTS/"$BUILD__"/qtox_"$BUILD__"_"$BTYPE__".zip *
+    - echo "Download Artifacts for this PR at https://circleci.com/api/v1/project/qTox/qTox/latest/artifacts/0/\$CIRCLE_ARTIFACTS/x86_64/qtox_x86_64_release.zip?filter=completed&branch=$CIRCLE_BRANCH"
 test:
   override:
-    - mkdir -p $CIRCLE_ARTIFACTS/"$BUILD__"/cache/
-    - cd /home/ubuntu/ ; tar -czvf $CIRCLE_ARTIFACTS/"$BUILD__"/cache/workspace.tar workspace/
-    - du -hs /home/ubuntu/workspace ; exit 0
-    - du -hs /home/ubuntu/workspace/* ; exit 0
+    - "true"

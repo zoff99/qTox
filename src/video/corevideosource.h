@@ -1,5 +1,5 @@
 /*
-    Copyright © 2015 by The qTox Project Contributors
+    Copyright © 2015-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -50,7 +50,7 @@ private:
     std::atomic_bool stopped;
 
     friend class CoreAV;
-    friend struct ToxFriendCall;
+    friend class ToxFriendCall;
 };
 
 #endif // COREVIDEOSOURCE_H

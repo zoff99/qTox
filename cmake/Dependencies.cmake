@@ -35,7 +35,7 @@ include(CMakeParseArguments)
 include(Qt5CorePatches)
 
 function(search_dependency pkg)
-  set(options OPTIONAL)
+  set(options OPTIONAL STATIC_PACKAGE)
   set(oneValueArgs PACKAGE LIBRARY FRAMEWORK HEADER)
   set(multiValueArgs)
   cmake_parse_arguments(arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -76,19 +76,25 @@ function(search_dependency pkg)
       message(STATUS "${pkg} not found")
     endif()
   else()
-    message(STATUS ${pkg} " LIBRARY_DIRS: " "${${pkg}_LIBRARY_DIRS}" )
-    message(STATUS ${pkg} " INCLUDE_DIRS: " "${${pkg}_INCLUDE_DIRS}" )
-    message(STATUS ${pkg} " CFLAGS_OTHER: " "${${pkg}_CFLAGS_OTHER}" )
-    message(STATUS ${pkg} " LIBRARIES:    " "${${pkg}_LIBRARIES}" )
+    if(arg_STATIC_PACKAGE)
+      set(maybe_static _STATIC)
+    else()
+      set(maybe_static "")
+    endif()
 
-    link_directories(${${pkg}_LIBRARY_DIRS})
-    include_directories(${${pkg}_INCLUDE_DIRS})
+    message(STATUS ${pkg} " LIBRARY_DIRS: " "${${pkg}${maybe_static}_LIBRARY_DIRS}" )
+    message(STATUS ${pkg} " INCLUDE_DIRS: " "${${pkg}${maybe_static}_INCLUDE_DIRS}" )
+    message(STATUS ${pkg} " CFLAGS_OTHER: " "${${pkg}${maybe_static}_CFLAGS_OTHER}" )
+    message(STATUS ${pkg} " LIBRARIES:    " "${${pkg}${maybe_static}_LIBRARIES}" )
 
-    foreach(flag ${${pkg}_CFLAGS_OTHER})
+    link_directories(${${pkg}${maybe_static}_LIBRARY_DIRS})
+    include_directories(${${pkg}${maybe_static}_INCLUDE_DIRS})
+
+    foreach(flag ${${pkg}${maybe_static}_CFLAGS_OTHER})
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" PARENT_SCOPE)
     endforeach()
 
-    set(ALL_LIBRARIES ${ALL_LIBRARIES} ${${pkg}_LIBRARIES} PARENT_SCOPE)
+    set(ALL_LIBRARIES ${ALL_LIBRARIES} ${${pkg}${maybe_static}_LIBRARIES} PARENT_SCOPE)
     message(STATUS "${pkg} found")
   endif()
 
@@ -106,17 +112,32 @@ search_dependency(LIBSWSCALE          PACKAGE libswscale)
 search_dependency(SQLCIPHER           PACKAGE sqlcipher)
 search_dependency(VPX                 PACKAGE vpx)
 
+if(${SPELL_CHECK})
+    find_package(KF5Sonnet)
+    if(KF5Sonnet_FOUND)
+      add_definitions(-DSPELL_CHECKING)
+      add_dependency(KF5::SonnetUi)
+    else()
+      message(WARNING "Sonnet not found. Spell checking will be disabled.")
+    endif()
+endif()
+
 # Try to find cmake toxcore libraries
-search_dependency(TOXCORE             PACKAGE toxcore          OPTIONAL)
-search_dependency(TOXAV               PACKAGE toxav            OPTIONAL)
-search_dependency(TOXENCRYPTSAVE      PACKAGE toxencryptsave   OPTIONAL)
+if(WIN32)
+  search_dependency(TOXCORE             PACKAGE toxcore          OPTIONAL STATIC_PACKAGE)
+  search_dependency(TOXAV               PACKAGE toxav            OPTIONAL STATIC_PACKAGE)
+  search_dependency(TOXENCRYPTSAVE      PACKAGE toxencryptsave   OPTIONAL STATIC_PACKAGE)
+else()
+  search_dependency(TOXCORE             PACKAGE toxcore          OPTIONAL)
+  search_dependency(TOXAV               PACKAGE toxav            OPTIONAL)
+  search_dependency(TOXENCRYPTSAVE      PACKAGE toxencryptsave   OPTIONAL)
+endif()
 
 # If not found, use automake toxcore libraries
-if (NOT TOXCORE_FOUND OR
-        NOT TOXAV_FOUND OR
-        NOT TOXENCRYPTSAVE_FOUND)
-    search_dependency(TOXCORE         PACKAGE libtoxcore)
-    search_dependency(TOXAV           PACKAGE libtoxav)
+# We only check for TOXCORE, because the other two are gone in 0.2.0.
+if (NOT TOXCORE_FOUND)
+  search_dependency(TOXCORE         PACKAGE libtoxcore)
+  search_dependency(TOXAV           PACKAGE libtoxav)
 endif()
 
 search_dependency(OPENAL              PACKAGE openal)
@@ -197,7 +218,7 @@ if (X11_FOUND AND XSS_FOUND)
 endif()
 
 if (PLATFORM_EXTENSIONS)
-  if (${APPLE_EXT} OR ${X11_EXT})
+  if (${APPLE_EXT} OR ${X11_EXT} OR WIN32)
     add_definitions(
       -DQTOX_PLATFORM_EXT
     )

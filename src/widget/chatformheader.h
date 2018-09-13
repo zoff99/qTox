@@ -1,5 +1,5 @@
 /*
-    Copyright © 2017 by The qTox Project Contributors
+    Copyright © 2017-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -55,12 +55,14 @@ public:
     };
 
     ChatFormHeader(QWidget* parent = nullptr);
+    ~ChatFormHeader();
 
     void setName(const QString& newName);
     void setMode(Mode mode);
 
     void showOutgoingCall(bool video);
-    void showCallConfirm(bool video);
+    void createCallConfirm(bool video);
+    void showCallConfirm();
     void removeCallConfirm();
 
     void updateCallButtons(bool online, bool audio, bool video = false);

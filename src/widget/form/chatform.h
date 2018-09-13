@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -27,10 +27,10 @@
 
 #include "genericchatform.h"
 #include "src/core/core.h"
+#include "src/persistence/history.h"
 #include "src/widget/tool/screenshotgrabber.h"
 
 class CallConfirmWidget;
-class CoreAV;
 class FileTransferInstance;
 class Friend;
 class History;
@@ -46,7 +46,8 @@ public:
     ChatForm(Friend* chatFriend, History* history);
     ~ChatForm();
     void setStatusMessage(const QString& newMessage);
-    void loadHistory(const QDateTime& since, bool processUndelivered = false);
+    void loadHistoryByDateRange(const QDateTime& since, bool processUndelivered = false);
+    void loadHistoryDefaultNum(bool processUndelivered = false);
 
     void dischargeReceipt(int receipt);
     void setFriendTyping(bool isTyping);
@@ -57,8 +58,11 @@ public:
     static const QString ACTION_PREFIX;
 
 signals:
+
     void incomingNotification(uint32_t friendId);
     void outgoingNotification();
+    void stopNotification();
+    void endCallNotification();
     void rejectCall(uint32_t friendId);
     void acceptCall(uint32_t friendId);
 
@@ -69,7 +73,12 @@ public slots:
     void onAvStart(uint32_t friendId, bool video);
     void onAvEnd(uint32_t friendId, bool error);
     void onAvatarChange(uint32_t friendId, const QPixmap& pic);
-    void onAvatarRemoved(uint32_t friendId);
+    void onAvatarRemoved(const ToxPk& friendPk);
+    void onFileNameChanged(const ToxPk& friendPk);
+
+protected slots:
+    void onSearchUp(const QString& phrase) override;
+    void onSearchDown(const QString& phrase) override;
 
 private slots:
     void clearChatArea(bool notInForm) override final;
@@ -77,8 +86,6 @@ private slots:
     void onAttachClicked() override;
     void onScreenshotClicked() override;
 
-    void onDeliverOfflineMessages();
-    void onLoadChatHistory();
     void onTextEditChanged();
     void onCallTriggered();
     void onVideoCallTriggered();
@@ -102,6 +109,32 @@ private slots:
     void onExportChat();
 
 private:
+    struct MessageMetadata
+    {
+        const bool isSelf;
+        const bool needSending;
+        const bool isAction;
+        const qint64 id;
+        const ToxPk authorPk;
+        const QDateTime msgDateTime;
+        MessageMetadata(bool isSelf, bool needSending, bool isAction, qint64 id, ToxPk authorPk,
+                        QDateTime msgDateTime)
+            : isSelf{isSelf}
+            , needSending{needSending}
+            , isAction{isAction}
+            , id{id}
+            , authorPk{authorPk}
+            , msgDateTime{msgDateTime}
+        {}
+    };
+    void handleLoadedMessages(QList<History::HistMessage> newHistMsgs, bool processUndelivered);
+    QDate addDateLineIfNeeded(QList<ChatLine::Ptr> msgs, QDate const& lastDate,
+                              History::HistMessage const& newMessage, MessageMetadata const& metadata);
+    MessageMetadata getMessageMetadata(History::HistMessage const& histMessage);
+    ChatMessage::Ptr chatMessageFromHistMessage(History::HistMessage const& histMessage,
+                                                MessageMetadata const& metadata);
+    void sendLoadedMessage(ChatMessage::Ptr chatMsg, MessageMetadata const& metadata);
+    void insertChatlines(QList<ChatLine::Ptr> chatLines);
     void updateMuteMicButton();
     void updateMuteVolButton();
     void retranslateUi();

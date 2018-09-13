@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2017 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -55,16 +55,15 @@ class OpenAL2 : public OpenAL
 public:
     OpenAL2();
 
-private:
-    bool initInput(const QString& deviceName);
-    bool initOutput(const QString& outDevDescr);
-    void cleanupOutput();
+protected:
+    bool initInput(const QString& deviceName) override;
+    bool initOutput(const QString& outDevDescr) override;
+    void cleanupOutput() override;
     void playMono16SoundCleanup();
-    void doAudio();
-    void doInput();
-    void doOutput();
+    void doOutput() override;
     bool loadOpenALExtensions(ALCdevice* dev);
     bool initOutputEchoCancel();
+    void captureSamples(ALCdevice* device, int16_t* buffer, ALCsizei samples) override;
 
 private:
     ALCdevice* alProxyDev;

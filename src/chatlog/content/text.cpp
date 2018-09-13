@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -56,6 +56,38 @@ void Text::setText(const QString& txt)
 {
     text = txt;
     dirty = true;
+}
+
+void Text::selectText(const QString &txt, const int index)
+{
+    regenerate();
+
+    if (!doc) {
+        return;
+    }
+
+    auto cursor = doc->find(txt, index);
+
+    if (!cursor.isNull()) {
+        cursor.beginEditBlock();
+        cursor.setPosition(index);
+        cursor.setPosition(index + txt.size(), QTextCursor::KeepAnchor);
+        cursor.endEditBlock();
+
+        QTextCharFormat format;
+        format.setBackground(QBrush(QColor("#ff7626")));
+        cursor.mergeCharFormat(format);
+
+        regenerate();
+        update();
+    }
+}
+
+void Text::deselectText()
+{
+    dirty = true;
+    regenerate();
+    update();
 }
 
 void Text::setWidth(qreal w)

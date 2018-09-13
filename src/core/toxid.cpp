@@ -1,5 +1,5 @@
 /*
-    Copyright © 2015 by The qTox Project Contributors
+    Copyright © 2015-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -19,7 +19,6 @@
 
 
 #include "toxid.h"
-#include "core.h"
 #include "toxpk.h"
 
 #include <tox/tox.h>

@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -21,6 +21,7 @@
 #define GROUPCHATFORM_H
 
 #include "genericchatform.h"
+#include "src/core/toxpk.h"
 #include <QMap>
 
 namespace Ui {
@@ -38,7 +39,7 @@ public:
     explicit GroupChatForm(Group* chatGroup);
     ~GroupChatForm();
 
-    void peerAudioPlaying(int peer);
+    void peerAudioPlaying(ToxPk peerPk);
 
 private slots:
     void onSendTriggered() override;
@@ -49,6 +50,9 @@ private slots:
     void onCallClicked();
     void onUserListChanged();
     void onTitleChanged(uint32_t groupId, const QString& author, const QString& title);
+    void onSearchUp(const QString& phrase)  override;
+    void onSearchDown(const QString& phrase)  override;
+    void onLabelContextMenuRequested(const QPoint& localPos);
 
 protected:
     virtual GenericNetCamView* createNetcam() final override;
@@ -65,8 +69,8 @@ private:
 
 private:
     Group* group;
-    QVector<QLabel*> peerLabels;
-    QMap<int, QTimer*> peerAudioTimers;
+    QMap<ToxPk, QLabel*> peerLabels;
+    QMap<ToxPk, QTimer*> peerAudioTimers;
     FlowLayout* namesListLayout;
     QLabel* nusersLabel;
     TabCompleter* tabber;

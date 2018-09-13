@@ -1,5 +1,5 @@
 /*
-    Copyright © 2015 by The qTox Project Contributors
+    Copyright © 2015-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -109,7 +109,11 @@ CameraSource::CameraSource()
     moveToThread(deviceThread);
 
     subscriptions = 0;
+
+// TODO(sudden6): remove code when minimum ffmpeg version >= 4.0
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(58, 9, 100)
     av_register_all();
+#endif
     avdevice_register_all();
 }
 
@@ -145,11 +149,6 @@ void CameraSource::setupDefault()
     if (!isScreen) {
         mode = VideoMode(Settings::getInstance().getCamVideoRes());
         mode.FPS = Settings::getInstance().getCamVideoFPS();
-    }
-    else {
-        // TODO: make a user setting for this in the GUI
-        // HINT: x-FPS-x
-        mode.FPS = 25; // screen caputre
     }
 
     setupDevice(deviceName, mode);
@@ -269,7 +268,7 @@ void CameraSource::openDevice()
         return;
     }
 
-    qDebug() << "Opening device " << deviceName;
+    qDebug() << "Opening device" << deviceName << "subscriptions:" << subscriptions;
 
     if (device) {
         device->open();
@@ -289,8 +288,9 @@ void CameraSource::openDevice()
 
     // We need to open the device as many time as we already have subscribers,
     // otherwise the device could get closed while we still have subscribers
-    for (int i = 0; i < subscriptions; ++i)
+    for (int i = 0; i < subscriptions; ++i) {
         device->open();
+    }
 
     // Find the first video stream, if any
     for (unsigned i = 0; i < device->context->nb_streams; ++i) {
@@ -385,7 +385,7 @@ void CameraSource::closeDevice()
         return;
     }
 
-    qDebug() << "Closing device " << deviceName;
+    qDebug() << "Closing device" << deviceName << "subscriptions:" << subscriptions;
 
     // Free all remaining VideoFrame
     VideoFrame::untrackFrames(id, true);
@@ -411,11 +411,8 @@ void CameraSource::stream()
     auto streamLoop = [=]() {
         AVPacket packet;
         if (av_read_frame(device->context, &packet) != 0) {
-            // QThread::usleep(500 * 1000); // dont run full throttle
             return;
         }
-
-        // QThread::usleep(500 * 1000); // dont run full throttle
 
 #if LIBAVCODEC_VERSION_INT < 3747941
         AVFrame* frame = av_frame_alloc();

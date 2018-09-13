@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -43,7 +43,7 @@ public:
 
     void insertChatlineAtBottom(ChatLine::Ptr l);
     void insertChatlineOnTop(ChatLine::Ptr l);
-    void insertChatlineOnTop(const QList<ChatLine::Ptr>& newLines);
+    void insertChatlinesOnTop(const QList<ChatLine::Ptr>& newLines);
     void clearSelection();
     void clear();
     void copySelectedText(bool toSelectionBuffer = false) const;
@@ -67,6 +67,7 @@ public:
 
 signals:
     void selectionChanged();
+    void workerTimeoutFinished();
 
 public slots:
     void forceRelayout();
@@ -153,6 +154,7 @@ private:
     AutoScrollDirection selectionScrollDir = NoDirection;
     int clickCount = 0;
     QPoint lastClickPos;
+    Qt::MouseButton lastClickButton;
 
     // worker vars
     int workerLastIndex = 0;

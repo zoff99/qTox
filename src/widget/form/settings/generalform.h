@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -42,14 +42,13 @@ public:
 private slots:
     void on_transComboBox_currentIndexChanged(int index);
     void on_cbAutorun_stateChanged();
+    void on_cbSpellChecking_stateChanged();
     void on_showSystemTray_stateChanged();
     void on_startInTray_stateChanged();
     void on_closeToTray_stateChanged();
     void on_lightTrayIcon_stateChanged();
     void on_autoAwaySpinBox_editingFinished();
     void on_minimizeToTray_stateChanged();
-    void on_notifySound_stateChanged();
-    void on_busySound_stateChanged();
     void on_statusChanges_stateChanged();
     void on_cbFauxOfflineMessaging_stateChanged();
 

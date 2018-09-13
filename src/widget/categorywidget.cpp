@@ -1,5 +1,5 @@
 /*
-    Copyright © 2015 by The qTox Project Contributors
+    Copyright © 2015-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -81,6 +81,9 @@ bool CategoryWidget::isExpanded() const
 
 void CategoryWidget::setExpanded(bool isExpanded, bool save)
 {
+    if (expanded == isExpanded) {
+        return;
+    }
     expanded = isExpanded;
     setMouseTracking(true);
     listWidget->setVisible(isExpanded);

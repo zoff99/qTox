@@ -1,5 +1,5 @@
 /*
-    Copyright © 2017 by The qTox Project Contributors
+    Copyright © 2017-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -63,12 +63,8 @@ extern "C" {
  * the context MUST exit with alProxyContext as active context and MUST not be
  * interrupted. For this to work, all functions of the base class modifying the
  * context have to be overriden.
- *
- * @var BUFFER_COUNT
- * @brief Number of buffers to use per audio source
  */
 
-static const unsigned int BUFFER_COUNT = 16;
 static const unsigned int PROXY_BUFFER_COUNT = 4;
 
 #define GET_PROC_ADDR(dev, name) name = reinterpret_cast<LP##name>(alcGetProcAddress(dev, #name))
@@ -297,6 +293,11 @@ void OpenAL2::cleanupOutput()
  */
 void OpenAL2::doOutput()
 {
+    if (!echoCancelSupported) {
+        kill_filter_audio(filterer);
+        filterer = nullptr;
+    }
+
     alcMakeContextCurrent(alOutContext);
     ALuint bufids[PROXY_BUFFER_COUNT];
     ALint processed = 0, queued = 0;
@@ -317,20 +318,27 @@ void OpenAL2::doOutput()
     }
 
     ALdouble latency[2] = {0};
-    alGetSourcedvSOFT(alProxySource, AL_SEC_OFFSET_LATENCY_SOFT, latency);
+    if (echoCancelSupported) {
+        alGetSourcedvSOFT(alProxySource, AL_SEC_OFFSET_LATENCY_SOFT, latency);
+    }
+
     checkAlError();
 
-    ALshort outBuf[AUDIO_FRAME_SAMPLE_COUNT] = {0};
-    alcMakeContextCurrent(alProxyContext);
-    alcRenderSamplesSOFT(alProxyDev, outBuf, AUDIO_FRAME_SAMPLE_COUNT);
-    checkAlcError(alProxyDev);
+    ALshort outBuf[AUDIO_FRAME_SAMPLE_COUNT_PER_CHANNEL] = {0};
+    if (echoCancelSupported) {
+        alcMakeContextCurrent(alProxyContext);
+        alcRenderSamplesSOFT(alProxyDev, outBuf, AUDIO_FRAME_SAMPLE_COUNT_PER_CHANNEL);
+        checkAlcError(alProxyDev);
 
-    alcMakeContextCurrent(alOutContext);
-    alBufferData(bufids[0], AL_FORMAT_MONO16, outBuf, AUDIO_FRAME_SAMPLE_COUNT * 2, AUDIO_SAMPLE_RATE);
+        alcMakeContextCurrent(alOutContext);
+    }
+
+    alBufferData(bufids[0], AL_FORMAT_MONO16, outBuf, AUDIO_FRAME_SAMPLE_COUNT_PER_CHANNEL * 2, AUDIO_SAMPLE_RATE);
+
     alSourceQueueBuffers(alProxySource, 1, bufids);
 
     // initialize echo canceler if supported
-    if (!filterer) {
+    if (echoCancelSupported && !filterer) {
         filterer = new_filter_audio(AUDIO_SAMPLE_RATE);
         int16_t filterLatency = latency[1] * 1000 * 2 + AUDIO_FRAME_DURATION;
         qDebug() << "Setting filter delay to: " << filterLatency << "ms";
@@ -339,7 +347,7 @@ void OpenAL2::doOutput()
     }
 
     // do echo cancel
-    pass_audio_output(filterer, outBuf, AUDIO_FRAME_SAMPLE_COUNT);
+    pass_audio_output(filterer, outBuf, AUDIO_FRAME_SAMPLE_COUNT_PER_CHANNEL);
 
     ALint state;
     alGetSourcei(alProxySource, AL_SOURCE_STATE, &state);
@@ -350,53 +358,10 @@ void OpenAL2::doOutput()
     alcMakeContextCurrent(alProxyContext);
 }
 
-/**
- * @brief handles recording of audio frames
- */
-void OpenAL2::doInput()
+void OpenAL2::captureSamples(ALCdevice* device, int16_t* buffer, ALCsizei samples)
 {
-    ALint curSamples = 0;
-    alcGetIntegerv(alInDev, ALC_CAPTURE_SAMPLES, sizeof(curSamples), &curSamples);
-    if (curSamples < static_cast<ALint>(AUDIO_FRAME_SAMPLE_COUNT)) {
-        return;
-    }
-
-    int16_t buf[AUDIO_FRAME_SAMPLE_COUNT];
-    alcCaptureSamples(alInDev, buf, AUDIO_FRAME_SAMPLE_COUNT);
-
+    alcCaptureSamples(device, buffer, samples);
     if (echoCancelSupported && filterer) {
-        filter_audio(filterer, buf, AUDIO_FRAME_SAMPLE_COUNT);
-    }
-
-    // gain amplification with clipping to 16-bit boundaries
-    for (quint32 i = 0; i < AUDIO_FRAME_SAMPLE_COUNT; ++i) {
-        int ampPCM = qBound<int>(std::numeric_limits<int16_t>::min(),
-                                 qRound(buf[i] * OpenAL::inputGainFactor()),
-                                 std::numeric_limits<int16_t>::max());
-
-        buf[i] = static_cast<int16_t>(ampPCM);
-    }
-
-    emit Audio::frameAvailable(buf, AUDIO_FRAME_SAMPLE_COUNT, 1, AUDIO_SAMPLE_RATE);
-}
-
-/**
- * @brief Called on the captureTimer events to capture audio
- */
-void OpenAL2::doAudio()
-{
-    QMutexLocker lock(&audioLock);
-
-    // output section
-    if (echoCancelSupported && outputInitialized && !peerSources.isEmpty()) {
-        doOutput();
-    } else {
-        kill_filter_audio(filterer);
-        filterer = nullptr;
-    }
-
-    // input section
-    if (alInDev && inSubscriptions) {
-        doInput();
+        filter_audio(filterer, buffer, samples);
     }
 }

@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2016 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -55,15 +55,19 @@ AdvancedForm::AdvancedForm()
     Settings& s = Settings::getInstance();
     bodyUI->cbEnableIPv6->setChecked(s.getEnableIPv6());
     bodyUI->cbMakeToxPortable->setChecked(Settings::getInstance().getMakeToxPortable());
-    bodyUI->cbEnableUDP->setChecked(!s.getForceTCP());
     bodyUI->proxyAddr->setText(s.getProxyAddr());
     quint16 port = s.getProxyPort();
-    if (port > 0)
+    if (port > 0) {
         bodyUI->proxyPort->setValue(port);
+    }
 
     int index = static_cast<int>(s.getProxyType());
     bodyUI->proxyType->setCurrentIndex(index);
     on_proxyType_currentIndexChanged(index);
+    const bool udpEnabled = !s.getForceTCP() && (s.getProxyType() == Settings::ProxyType::ptNone);
+    bodyUI->cbEnableUDP->setChecked(udpEnabled);
+    bodyUI->cbEnableLanDiscovery->setChecked(s.getEnableLanDiscovery() && udpEnabled);
+    bodyUI->cbEnableLanDiscovery->setEnabled(udpEnabled);
 
     QString warningBody = tr("Unless you %1 know what you are doing, "
                              "please do %2 change anything here. Changes "
@@ -96,8 +100,7 @@ void AdvancedForm::on_cbMakeToxPortable_stateChanged()
 void AdvancedForm::on_btnExportLog_clicked()
 {
     QString savefile =
-        QFileDialog::getSaveFileName(this, tr("Save File"), QDir::homePath(), tr("Logs (*.log)"), 0,
-                                     QFileDialog::DontUseNativeDialog);
+        QFileDialog::getSaveFileName(Q_NULLPTR, tr("Save File"), QString{}, tr("Logs (*.log)"));
 
     if (savefile.isNull() || savefile.isEmpty()) {
         qDebug() << "Debug log save file was not properly chosen";
@@ -172,7 +175,16 @@ void AdvancedForm::on_cbEnableIPv6_stateChanged()
 
 void AdvancedForm::on_cbEnableUDP_stateChanged()
 {
-    Settings::getInstance().setForceTCP(!bodyUI->cbEnableUDP->isChecked());
+    const bool enableUdp = bodyUI->cbEnableUDP->isChecked();
+    Settings::getInstance().setForceTCP(!enableUdp);
+    const bool enableLanDiscovery = Settings::getInstance().getEnableLanDiscovery();
+    bodyUI->cbEnableLanDiscovery->setEnabled(enableUdp);
+    bodyUI->cbEnableLanDiscovery->setChecked(enableUdp && enableLanDiscovery);
+}
+
+void AdvancedForm::on_cbEnableLanDiscovery_stateChanged()
+{
+    Settings::getInstance().setEnableLanDiscovery(bodyUI->cbEnableLanDiscovery->isChecked());
 }
 
 void AdvancedForm::on_proxyAddr_editingFinished()
@@ -182,8 +194,9 @@ void AdvancedForm::on_proxyAddr_editingFinished()
 
 void AdvancedForm::on_proxyPort_valueChanged(int port)
 {
-    if (port <= 0)
+    if (port <= 0) {
         port = 0;
+    }
 
     Settings::getInstance().setProxyPort(port);
 }
@@ -191,9 +204,14 @@ void AdvancedForm::on_proxyPort_valueChanged(int port)
 void AdvancedForm::on_proxyType_currentIndexChanged(int index)
 {
     Settings::ProxyType proxytype = static_cast<Settings::ProxyType>(index);
+    const bool proxyEnabled = proxytype != Settings::ProxyType::ptNone;
 
-    bodyUI->proxyAddr->setEnabled(proxytype != Settings::ProxyType::ptNone);
-    bodyUI->proxyPort->setEnabled(proxytype != Settings::ProxyType::ptNone);
+    bodyUI->proxyAddr->setEnabled(proxyEnabled);
+    bodyUI->proxyPort->setEnabled(proxyEnabled);
+    // enabling UDP and proxy can be a privacy issue
+    bodyUI->cbEnableUDP->setEnabled(!proxyEnabled);
+    bodyUI->cbEnableUDP->setChecked(!proxyEnabled);
+
     Settings::getInstance().setProxyType(proxytype);
 }
 

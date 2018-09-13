@@ -1,5 +1,5 @@
 /*
-    Copyright © 2015 by The qTox Project Contributors
+    Copyright © 2015-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -20,26 +20,30 @@
 #ifndef CONTENTDIALOG_H
 #define CONTENTDIALOG_H
 
-#include <tuple>
-
 #include "src/widget/genericchatitemlayout.h"
 #include "src/widget/tool/activatedialog.h"
+
+#include <memory>
+#include <tuple>
 
 template <typename K, typename V>
 class QHash;
 template <typename T>
 class QSet;
 
-class QSplitter;
-class QVBoxLayout;
 class ContentDialog;
 class ContentLayout;
-class GenericChatroomWidget;
-class FriendWidget;
-class GroupWidget;
-class FriendListLayout;
 class Friend;
+class FriendChatroom;
+class FriendListLayout;
+class FriendWidget;
+class GenericChatForm;
+class GenericChatroomWidget;
 class Group;
+class GroupChatroom;
+class GroupWidget;
+class QSplitter;
+class QVBoxLayout;
 
 using ContactInfo = std::tuple<ContentDialog*, GenericChatroomWidget*>;
 
@@ -50,8 +54,8 @@ public:
     explicit ContentDialog(QWidget* parent = nullptr);
     ~ContentDialog() override;
 
-    FriendWidget* addFriend(const Friend* f);
-    GroupWidget* addGroup(int groupId, const QString& name);
+    FriendWidget* addFriend(std::shared_ptr<FriendChatroom> chatroom, GenericChatForm* form);
+    GroupWidget* addGroup(std::shared_ptr<GroupChatroom> chatroom, GenericChatForm* form);
     void removeFriend(int friendId);
     void removeGroup(int groupId);
     bool hasFriendWidget(int friendId, const GenericChatroomWidget* chatroomWidget) const;
@@ -132,6 +136,8 @@ private:
     static ContentDialog* currentDialog;
     static QHash<int, ContactInfo> friendList;
     static QHash<int, ContactInfo> groupList;
+    QHash<int, GenericChatForm*> friendChatForms;
+    QHash<int, GenericChatForm*> groupChatForms;
 };
 
 #endif // CONTENTDIALOG_H

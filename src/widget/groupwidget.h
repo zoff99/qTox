@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -22,16 +22,19 @@
 
 #include "genericchatroomwidget.h"
 
+#include "src/model/chatroom/groupchatroom.h"
+
+#include <memory>
+
 class GroupWidget final : public GenericChatroomWidget
 {
     Q_OBJECT
 public:
-    GroupWidget(int GroupId, const QString& Name, bool compact);
+    GroupWidget(std::shared_ptr<GroupChatroom> chatroom, bool compact);
     ~GroupWidget();
     void setAsInactiveChatroom() final override;
     void setAsActiveChatroom() final override;
     void updateStatusLight() final override;
-    void setChatForm(ContentLayout* contentLayout) final override;
     void resetEventFlags() final override;
     QString getStatusString() const final override;
     Group* getGroup() const final override;
@@ -52,12 +55,14 @@ protected:
 
 private slots:
     void retranslateUi();
-    void setTitle(const QString& newName);
     void updateTitle(uint32_t groupId, const QString& author, const QString& newName);
     void updateUserCount();
 
 public:
     int groupId;
+
+private:
+    std::shared_ptr<GroupChatroom> chatroom;
 };
 
 #endif // GROUPWIDGET_H

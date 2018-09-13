@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -150,7 +150,7 @@ void VideoSurface::onNewFrameAvailable(const std::shared_ptr<VideoFrame>& newFra
 
     float newRatio = getSizeRatio(newSize);
 
-    if (qAbs(newRatio - ratio) > 1E-3 && isVisible()) {
+    if (!qFuzzyCompare(newRatio, ratio)  && isVisible()) {
         ratio = newRatio;
         recalulateBounds();
         emit ratioChanged();

@@ -11,6 +11,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 option(PLATFORM_EXTENSIONS "Enable platform specific extensions, requires extra dependencies" ON)
 option(USE_FILTERAUDIO "Enable the echo canceling backend" ON)
+# AUTOUPDATE is currently broken and thus disabled
+option(AUTOUPDATE "Enable the auto updater" OFF)
+option(USE_CCACHE "Use ccache when available" ON)
+option(SPELL_CHECK "Enable spell cheching support" ON)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug)
@@ -73,10 +77,16 @@ endif()
 #endif()
 
 # Use ccache when available to speed up builds.
-find_program(CCACHE_FOUND ccache)
-if(CCACHE_FOUND)
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-  message(STATUS "using ccache")
+if (USE_CCACHE)
+  find_program(CCACHE_FOUND ccache)
+  if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    message(STATUS "using ccache")
+  else()
+    message(STATUS "ccache not found")
+  endif()
+else()
+  message(STATUS "ccache disabled; set option USE_CCACHE=ON to use ccache if available")
 endif()
 
 # Search for headers in current directory.
@@ -129,6 +139,7 @@ qt5_add_translation(${PROJECT_NAME}_QM_FILES
   translations/jbo.ts
   translations/ko.ts
   translations/lt.ts
+  translations/mk.ts
   translations/nl.ts
   translations/no_nb.ts
   translations/pl.ts
@@ -251,6 +262,10 @@ set(${PROJECT_NAME}_SOURCES
   src/core/toxfile.h
   src/core/toxid.cpp
   src/core/toxid.h
+  src/core/toxlogger.cpp
+  src/core/toxlogger.h
+  src/core/toxoptions.cpp
+  src/core/toxoptions.h
   src/core/toxpk.cpp
   src/core/toxpk.h
   src/core/toxstring.cpp
@@ -264,6 +279,11 @@ set(${PROJECT_NAME}_SOURCES
   src/model/about/aboutfriend.cpp
   src/model/about/aboutfriend.h
   src/model/about/iaboutfriend.h
+  src/model/chatroom/chatroom.h
+  src/model/chatroom/friendchatroom.cpp
+  src/model/chatroom/friendchatroom.h
+  src/model/chatroom/groupchatroom.cpp
+  src/model/chatroom/groupchatroom.h
   src/model/contact.cpp
   src/model/contact.h
   src/model/friend.cpp
@@ -276,8 +296,6 @@ set(${PROJECT_NAME}_SOURCES
   src/model/profile/iprofileinfo.h
   src/model/profile/profileinfo.cpp
   src/model/profile/profileinfo.h
-  src/net/autoupdate.cpp
-  src/net/autoupdate.h
   src/net/avatarbroadcaster.cpp
   src/net/avatarbroadcaster.h
   src/net/toxme.cpp
@@ -292,6 +310,7 @@ set(${PROJECT_NAME}_SOURCES
   src/persistence/db/rawdatabase.h
   src/persistence/history.cpp
   src/persistence/history.h
+  src/persistence/ifriendsettings.h
   src/persistence/offlinemsgengine.cpp
   src/persistence/offlinemsgengine.h
   src/persistence/profile.cpp
@@ -345,6 +364,8 @@ set(${PROJECT_NAME}_SOURCES
   src/widget/emoticonswidget.h
   src/widget/flowlayout.cpp
   src/widget/flowlayout.h
+  src/widget/searchform.cpp
+  src/widget/searchform.h
   src/widget/form/addfriendform.cpp
   src/widget/form/addfriendform.h
   src/widget/form/chatform.cpp
@@ -571,6 +592,14 @@ if(${USE_FILTERAUDIO})
     else()
          message(STATUS "not using filteraudio, libfilteraudio not found")
     endif()
+endif()
+
+if(${AUTOUPDATE} AND (WIN32 OR APPLE))
+    add_definitions(-DAUTOUPDATE_ENABLED=1)
+    set(${PROJECT_NAME}_SOURCES ${${PROJECT_NAME}_SOURCES}
+        src/net/autoupdate.cpp
+        src/net/autoupdate.h)
+    message(STATUS "using autoupdater")
 endif()
 
 if (MINGW)

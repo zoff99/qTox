@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -58,7 +58,7 @@ void ChatTextEdit::keyPressEvent(QKeyEvent* event)
         return;
     }
     if (key == Qt::Key_Up && this->toPlainText().isEmpty()) {
-        this->setText(lastMessage);
+        this->setPlainText(lastMessage);
         this->setFocus();
         this->moveCursor(QTextCursor::MoveOperation::End, QTextCursor::MoveMode::MoveAnchor);
         return;

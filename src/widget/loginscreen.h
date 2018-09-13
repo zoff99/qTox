@@ -1,5 +1,5 @@
 /*
-    Copyright © 2015 by The qTox Project Contributors
+    Copyright © 2015-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -23,20 +23,23 @@
 
 #include <QShortcut>
 #include <QToolButton>
-#include <QWidget>
+#include <QDialog>
+
+class Profile;
 
 namespace Ui {
 class LoginScreen;
 }
 
-class LoginScreen : public QWidget
+class LoginScreen : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit LoginScreen(QWidget* parent = 0);
+    LoginScreen(QString selectedProfile = QString(), QWidget* parent = nullptr);
     ~LoginScreen();
-    void reset();
+    void reset(QString selectedProfile = QString());
+    Profile* getProfile() const;
 
     bool event(QEvent* event) final override;
 
@@ -68,6 +71,7 @@ private:
 private:
     Ui::LoginScreen* ui;
     QShortcut quitShortcut;
+    Profile* profile{nullptr};
 };
 
 #endif // LOGINSCREEN_H

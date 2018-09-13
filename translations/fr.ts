@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr_FR">
+<TS version="2.0" language="fr_FR">
 <context>
     <name>AVForm</name>
     <message>
@@ -14,14 +14,6 @@
     <message>
         <source>Disabled</source>
         <translation>Désactivé</translation>
-    </message>
-    <message>
-        <source>Play a test sound while changing the output volume.</source>
-        <translation>Jouer un son de test lors de la modification du volume de sortie.</translation>
-    </message>
-    <message>
-        <source>Use slider to set the gain of your input device ranging from %1dB to %2dB.</source>
-        <translation>Utiliser le curseur afin de définir le gain de votre périphérique d&apos;entrée dans l’intervalle de %1dB à %2dB.</translation>
     </message>
     <message>
         <source>Select region</source>
@@ -89,35 +81,39 @@ ce qui peut entraîner des problèmes avec les appels vidéo.</translation>
     </message>
     <message>
         <source>Enables the experimental audio backend with echo cancelling support, needs qTox restart to take effect.</source>
-        <translation type="unfinished"></translation>
+        <translation>Active le serveur audio expérimental avec prise en charge de l&apos;annulation d&apos;écho, nécessite le redémarrage de qTox pour prendre effet.</translation>
     </message>
     <message>
         <source>Enable experimental audio backend</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer le moteur audio expérimental</translation>
     </message>
     <message>
         <source>Audio quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualité audio</translation>
     </message>
     <message>
         <source>Transmitted audio quality. Lower this setting if your bandwidth is not high enough or if you want to lower the internet usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualité audio transmise. Baissez ce paramètre si votre bande passante n&apos;est pas assez élevée ou si vous souhaitez réduire l&apos;utilisation d&apos;Internet.</translation>
     </message>
     <message>
         <source>High (64 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Haute (64Kbps)</translation>
     </message>
     <message>
         <source>Medium (32 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Moyenne (32 kbps)</translation>
     </message>
     <message>
         <source>Low (16 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Basse (16 Kbits/s)</translation>
     </message>
     <message>
         <source>Very low (8 kbps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Très faible (8 kbps)</translation>
+    </message>
+    <message>
+        <source>Threshold</source>
+        <translation>Seuil</translation>
     </message>
 </context>
 <context>
@@ -172,29 +168,29 @@ ce qui peut entraîner des problèmes avec les appels vidéo.</translation>
     </message>
     <message>
         <source>bug-tracker</source>
-        <comment>Replaces `%1` in the `A list of all known…`</comment>
+        <comment>Replaces `%1` in the `A list of all knownâ¦`</comment>
         <translation type="unfinished">logiciel de suivi de bogue</translation>
     </message>
     <message>
         <source>Writing Useful Bug Reports</source>
-        <comment>Replaces `%2` in the `A list of all known…`</comment>
+        <comment>Replaces `%2` in the `A list of all knownâ¦`</comment>
         <translation type="unfinished">Rédaction de rapports de bogues utiles</translation>
     </message>
     <message>
         <source>contributors</source>
-        <comment>Replaces `%1` in `See a full list of…`</comment>
-        <translation type="unfinished">contributeurs</translation>
+        <comment>Replaces `%1` in `See a full list ofâ¦`</comment>
+        <translation>contributeurs</translation>
     </message>
 </context>
 <context>
     <name>AboutFriendForm</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Discussion</translation>
+        <translation>Discussion</translation>
     </message>
     <message>
         <source>username</source>
-        <translation type="unfinished">nom d&apos;utilisateur</translation>
+        <translation>nom d&apos;utilisateur</translation>
     </message>
     <message>
         <source>status message</source>
@@ -202,47 +198,47 @@ ce qui peut entraîner des problèmes avec les appels vidéo.</translation>
     </message>
     <message>
         <source>Public key:</source>
-        <translation type="unfinished">Clé publique :</translation>
+        <translation>Clé publique :</translation>
     </message>
     <message>
         <source>Used aliases:</source>
-        <translation type="unfinished">Alias utilisés :</translation>
+        <translation>Alias utilisés :</translation>
     </message>
     <message>
         <source>HISTORY OF ALIASES</source>
-        <translation type="unfinished">HISTORIQUE DES ALIAS</translation>
+        <translation>HISTORIQUE DES ALIAS</translation>
     </message>
     <message>
         <source>Automatically accept files from contact if set</source>
-        <translation type="unfinished">Si activé, accepte automatiquement les fichiers du contact</translation>
+        <translation>Si actif, accepte automatiquement les fichiers du contact</translation>
     </message>
     <message>
         <source>Auto accept files</source>
-        <translation type="unfinished">Acceptation automatique des fichiers</translation>
+        <translation>Accepter automatiquement les fichiers</translation>
     </message>
     <message>
         <source>Default directory to save files:</source>
-        <translation type="unfinished">Répertoire par défaut d&apos;enregistrement des fichiers :</translation>
+        <translation>Répertoire d&apos;enregistrement par défaut des fichiers :</translation>
     </message>
     <message>
         <source>Auto accept for this contact is disabled</source>
-        <translation type="unfinished">L&apos;acceptation automatique est désactivée pour ce contact</translation>
+        <translation>L&apos;acceptation automatique est désactivée pour ce contact</translation>
     </message>
     <message>
         <source>Auto accept call:</source>
-        <translation type="unfinished">Acceptation automatique des appels :</translation>
+        <translation>Acceptation automatique des appels :</translation>
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished">Manuel</translation>
+        <translation>Manuel</translation>
     </message>
     <message>
         <source>Audio</source>
-        <translation type="unfinished">Audio</translation>
+        <translation>Audio</translation>
     </message>
     <message>
         <source>Audio + Video</source>
-        <translation type="unfinished">Audio + Vidéo</translation>
+        <translation>Audio + Vidéo</translation>
     </message>
     <message>
         <source>Automatically accept group chat invitations from this contact if set.</source>
@@ -250,36 +246,36 @@ ce qui peut entraîner des problèmes avec les appels vidéo.</translation>
     </message>
     <message>
         <source>Auto accept group invites</source>
-        <translation type="unfinished">Acceptation automatique des invitations de groupe</translation>
+        <translation>Accepter automatiquement les invitations de groupe</translation>
     </message>
     <message>
         <source>Remove history (operation can not be undone!)</source>
-        <translation type="unfinished">Effacer l&apos;historique (attention : l&apos;opération est irréversible !)</translation>
+        <translation>Effacer l&apos;historique (l&apos;opération est irréversible !)</translation>
     </message>
     <message>
         <source>Notes</source>
-        <translation type="unfinished">Notes</translation>
+        <translation>Notes</translation>
     </message>
     <message>
         <source>Input field for notes about the contact</source>
-        <translation type="unfinished">Champ de saisie des notes concernant le contact</translation>
+        <translation>Champ de saisie des notes du contact</translation>
     </message>
     <message>
         <source>You can save comment about this contact here.</source>
         <translation type="unfinished">Vous pouvez enregistrer ici des commentaires sur ce contact.</translation>
     </message>
     <message>
-        <source>Choose an auto accept directory</source>
-        <comment>popup title</comment>
-        <translation type="unfinished">Sélectionner un répertoire d&apos;acceptation automatique</translation>
-    </message>
-    <message>
         <source>History removed</source>
-        <translation type="unfinished">Historique effacé</translation>
+        <translation>Historique effacé</translation>
     </message>
     <message>
         <source>Chat history with %1 removed!</source>
-        <translation type="unfinished">Historique de discussion avec %1 effacé(s) !</translation>
+        <translation>Historique de discussion avec %1 effacé !</translation>
+    </message>
+    <message>
+        <source>Choose an auto accept directory</source>
+        <extracomment>popup title</extracomment>
+        <translation type="unfinished">Sélectionner un répertoire d&apos;acceptation automatique</translation>
     </message>
 </context>
 <context>
@@ -358,38 +354,38 @@ ce qui peut entraîner des problèmes avec les appels vidéo.</translation>
     <message>
         <source>%1 Tox ID is invalid or does not exist</source>
         <comment>Toxme error</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tox ID n&apos;est pas valable ou n&apos;existe pas</translation>
     </message>
     <message>
         <source>You can&apos;t add yourself as a friend!</source>
         <extracomment>When trying to add your own Tox ID as friend</extracomment>
-        <translation type="unfinished">Vous ne pouvez pas vous ajouter vous-même comme contact !</translation>
+        <translation>Vous ne pouvez pas vous ajouter vous-même comme contact !</translation>
     </message>
     <message>
         <source>Open contact list</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir la liste de contacts</translation>
     </message>
     <message>
         <source>Couldn&apos;t open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the contact file</source>
         <extracomment>Error message when trying to open a contact list file to import</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier de contact</translation>
     </message>
     <message>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier non valide</translation>
     </message>
     <message>
         <source>We couldn&apos;t find any contacts to import in this file!</source>
-        <translation type="unfinished"></translation>
+        <translation>On n&apos;a trouvé aucun contact à importer dans ce fichier !</translation>
     </message>
     <message>
         <source>Tox ID</source>
         <extracomment>Tox ID of the person you&apos;re sending a friend request to</extracomment>
-        <translation type="unfinished">Identifiant Tox</translation>
+        <translation>ID Tox</translation>
     </message>
     <message>
         <source>either 76 hexadecimal characters or name@example.com</source>
@@ -399,16 +395,16 @@ ce qui peut entraîner des problèmes avec les appels vidéo.</translation>
     <message>
         <source>Message</source>
         <extracomment>The message you send in friend requests</extracomment>
-        <translation type="unfinished">Message</translation>
+        <translation>Message</translation>
     </message>
     <message>
         <source>Open</source>
         <extracomment>Button to choose a file with a list of contacts to import</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir</translation>
     </message>
     <message>
         <source>Send friend requests</source>
-        <translation type="unfinished"></translation>
+        <translation>Envoyer des demandes d&apos;amitié</translation>
     </message>
     <message>
         <source>%1 here! Tox me maybe?</source>
@@ -417,18 +413,17 @@ ce qui peut entraîner des problèmes avec les appels vidéo.</translation>
     </message>
     <message>
         <source>Import a list of contacts, one Tox ID per line</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer une liste de contacts, un Tox ID par ligne</translation>
     </message>
     <message numerus="yes">
         <source>Ready to import %n contact(s), click send to confirm</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <extracomment>Shows the number of contacts we&apos;re about to import from a file (at least one)</extracomment>
+        <translation><numerusform>Prêt à importer %n contact(s), cliquez sur envoyer pour confirmer</numerusform>
+        <numerusform>Prêt à importer %n contacts, cliquez sur envoyer pour confirmer</numerusform>
+        </translation></message>
     <message>
         <source>Import contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer des contacts</translation>
     </message>
 </context>
 <context>
@@ -601,46 +596,6 @@ ce qui peut entraîner des problèmes avec les appels vidéo.</translation>
         <translation>Mauvaise idée</translation>
     </message>
     <message>
-        <source>End video call</source>
-        <translation>Mettre fin à l&apos;appel vidéo</translation>
-    </message>
-    <message>
-        <source>End audio call</source>
-        <translation>Mettre fin à l&apos;appel audio</translation>
-    </message>
-    <message>
-        <source>Mute microphone</source>
-        <translation>Couper le microphone</translation>
-    </message>
-    <message>
-        <source>Mute call</source>
-        <translation>Couper le son de l&apos;appel</translation>
-    </message>
-    <message>
-        <source>Cancel video call</source>
-        <translation>Annuler l&apos;appel vidéo</translation>
-    </message>
-    <message>
-        <source>Cancel audio call</source>
-        <translation>Annuler l&apos;appel audio</translation>
-    </message>
-    <message>
-        <source>Start audio call</source>
-        <translation>Démarrer un appel audio</translation>
-    </message>
-    <message>
-        <source>Start video call</source>
-        <translation>Démarrer un appel vidéo</translation>
-    </message>
-    <message>
-        <source>Unmute microphone</source>
-        <translation>Réactiver le microphone</translation>
-    </message>
-    <message>
-        <source>Unmute call</source>
-        <translation>Réactiver le son de l&apos;appel</translation>
-    </message>
-    <message>
         <source>Failed to send file &quot;%1&quot;</source>
         <translation>Impossible d&apos;envoyer le fichier &quot;%1&quot;</translation>
     </message>
@@ -699,22 +654,6 @@ ce qui peut entraîner des problèmes avec les appels vidéo.</translation>
         <translation>%1 est maintenant %2</translation>
     </message>
     <message>
-        <source>Can&apos;t start video call</source>
-        <translation>Impossible de démarrer l&apos;appel vidéo</translation>
-    </message>
-    <message>
-        <source>Can&apos;t start audio call</source>
-        <translation>Impossible de démarrer l&apos;appel audio</translation>
-    </message>
-    <message>
-        <source>Microphone can be muted only during a call</source>
-        <translation>Le microphone ne peut être coupé que lors d&apos;un appel</translation>
-    </message>
-    <message>
-        <source>Sound can be disabled only during a call</source>
-        <translation>Le son ne peut être coupé que lors d&apos;un appel</translation>
-    </message>
-    <message>
         <source>Export to file</source>
         <translation>Exporter vers le fichier</translation>
     </message>
@@ -724,7 +663,74 @@ ce qui peut entraîner des problèmes avec les appels vidéo.</translation>
     </message>
     <message>
         <source>Call with %1 ended unexpectedly. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;appel avec %1 s&apos;est terminé de façon inattendue. %2</translation>
+    </message>
+</context>
+<context>
+    <name>ChatFormHeader</name>
+    <message>
+        <source>Can&apos;t start audio call</source>
+        <translation>Impossible de démarrer l&apos;appel audio</translation>
+    </message>
+    <message>
+        <source>Start audio call</source>
+        <translation>Démarrer un appel audio</translation>
+    </message>
+    <message>
+        <source>End audio call</source>
+        <translation>Terminer l&apos;appel audio</translation>
+    </message>
+    <message>
+        <source>Cancel audio call</source>
+        <translation>Annuler l&apos;appel audio</translation>
+    </message>
+    <message>
+        <source>Accept audio call</source>
+        <translation>Accepter l&apos;appel audio</translation>
+    </message>
+    <message>
+        <source>Can&apos;t start video call</source>
+        <translation>Impossible de démarrer l&apos;appel vidéo</translation>
+    </message>
+    <message>
+        <source>Start video call</source>
+        <translation>Démarrer un appel vidéo</translation>
+    </message>
+    <message>
+        <source>End video call</source>
+        <translation>Terminer l&apos;appel vidéo</translation>
+    </message>
+    <message>
+        <source>Cancel video call</source>
+        <translation>Annuler l&apos;appel vidéo</translation>
+    </message>
+    <message>
+        <source>Accept video call</source>
+        <translation>Accepter l&apos;appel vidéo</translation>
+    </message>
+    <message>
+        <source>Sound can be disabled only during a call</source>
+        <translation>Le son ne peut être coupé que lors d&apos;un appel</translation>
+    </message>
+    <message>
+        <source>Unmute call</source>
+        <translation>Réactiver le son de l&apos;appel</translation>
+    </message>
+    <message>
+        <source>Mute call</source>
+        <translation>Couper le son de l&apos;appel</translation>
+    </message>
+    <message>
+        <source>Microphone can be muted only during a call</source>
+        <translation>Le micro ne peut être coupé que lors d&apos;un appel</translation>
+    </message>
+    <message>
+        <source>Unmute microphone</source>
+        <translation>Réactiver le micro</translation>
+    </message>
+    <message>
+        <source>Mute microphone</source>
+        <translation>Couper le micro</translation>
     </message>
 </context>
 <context>
@@ -1202,30 +1208,6 @@ au lieu de se minimiser dans la barre des tâches du système.</translation>
         <translation>Sauvegarder le journal de discussion</translation>
     </message>
     <message>
-        <source>Start audio call</source>
-        <translation>Démarrer un appel audio</translation>
-    </message>
-    <message>
-        <source>Accept audio call</source>
-        <translation>Accepter l&apos;appel audio</translation>
-    </message>
-    <message>
-        <source>End audio call</source>
-        <translation>Mettre fin à l&apos;appel audio</translation>
-    </message>
-    <message>
-        <source>Start video call</source>
-        <translation>Démarrer un appel vidéo</translation>
-    </message>
-    <message>
-        <source>Accept video call</source>
-        <translation>Accepter l&apos;appel vidéo</translation>
-    </message>
-    <message>
-        <source>End video call</source>
-        <translation>Mettre fin à l&apos;appel vidéo</translation>
-    </message>
-    <message>
         <source>Send a screenshot</source>
         <translation>Envoyer une capture d&apos;écran</translation>
     </message>
@@ -1281,33 +1263,13 @@ au lieu de se minimiser dans la barre des tâches du système.</translation>
         <translation>1 personne dans la messagerie instantanée</translation>
     </message>
     <message>
-        <source>Start audio call</source>
-        <translation>Démarrer un appel audio</translation>
-    </message>
-    <message>
-        <source>Mute microphone</source>
-        <translation>Couper le microphone</translation>
-    </message>
-    <message>
-        <source>Unmute microphone</source>
-        <translation>Réactiver le microphone</translation>
-    </message>
-    <message>
-        <source>Mute call</source>
-        <translation>Couper le son de l&apos;appel</translation>
-    </message>
-    <message>
-        <source>Unmute call</source>
-        <translation>Réactiver le son de l&apos;appel</translation>
-    </message>
-    <message>
-        <source>End audio call</source>
-        <translation>Mettre fin à l&apos;appel audio</translation>
-    </message>
-    <message>
         <source>%1 users in chat</source>
         <comment>Number of users in chat</comment>
         <translation>%1 personnes dans la discussion instantanée</translation>
+    </message>
+    <message>
+        <source>%1 has set the title to %2</source>
+        <translation type="unfinished">%1 a modifié le titre en %2</translation>
     </message>
 </context>
 <context>
@@ -1994,11 +1956,11 @@ Les changements de format de sauvegarde sont possibles, ce qui pourrait entraine
     </message>
     <message>
         <source>BlackList</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste noire</translation>
     </message>
     <message>
         <source>Filter group message by group member&apos;s public key. Put public key here, one per line.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Filtrer le message de groupe par clé publique du membre du groupe. Mettre la clé publique ici, une par ligne.</translation>
     </message>
 </context>
 <context>
@@ -2175,7 +2137,7 @@ Cet identifiant inclue le code anti-spam (en bleu) et la somme de contrôle (en 
     </message>
     <message>
         <source>Empty path is unavaliable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Le chemin vide est indisponible</translation>
     </message>
     <message>
         <source>Failed to rename</source>
@@ -2183,23 +2145,23 @@ Cet identifiant inclue le code anti-spam (en bleu) et la somme de contrôle (en 
     </message>
     <message>
         <source>Profile already exists</source>
-        <translation type="unfinished">Le profil existe déjà</translation>
+        <translation>Le profil existe déjà</translation>
     </message>
     <message>
         <source>A profile named &quot;%1&quot; already exists.</source>
-        <translation type="unfinished">Un profil nommé &quot;%1&quot; existe déjà.</translation>
+        <translation>Un profil nommé &quot;%1&quot; existe déjà.</translation>
     </message>
     <message>
         <source>Empty name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom vide</translation>
     </message>
     <message>
         <source>Empty name is unavaliable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Le nom vide est indisponible</translation>
     </message>
     <message>
         <source>Empty path</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin vide</translation>
     </message>
     <message>
         <source>Couldn&apos;t change password on the database, it might be corrupted or use the old password.</source>
@@ -2207,31 +2169,27 @@ Cet identifiant inclue le code anti-spam (en bleu) et la somme de contrôle (en 
     </message>
     <message>
         <source>Export profile</source>
-        <translation type="unfinished">Exporter le profil</translation>
+        <translation>Exporter le profil</translation>
     </message>
     <message>
         <source>Tox save file (*.tox)</source>
         <extracomment>save dialog filter</extracomment>
-        <translation type="unfinished">Fichier de sauvegarde Tox (*.tox)</translation>
+        <translation>Fichier de sauvegarde Tox (*.tox)</translation>
     </message>
     <message>
         <source>The following files could not be deleted:</source>
         <extracomment>deletion failed text part 1</extracomment>
-        <translation type="unfinished">Les fichiers suivants ne peuvent pas être supprimés :</translation>
+        <translation>Les fichiers suivants ne peuvent pas être supprimés :</translation>
     </message>
     <message>
         <source>Please manually remove them.</source>
         <extracomment>deletion failed text part 2</extracomment>
-        <translation type="unfinished">Merci de bien vouloir les supprimer manuellement.</translation>
+        <translation>Veuillez les supprimer manuellement.</translation>
     </message>
     <message>
         <source>Are you sure you want to delete your password?</source>
         <extracomment>deletion confirmation text</extracomment>
-        <translation type="unfinished">Êtes-vous certain(e) de vouloir supprimer ce mot de passe ?</translation>
-    </message>
-    <message>
-        <source>Tox user names cannot exceed %1 characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Êtes-vous certain(e) de vouloir supprimer votre mot de passe ?</translation>
     </message>
 </context>
 <context>
@@ -2453,7 +2411,7 @@ Elle sera installée au prochain démarrage de qTox.</translation>
     </message>
     <message>
         <source>Starts new instance and opens the login screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Démarre une nouvelle instance et ouvre l&apos;écran de connexion.</translation>
     </message>
 </context>
 <context>
@@ -2742,6 +2700,15 @@ Elle sera installée au prochain démarrage de qTox.</translation>
         <source>Date format:</source>
         <translation>Format de la date :</translation>
     </message>
+    <message>
+        <source>If enabled every contact without an avatar set will have a generated avatar based on their Tox ID instead of a default picture. Requires restart to apply.</source>
+        <comment>toolTip for show identicons</comment>
+        <translation>Si elle est activée, chaque contact sans avatar défini aura un avatar généré basé sur son ID Tox au lieu d&apos;une image par défaut. Requiert un redémarrage pour être appliquer.</translation>
+    </message>
+    <message>
+        <source>Use identicons instead of empty avatars</source>
+        <translation type="unfinished">Utiliser des identicons au lieu d&apos;avatars vides</translation>
+    </message>
 </context>
 <context>
     <name>Widget</name>
@@ -2834,10 +2801,6 @@ Elle sera installée au prochain démarrage de qTox.</translation>
     <message>
         <source>Your status</source>
         <translation>Votre statut</translation>
-    </message>
-    <message>
-        <source>%1 has set the title to %2</source>
-        <translation>%1 a modifié le titre en %2</translation>
     </message>
     <message>
         <source>Status</source>

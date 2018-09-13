@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ru_RU">
+<TS version="2.0" language="ru_RU">
 <context>
     <name>AVForm</name>
     <message>
@@ -14,14 +14,6 @@
     <message>
         <source>Disabled</source>
         <translation>Отсутствует</translation>
-    </message>
-    <message>
-        <source>Play a test sound while changing the output volume.</source>
-        <translation>Проигрывать тестовый звук во время изменения громкости.</translation>
-    </message>
-    <message>
-        <source>Use slider to set the gain of your input device ranging from %1dB to %2dB.</source>
-        <translation>Используйте ползунок для установки уровня записи от %1dB до %2dB.</translation>
     </message>
     <message>
         <source>Select region</source>
@@ -89,11 +81,11 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Enables the experimental audio backend with echo cancelling support, needs qTox restart to take effect.</source>
-        <translation>Включает экспериментальную поддержку аудиоданных с поддержкой эхоподавления, требует перезагрузки qTox.</translation>
+        <translation>Включает экспериментальную звуковую систему с поддержкой эхоподавления, требует перезагрузки qTox.</translation>
     </message>
     <message>
         <source>Enable experimental audio backend</source>
-        <translation>Включить экспериментальные аудиообъявления</translation>
+        <translation>Экспериментальная звуковая система</translation>
     </message>
     <message>
         <source>Audio quality</source>
@@ -118,6 +110,10 @@ which may lead to problems with video calls.</source>
     <message>
         <source>Very low (8 kbps)</source>
         <translation>Очень низкий (8 КБит/с)</translation>
+    </message>
+    <message>
+        <source>Threshold</source>
+        <translation>Порог</translation>
     </message>
 </context>
 <context>
@@ -173,17 +169,17 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>bug-tracker</source>
-        <comment>Replaces `%1` in the `A list of all known…`</comment>
+        <comment>Replaces `%1` in the `A list of all knownâ¦`</comment>
         <translation>баг-трекерe</translation>
     </message>
     <message>
         <source>Writing Useful Bug Reports</source>
-        <comment>Replaces `%2` in the `A list of all known…`</comment>
+        <comment>Replaces `%2` in the `A list of all knownâ¦`</comment>
         <translation>Написание полезных отчетов об ошибках</translation>
     </message>
     <message>
         <source>contributors</source>
-        <comment>Replaces `%1` in `See a full list of…`</comment>
+        <comment>Replaces `%1` in `See a full list ofâ¦`</comment>
         <translation>разработчиков</translation>
     </message>
 </context>
@@ -227,7 +223,7 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Auto accept for this contact is disabled</source>
-        <translation type="unfinished">Автоматический приём файлов от этого контакта отключён</translation>
+        <translation>Автоматический приём файлов от этого контакта отключён</translation>
     </message>
     <message>
         <source>Auto accept call:</source>
@@ -235,7 +231,7 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished">Ручной</translation>
+        <translation>Ручной</translation>
     </message>
     <message>
         <source>Audio</source>
@@ -270,17 +266,17 @@ which may lead to problems with video calls.</source>
         <translation>Здесь вы можете сохранить заметки об этом контакте.</translation>
     </message>
     <message>
-        <source>Choose an auto accept directory</source>
-        <comment>popup title</comment>
-        <translation>Выбрать папку для автоматического приёма</translation>
-    </message>
-    <message>
         <source>History removed</source>
         <translation>История переписки удалена</translation>
     </message>
     <message>
         <source>Chat history with %1 removed!</source>
         <translation>История переписки с %1 была удалена!</translation>
+    </message>
+    <message>
+        <source>Choose an auto accept directory</source>
+        <extracomment>popup title</extracomment>
+        <translation>Выбрать папку для автоматического приёма</translation>
     </message>
 </context>
 <context>
@@ -423,12 +419,11 @@ which may lead to problems with video calls.</source>
     </message>
     <message numerus="yes">
         <source>Ready to import %n contact(s), click send to confirm</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <extracomment>Shows the number of contacts we&apos;re about to import from a file (at least one)</extracomment>
+        <translation><numerusform>Можно импортировать %n контакт, нажмите &quot;Отправить&quot; для подтверждения</numerusform>
+        <numerusform>Можно импортировать %n контактов, нажмите &quot;Отправить&quot; для подтверждения</numerusform>
+        <numerusform>Можно импортировать %n контакта, нажмите &quot;Отправить&quot; для подтверждения</numerusform>
+        </translation></message>
     <message>
         <source>Import contacts</source>
         <translation>Импорт списка контактов</translation>
@@ -594,51 +589,11 @@ which may lead to problems with video calls.</source>
     </message>
     <message>
         <source>%1 calling</source>
-        <translation>%1 звонит</translation>
-    </message>
-    <message>
-        <source>End video call</source>
-        <translation>Завершить видеозвонок</translation>
-    </message>
-    <message>
-        <source>End audio call</source>
-        <translation>Завершить аудиозвонок</translation>
-    </message>
-    <message>
-        <source>Mute microphone</source>
-        <translation>Выключить микрофон</translation>
-    </message>
-    <message>
-        <source>Mute call</source>
-        <translation>Выключить звук</translation>
+        <translation>Входящий звонок от %1</translation>
     </message>
     <message>
         <source>Calling %1</source>
-        <translation>Звонит %1</translation>
-    </message>
-    <message>
-        <source>Cancel video call</source>
-        <translation>Отменить видеозвонок</translation>
-    </message>
-    <message>
-        <source>Cancel audio call</source>
-        <translation>Отменить аудиозвонок</translation>
-    </message>
-    <message>
-        <source>Start audio call</source>
-        <translation>Начать аудиозвонок</translation>
-    </message>
-    <message>
-        <source>Start video call</source>
-        <translation>Начать видеозвонок</translation>
-    </message>
-    <message>
-        <source>Unmute microphone</source>
-        <translation>Включить микрофон</translation>
-    </message>
-    <message>
-        <source>Unmute call</source>
-        <translation>Включить звук</translation>
+        <translation>Вызов %1</translation>
     </message>
     <message>
         <source>Failed to send file &quot;%1&quot;</source>
@@ -703,22 +658,6 @@ which may lead to problems with video calls.</source>
         <translation>%1 сейчас %2</translation>
     </message>
     <message>
-        <source>Can&apos;t start video call</source>
-        <translation>Невозможно начать видеозвонок</translation>
-    </message>
-    <message>
-        <source>Can&apos;t start audio call</source>
-        <translation>Невозможно начать аудиозвонок</translation>
-    </message>
-    <message>
-        <source>Microphone can be muted only during a call</source>
-        <translation>Микрофон может быть выключен только во время звонка</translation>
-    </message>
-    <message>
-        <source>Sound can be disabled only during a call</source>
-        <translation>Звук может быть выключен только во время звонка</translation>
-    </message>
-    <message>
         <source>Export to file</source>
         <translation>Экспорт в файл</translation>
     </message>
@@ -729,6 +668,73 @@ which may lead to problems with video calls.</source>
     <message>
         <source>Call with %1 ended unexpectedly. %2</source>
         <translation>Разговор с %1  неожиданно прервался. %2</translation>
+    </message>
+</context>
+<context>
+    <name>ChatFormHeader</name>
+    <message>
+        <source>Can&apos;t start audio call</source>
+        <translation>Невозможно начать аудиозвонок</translation>
+    </message>
+    <message>
+        <source>Start audio call</source>
+        <translation>Начать голосовой звонок</translation>
+    </message>
+    <message>
+        <source>End audio call</source>
+        <translation>Завершить звонок</translation>
+    </message>
+    <message>
+        <source>Cancel audio call</source>
+        <translation>Прервать звонок</translation>
+    </message>
+    <message>
+        <source>Accept audio call</source>
+        <translation>Принять аудиозвонок</translation>
+    </message>
+    <message>
+        <source>Can&apos;t start video call</source>
+        <translation>Невозможно начать видеозвонок</translation>
+    </message>
+    <message>
+        <source>Start video call</source>
+        <translation>Начать видеозвонок</translation>
+    </message>
+    <message>
+        <source>End video call</source>
+        <translation>Завершить видеозвонок</translation>
+    </message>
+    <message>
+        <source>Cancel video call</source>
+        <translation>Отменить видеозвонок</translation>
+    </message>
+    <message>
+        <source>Accept video call</source>
+        <translation>Принять видеозвонок</translation>
+    </message>
+    <message>
+        <source>Sound can be disabled only during a call</source>
+        <translation>Звук может быть выключен только во время звонка</translation>
+    </message>
+    <message>
+        <source>Unmute call</source>
+        <translation>Включить звук</translation>
+    </message>
+    <message>
+        <source>Mute call</source>
+        <translation>Выключить звук</translation>
+    </message>
+    <message>
+        <source>Microphone can be muted only during a call</source>
+        <translation>Микрофон может быть выключен только во время звонка</translation>
+    </message>
+    <message>
+        <source>Unmute microphone</source>
+        <translation>Включить микрофон</translation>
+    </message>
+    <message>
+        <source>Mute microphone</source>
+        <translation>Выключить микрофон</translation>
     </message>
 </context>
 <context>
@@ -1213,30 +1219,6 @@ instead of system taskbar.</source>
         <translation>Сохранить журнал чата</translation>
     </message>
     <message>
-        <source>Start audio call</source>
-        <translation>Начать аудиозвонок</translation>
-    </message>
-    <message>
-        <source>Accept audio call</source>
-        <translation>Принять аудиозвонок</translation>
-    </message>
-    <message>
-        <source>End audio call</source>
-        <translation>Завершить аудиозвонок</translation>
-    </message>
-    <message>
-        <source>Start video call</source>
-        <translation>Начать видеозвонок</translation>
-    </message>
-    <message>
-        <source>Accept video call</source>
-        <translation>Принять видеозвонок</translation>
-    </message>
-    <message>
-        <source>End video call</source>
-        <translation>Завершить видеозвонок</translation>
-    </message>
-    <message>
         <source>Clear displayed messages</source>
         <translation>Очистить показываемые сообщения</translation>
     </message>
@@ -1255,6 +1237,14 @@ instead of system taskbar.</source>
     <message>
         <source>Copy link address</source>
         <translation>Копировать адрес ссылки</translation>
+    </message>
+    <message>
+        <source>Confirmation</source>
+        <translation>Подтверждение</translation>
+    </message>
+    <message>
+        <source>You are sure that you want to clear all displayed messages?</source>
+        <translation>Вы уверены, что хотите удалить все отображаемые сообщения?</translation>
     </message>
 </context>
 <context>
@@ -1293,28 +1283,8 @@ instead of system taskbar.</source>
         <translation>1 пользователь в чате</translation>
     </message>
     <message>
-        <source>Start audio call</source>
-        <translation>Позвонить</translation>
-    </message>
-    <message>
-        <source>Mute microphone</source>
-        <translation>Выключить микрофон</translation>
-    </message>
-    <message>
-        <source>Unmute microphone</source>
-        <translation>Включить микрофон</translation>
-    </message>
-    <message>
-        <source>Mute call</source>
-        <translation>Выключить звук</translation>
-    </message>
-    <message>
-        <source>Unmute call</source>
-        <translation>Включить звук</translation>
-    </message>
-    <message>
-        <source>End audio call</source>
-        <translation>Завершить аудио звонок</translation>
+        <source>%1 has set the title to %2</source>
+        <translation>%1 сменил заголовок на %2</translation>
     </message>
 </context>
 <context>
@@ -2206,7 +2176,7 @@ This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
     </message>
     <message>
         <source>Empty path</source>
-        <translation type="unfinished">Путь не задан</translation>
+        <translation>Путь не задан</translation>
     </message>
     <message>
         <source>Couldn&apos;t change password on the database, it might be corrupted or use the old password.</source>
@@ -2235,10 +2205,6 @@ This ID includes the NoSpam code (in blue), and the checksum (in gray).</source>
         <source>Are you sure you want to delete your password?</source>
         <extracomment>deletion confirmation text</extracomment>
         <translation>Вы уверены, что хотите удалить свой пароль?</translation>
-    </message>
-    <message>
-        <source>Tox user names cannot exceed %1 characters.</source>
-        <translation>Имя пользователя Tox не может превышать %1 символов.</translation>
     </message>
 </context>
 <context>
@@ -2752,6 +2718,15 @@ It will be installed when qTox restarts.</source>
         <source>Date format:</source>
         <translation>Формат даты:</translation>
     </message>
+    <message>
+        <source>If enabled every contact without an avatar set will have a generated avatar based on their Tox ID instead of a default picture. Requires restart to apply.</source>
+        <comment>toolTip for show identicons</comment>
+        <translation>Если включено, каждый контакт без аватара будет иметь сгенерированный аватар, основываясь на своём Tox ID, вместо картинки по умолчанию. Требуется перезагрузка для применения.</translation>
+    </message>
+    <message>
+        <source>Use identicons instead of empty avatars</source>
+        <translation>Использовать картинки вместо пустых аватаров</translation>
+    </message>
 </context>
 <context>
     <name>Widget</name>
@@ -2912,10 +2887,6 @@ It will be installed when qTox restarts.</source>
     <message>
         <source>Couldn&apos;t request friendship</source>
         <translation>Не удалось запросить добавление в друзья</translation>
-    </message>
-    <message>
-        <source>%1 has set the title to %2</source>
-        <translation>%1 сменил заголовок на %2</translation>
     </message>
     <message>
         <source>Status</source>

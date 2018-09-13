@@ -1,5 +1,5 @@
 /*
-    Copyright © 2015 by The qTox Project Contributors
+    Copyright © 2015-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -39,6 +39,10 @@ class CoreFile
 {
     friend class Core;
 
+
+public:
+    static void handleAvatarOffer(uint32_t friendId, uint32_t fileId, bool accept);
+
 private:
     CoreFile() = delete;
 
@@ -77,6 +81,7 @@ private:
 private:
     static QMutex fileSendMutex;
     static QHash<uint64_t, ToxFile> fileMap;
+    static QString getCleanFileName(QString filename);
 };
 
 #endif // COREFILE_H

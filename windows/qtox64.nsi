@@ -273,10 +273,11 @@ Section "Install"
 	${CreateShortCut} "$SMPROGRAMS\qTox\Uninstall qTox.lnk" "$INSTDIR\uninstall.exe" "" "" ""
 
 	# Write setup/app info into the registry
+	SetRegView 64
 	${WriteRegStr} "${REG_ROOT}" "${REG_APP_PATH}" "" "$INSTDIR\${MAIN_APP_EXE}"
 	${WriteRegStr} "${REG_ROOT}" "${REG_APP_PATH}" "Path" "$INSTDIR\bin\"
 	${WriteRegStr} ${REG_ROOT} "${UNINSTALL_PATH}" "DisplayName" "qTox"
-	${WriteRegStr} ${REG_ROOT} "${UNINSTALL_PATH}" "DisplayVersion" "1.13.0"
+	${WriteRegStr} ${REG_ROOT} "${UNINSTALL_PATH}" "DisplayVersion" "1.16.3"
 	${WriteRegStr} ${REG_ROOT} "${UNINSTALL_PATH}" "Publisher" "The qTox Project"
 	${WriteRegStr} ${REG_ROOT} "${UNINSTALL_PATH}" "UninstallString" "$INSTDIR\uninstall.exe"
 	${WriteRegStr} ${REG_ROOT} "${UNINSTALL_PATH}" "URLInfoAbout" "https://qtox.github.io"
@@ -354,6 +355,7 @@ Section Uninstall
   RMDir /r /REBOOTOK "$SMPROGRAMS\qTox"
  
   ;Remove registry keys
+  SetRegView 64
   DeleteRegKey ${REG_ROOT} "${REG_APP_PATH}"
   DeleteRegKey ${REG_ROOT} "${UNINSTALL_PATH}"
   DeleteRegKey HKCR "Applications\qtox.exe"

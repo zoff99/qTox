@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2017 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -39,21 +39,22 @@
 #include "src/widget/tool/flyoutoverlaywidget.h"
 #include "src/widget/translator.h"
 #include "src/widget/widget.h"
+#include "src/widget/searchform.h"
 
 #include <QClipboard>
 #include <QFileDialog>
 #include <QKeyEvent>
-#include <QShortcut>
+#include <QMessageBox>
+#include <QStringBuilder>
+
+#ifdef SPELL_CHECKING
+#include <KF5/SonnetUi/sonnet/spellcheckdecorator.h>
+#endif
 
 /**
  * @class GenericChatForm
  * @brief Parent class for all chatforms. It's provide the minimum required UI
  * elements and methods to work with chat messages.
- *
- * TODO: reword
- * @var GenericChatForm::historyBaselineDate
- * @brief Used by HistoryKeeper to load messages from t to historyBaselineDate
- *        (excluded)
  */
 
 #define SET_STYLESHEET(x) (x)->setStyleSheet(Style::getStylesheet(":/ui/" #x "/" #x ".css"))
@@ -128,15 +129,17 @@ QPushButton* createButton(const QString& name, T* self, Fun onClickSlot)
 
 }
 
-GenericChatForm::GenericChatForm(QWidget* parent)
+GenericChatForm::GenericChatForm(const Contact* contact, QWidget* parent)
     : QWidget(parent, Qt::Window)
     , audioInputFlag(false)
     , audioOutputFlag(false)
 {
     curRow = 0;
     headWidget = new ChatFormHeader();
+    searchForm = new SearchForm();
     chatWidget = new ChatLog(this);
     chatWidget->setBusyNotification(ChatMessage::createBusyNotification());
+    searchForm->hide();
 
     // settings
     const Settings& s = Settings::getInstance();
@@ -144,11 +147,16 @@ GenericChatForm::GenericChatForm(QWidget* parent)
     connect(&s, &Settings::chatMessageFontChanged, this, &GenericChatForm::onChatMessageFontChanged);
 
     msgEdit = new ChatTextEdit();
+#ifdef SPELL_CHECKING
+    if (s.getSpellCheckingEnabled()) {
+        decorator = new Sonnet::SpellCheckDecorator(msgEdit);
+    }
+#endif
 
     sendButton = createButton("sendButton", this, &GenericChatForm::onSendTriggered);
     emoteButton = createButton("emoteButton", this, &GenericChatForm::onEmoteButtonClicked);
 
-    fileButton = createButton("fileButton", this, &GenericChatForm::onSendTriggered);
+    fileButton = createButton("fileButton", this, &GenericChatForm::onAttachClicked);
     screenshotButton = createButton("screenshotButton", this, &GenericChatForm::onScreenshotClicked);
 
     // TODO: Make updateCallButtons (see ChatForm) abstract
@@ -190,27 +198,43 @@ GenericChatForm::GenericChatForm(QWidget* parent)
     mainFootLayout->setSpacing(0);
 
     QVBoxLayout* contentLayout = new QVBoxLayout(contentWidget);
+    contentLayout->addWidget(searchForm);
     contentLayout->addWidget(chatWidget);
     contentLayout->addLayout(mainFootLayout);
 
+    quoteAction = menu.addAction(QIcon(), QString(), this, SLOT(quoteSelectedText()),
+                                 QKeySequence(Qt::ALT + Qt::Key_Q));
+    addAction(quoteAction);
+    menu.addSeparator();
+
+    searchAction = menu.addAction(QIcon(), QString(), this, SLOT(searchFormShow()),
+                                  QKeySequence(Qt::CTRL + Qt::Key_F));
+    addAction(searchAction);
+
+    menu.addSeparator();
+
     menu.addActions(chatWidget->actions());
     menu.addSeparator();
-    saveChatAction =
-        menu.addAction(QIcon::fromTheme("document-save"), QString(), this, SLOT(onSaveLogClicked()));
-    clearAction =
-        menu.addAction(QIcon::fromTheme("edit-clear"), QString(), this, SLOT(clearChatArea(bool)));
 
-    quoteAction = menu.addAction(QIcon(), QString(), this, SLOT(quoteSelectedText()));
+    saveChatAction = menu.addAction(QIcon::fromTheme("document-save"), QString(),
+                                    this, SLOT(onSaveLogClicked()));
+    clearAction = menu.addAction(QIcon::fromTheme("edit-clear"), QString(),
+                                 this, SLOT(clearChatArea(bool)),
+                                 QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_L));
+    addAction(clearAction);
 
     copyLinkAction = menu.addAction(QIcon(), QString(), this, SLOT(copyLink()));
-
     menu.addSeparator();
 
     connect(chatWidget, &ChatLog::customContextMenuRequested, this,
             &GenericChatForm::onChatContextMenuRequested);
 
-    new QShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_L, this, SLOT(clearChatArea()));
-    new QShortcut(Qt::ALT + Qt::Key_Q, this, SLOT(quoteSelectedText()));
+    connect(searchForm, &SearchForm::searchInBegin, this, &GenericChatForm::searchInBegin);
+    connect(searchForm, &SearchForm::searchUp, this, &GenericChatForm::onSearchUp);
+    connect(searchForm, &SearchForm::searchDown, this, &GenericChatForm::onSearchDown);
+    connect(searchForm, &SearchForm::visibleChanged, this, &GenericChatForm::onSearchTriggered);
+
+    connect(chatWidget, &ChatLog::workerTimeoutFinished, this, &GenericChatForm::onContinueSearch);
 
     chatWidget->setStyleSheet(Style::getStylesheet(":/ui/chatArea/chatArea.css"));
     headWidget->setStyleSheet(Style::getStylesheet(":/ui/chatArea/chatHead.css"));
@@ -223,12 +247,16 @@ GenericChatForm::GenericChatForm(QWidget* parent)
     retranslateUi();
     Translator::registerHandler(std::bind(&GenericChatForm::retranslateUi, this), this);
 
+    // update header on name/title change
+    connect(contact, &Contact::displayedNameChanged, this, &GenericChatForm::setName);
+
     netcam = nullptr;
 }
 
 GenericChatForm::~GenericChatForm()
 {
     Translator::unregister(this);
+    delete searchForm;
 }
 
 void GenericChatForm::adjustFileMenuPosition()
@@ -285,16 +313,24 @@ void GenericChatForm::show(ContentLayout* contentLayout)
 void GenericChatForm::showEvent(QShowEvent*)
 {
     msgEdit->setFocus();
+    headWidget->showCallConfirm();
 }
 
 bool GenericChatForm::event(QEvent* e)
 {
     // If the user accidentally starts typing outside of the msgEdit, focus it automatically
-    if (e->type() == QEvent::KeyRelease && !msgEdit->hasFocus()) {
+    if (e->type() == QEvent::KeyPress) {
         QKeyEvent* ke = static_cast<QKeyEvent*>(e);
         if ((ke->modifiers() == Qt::NoModifier || ke->modifiers() == Qt::ShiftModifier)
-            && !ke->text().isEmpty())
-            msgEdit->setFocus();
+                && !ke->text().isEmpty()) {
+            if (searchForm->isHidden()) {
+                msgEdit->sendKeyEvent(ke);
+                msgEdit->setFocus();
+            } else {
+                searchForm->insertEditor(ke->text());
+                searchForm->setFocusEditor();
+            }
+        }
     }
     return QWidget::event(e);
 }
@@ -446,7 +482,7 @@ void GenericChatForm::onEmoteInsertRequested(QString str)
 
 void GenericChatForm::onSaveLogClicked()
 {
-    QString path = QFileDialog::getSaveFileName(0, tr("Save chat log"));
+    QString path = QFileDialog::getSaveFileName(Q_NULLPTR, tr("Save chat log"));
     if (path.isEmpty())
         return;
 
@@ -459,17 +495,16 @@ void GenericChatForm::onSaveLogClicked()
     for (ChatLine::Ptr l : lines) {
         Timestamp* rightCol = qobject_cast<Timestamp*>(l->getContent(2));
 
-        if (!rightCol)
-            break;
-
         ChatLineContent* middleCol = l->getContent(1);
         ChatLineContent* leftCol = l->getContent(0);
 
-        QString timestamp = rightCol->getTime().isNull() ? tr("Not sent") : rightCol->getText();
-        QString nick = leftCol->getText();
+        QString nick = leftCol->getText().isNull() ? tr("[System message]") : leftCol->getText();
+
         QString msg = middleCol->getText();
 
-        plainText += QString("[%2] %1\n%3\n\n").arg(nick, timestamp, msg);
+        QString timestamp = (rightCol == nullptr) ? tr("Not sent") : rightCol->getText();
+
+        plainText += QString{nick % "\t" % timestamp % "\t" % msg % "\n"};
     }
 
     file.write(plainText.toUtf8());
@@ -516,6 +551,108 @@ void GenericChatForm::addSystemDateMessage()
     insertChatMessage(ChatMessage::createChatInfoMessage(dateText, ChatMessage::INFO, QDateTime()));
 }
 
+void GenericChatForm::disableSearchText()
+{
+    if (searchPoint != QPoint(1, -1)) {
+        QVector<ChatLine::Ptr> lines = chatWidget->getLines();
+        int numLines = lines.size();
+        int index = numLines - searchPoint.x();
+        if (index >= 0 && numLines > index) {
+            ChatLine::Ptr l = lines[index];
+            if (l->getColumnCount() >= 2) {
+                ChatLineContent* content = l->getContent(1);
+                Text* text = static_cast<Text*>(content);
+                text->deselectText();
+            }
+        }
+    }
+}
+
+bool GenericChatForm::searchInText(const QString& phrase, bool searchUp)
+{
+    bool isSearch = false;
+
+    if (phrase.isEmpty()) {
+        disableSearchText();
+    }
+
+    QVector<ChatLine::Ptr> lines = chatWidget->getLines();
+
+    if (lines.isEmpty()) {
+        return isSearch;
+    }
+
+    int numLines = lines.size();
+    int startLine = numLines - searchPoint.x();
+
+    if (startLine < 0 || startLine >= numLines) {
+        return isSearch;
+    }
+
+    for (int i = startLine; searchUp ? i >= 0 : i < numLines; searchUp ? --i : ++i) {
+        ChatLine::Ptr l = lines[i];
+
+        if (l->getColumnCount() < 2) {
+            continue;
+        }
+
+        ChatLineContent* content = l->getContent(1);
+        Text* text = static_cast<Text*>(content);
+
+        if (searchUp && searchPoint.y() == 0) {
+            text->deselectText();
+            searchPoint.setY(-1);
+
+            continue;
+        }
+
+        QString txt = content->getText();
+
+        if (!txt.contains(phrase, Qt::CaseInsensitive)) {
+            continue;
+        }
+
+        int index = indexForSearchInLine(txt, phrase, searchUp);
+        if ((index == -1 && searchPoint.y() > -1)) {
+            text->deselectText();
+            searchPoint.setY(-1);
+        } else {
+            chatWidget->scrollToLine(l);
+            text->deselectText();
+            text->selectText(phrase, index);
+            searchPoint = QPoint(numLines - i, index);
+            isSearch = true;
+
+            break;
+        }
+    }
+
+    return isSearch;
+}
+
+int GenericChatForm::indexForSearchInLine(const QString& txt, const QString& phrase, bool searchUp)
+{
+    int index = 0;
+
+    if (searchUp) {
+        int startIndex = -1;
+        if (searchPoint.y() > -1) {
+            startIndex = searchPoint.y() - 1;
+        }
+
+        index = txt.lastIndexOf(phrase, startIndex, Qt::CaseInsensitive);
+    } else {
+        int startIndex = 0;
+        if (searchPoint.y() > -1) {
+            startIndex = searchPoint.y() + 1;
+        }
+
+        index = txt.indexOf(phrase, startIndex, Qt::CaseInsensitive);
+    }
+
+    return index;
+}
+
 void GenericChatForm::clearChatArea()
 {
     clearChatArea(true);
@@ -523,6 +660,13 @@ void GenericChatForm::clearChatArea()
 
 void GenericChatForm::clearChatArea(bool notinform)
 {
+    QMessageBox::StandardButton mboxResult =
+        QMessageBox::question(this, tr("Confirmation"),
+                              tr("You are sure that you want to clear all displayed messages?"),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+    if (mboxResult == QMessageBox::No) {
+        return;
+    }
     chatWidget->clear();
     previousId = ToxPk();
 
@@ -530,7 +674,6 @@ void GenericChatForm::clearChatArea(bool notinform)
         addSystemInfoMessage(tr("Cleared"), ChatMessage::INFO, QDateTime::currentDateTime());
 
     earliestMessage = QDateTime(); // null
-    historyBaselineDate = QDateTime::currentDateTime();
 
     emit chatAreaCleared();
 }
@@ -652,6 +795,43 @@ void GenericChatForm::copyLink()
     QApplication::clipboard()->setText(linkText);
 }
 
+void GenericChatForm::searchFormShow()
+{
+    if (searchForm->isHidden()) {
+        searchForm->show();
+        searchForm->setFocusEditor();
+    }
+}
+
+void GenericChatForm::onSearchTriggered()
+{
+    if (searchForm->isHidden()) {
+        searchForm->removeSearchPhrase();
+
+        disableSearchText();
+    } else {
+        searchPoint = QPoint(1, -1);
+        searchAfterLoadHistory = false;
+    }
+}
+
+void GenericChatForm::searchInBegin(const QString& phrase)
+{
+    disableSearchText();
+
+    searchPoint = QPoint(1, -1);
+    onSearchUp(phrase);
+}
+
+void GenericChatForm::onContinueSearch()
+{
+    QString phrase = searchForm->getSearchPhrase();
+    if (!phrase.isEmpty() && searchAfterLoadHistory) {
+        searchAfterLoadHistory = false;
+        onSearchUp(phrase);
+    }
+}
+
 void GenericChatForm::retranslateUi()
 {
     sendButton->setToolTip(tr("Send message"));
@@ -662,6 +842,7 @@ void GenericChatForm::retranslateUi()
     clearAction->setText(tr("Clear displayed messages"));
     quoteAction->setText(tr("Quote selected text"));
     copyLinkAction->setText(tr("Copy link address"));
+    searchAction->setText(tr("Search in text"));
 }
 
 void GenericChatForm::showNetcam()

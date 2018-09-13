@@ -1,5 +1,5 @@
 /*
-    Copyright © 2017 by The qTox Project Contributors
+    Copyright © 2017-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -49,7 +49,7 @@ public:
     virtual QString getProfileName() const = 0;
     virtual RenameResult renameProfile(const QString& name) = 0;
     virtual SaveResult exportProfile(const QString& path) const = 0;
-    virtual QVector<QString> removeProfile() = 0;
+    virtual QStringList removeProfile() = 0;
     virtual void logout() = 0;
 
     virtual void copyQr(const QImage& image) const = 0;

@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -36,10 +36,10 @@ class GenericChatroomWidget : public GenericChatItemWidget
 public:
     explicit GenericChatroomWidget(bool compact, QWidget* parent = 0);
 
+public slots:
     virtual void setAsActiveChatroom() = 0;
     virtual void setAsInactiveChatroom() = 0;
     virtual void updateStatusLight() = 0;
-    virtual void setChatForm(ContentLayout* contentLayout) = 0;
     virtual void resetEventFlags() = 0;
     virtual QString getStatusString() const = 0;
     virtual const Friend* getFriend() const
@@ -54,7 +54,6 @@ public:
     virtual bool eventFilter(QObject*, QEvent*) final override;
 
     bool isActive();
-    void setActive(bool active);
 
     void setName(const QString& name);
     void setStatusMsg(const QString& status);
@@ -63,21 +62,22 @@ public:
 
     void reloadTheme();
 
-public slots:
+    void activate();
     void compactChange(bool compact);
 
 signals:
     void chatroomWidgetClicked(GenericChatroomWidget* widget);
     void newWindowOpened(GenericChatroomWidget* widget);
+    void middleMouseClicked();
 
 protected:
-    virtual void mouseReleaseEvent(QMouseEvent* event) override;
-    virtual void enterEvent(QEvent* e) override;
-    virtual void leaveEvent(QEvent* e) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+    void enterEvent(QEvent* e) override;
+    void leaveEvent(QEvent* e) override;
+    void setActive(bool active);
 
+protected:
     QPoint dragStartPos;
-
-protected:
     QColor lastColor;
     QHBoxLayout* mainLayout = nullptr;
     QVBoxLayout* textLayout = nullptr;

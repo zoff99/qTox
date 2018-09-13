@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -231,7 +231,7 @@ static inline bool checkIsValidId(const QString& id)
 
 void AddFriendForm::onImportOpenClicked()
 {
-    const QString path = QFileDialog::getOpenFileName(tabWidget, tr("Open contact list"));
+    const QString path = QFileDialog::getOpenFileName(Q_NULLPTR, tr("Open contact list"));
     if (path.isEmpty()) {
         return;
     }
@@ -245,17 +245,19 @@ void AddFriendForm::onImportOpenClicked()
     }
 
     contactsToImport = QString::fromUtf8(contactFile.readAll()).split('\n');
-    QMutableListIterator<QString> it(contactsToImport);
     qDebug() << "Import list:";
-    while (it.hasNext()) {
-        const QString id = it.value().trimmed();
-        const bool valid = !id.isEmpty() && checkIsValidId(id);
-        if (valid) {
-            it.value() = id;
+    for (auto it = contactsToImport.begin(); it != contactsToImport.end();) {
+        const QString id = it->trimmed();
+        if (checkIsValidId(id)) {
+            *it = id;
+            qDebug() << *it;
+            ++it;
         } else {
-            it.remove();
+            if (!id.isEmpty()) {
+                qDebug() << "Invalid ID:" << *it;
+            }
+            it = contactsToImport.erase(it);
         }
-        qDebug() << it.next();
     }
 
     if (contactsToImport.isEmpty()) {

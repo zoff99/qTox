@@ -1,125 +1,134 @@
-# Cross-compile from Linux
+# Cross-compile from Linux to Windows
 
 ## Intro
 
-Following these instructions you will be able to cross-compile qTox to Windows.
+Following these instructions you will be able to cross-compile qTox for
+Windows.
 
-This script can be used by qTox power users to cross-compile qTox themselves,as
- well as by qTox developers to make sure their local changes don't break
-cross-compilation to Windows.
+This script can be used by qTox users and devs to compile qTox for Windows
+themselves.
 
-Note that the compilation script doesn't build the updater and doesn't produce
-an installer.
+Please note that the compilation script doesn't build the updater.
 
 ## Usage
 
-[Install Docker](https://docs.docker.com/engine/installation/linux/).
+[Install Docker](https://docs.docker.com/install).
 
-You should have 3 directories available (names don't have to match the given
-ones):
+Create 2 directories:
 
-1. `workspace` -- a directory that will contain a cache of qTox dependencies
-and the final qTox cross-compilation build. You should create this directory.
-2. `script` -- a directory that contains the `build.sh` script. You can use
-this directory for this, there is no need to create a new one.
-3. `qtox` -- a root directory of a qTox repository. This directory contains
-qTox source code that will be cross-compiled. You can use the root of this qTox
-repository, there is no need to create a new one.
+  * `workspace` -- a directory that will contain a cache of qTox dependencies
+  and the final qTox cross-compilation build. You should create this directory.
 
-These directories will be mounted inside a Docker container at `/workspace`,
-`/script` and `/qtox`.
+  * `qtox` -- the root directory of a qTox repository. This directory must
+  contain the qTox source code that will be cross-compiled.
 
-The contents of `qtox` and `script` directories wouldn't be modified. The
-`build.sh` script actually makes a copy of `qtox` directory and works on that
-copy.
+These directories will be mounted inside a Docker container at `/workspace` and
+`/qtox`.
+
+> Note:
+>    The contents of `qtox` directory are not modified during compilation. The
+>    `build.sh` script makes a temporary copy of the `qtox` directory for the
+>    compilation.
 
 Once you sort out the directories, you are ready to run the `build.sh` script
 in a Docker container.
 
-Note that the `build.sh` script takes 2 arguments: architecture and build type.
-Valid values for the architecture are `i686` for 32-bit and `x86_64` for
-64-bit. Valid values for the build type are `release` and `debug`. All case
-sensitive.
+> Note:
+>     The`build.sh` script takes 2 arguments: architecture and build type.
+>     Valid values for the architecture are `i686` for 32-bit and `x86_64` for
+>     64-bit. Valid values for the build type are `release` and `debug`. All
+>     case sensitive.
 
-Now, to start the cross-compilation, for example, for a 32-bit release qTox, run
+To start cross-compiling for 32-bit release version of qTox run:
 
 ```sh
 sudo docker run --rm \
                 -v /absolute/path/to/your/workspace:/workspace \
-                -v /absolute/path/to/your/script:/script \
                 -v /absolute/path/to/your/qtox:/qtox \
                 debian:stretch-slim \
-                /bin/bash /script/build.sh i686 release
+                /bin/bash /qtox/windows/cross-compile/build.sh i686 release
 ```
 
-If you are a qTox developer, you might want to instead run
+If you want to debug some compilation issue, you might want to instead run:
 
 ```sh
 # Get shell inside Debian Stretch container so that you can poke around if needed
 sudo docker run -it \
                 --rm \
                 -v /absolute/path/to/your/workspace:/workspace \
-                -v /absolute/path/to/your/script:/script \
                 -v /absolute/path/to/your/qtox:/qtox \
                 debian:stretch-slim \
                 /bin/bash
 # Run the script
-bash /script/build.sh i686 release
+bash /qtox/windows/cross-compile/build.sh i686 release
 ```
 
-This will cross-compile all of the qTox dependencies and qTox itself, storing
+These will cross-compile all of the qTox dependencies and qTox itself, storing
 them in the `workspace` directory. The first time you run it for each
 architecture, it will take a long time for the cross-compilation to finish, as
-qTox has a lot of dependencies that need to be cross-compiled. It takes my
-Intel Core i7 processor about 125 minutes for the cross-compilation to get done
-on a single core, and about 30 minutes using all 8 hyperthreads. But once you
-do it once for each architecture, the dependencies will get cached inside the
+qTox has a lot of dependencies that need to be cross-compiled. But once you do
+it once for each architecture, the dependencies will get cached inside the
 `workspace` directory, and the next time you build qTox, the `build.sh` script
 will skip recompiling them, going straight to compiling qTox, which is a lot
-faster -- about 8 minutes on a single core and 2 minutes using 8 hyperthreads.
+faster.
 
-The structure of `workspace` directory that the `build.sh` script will create
-is as follows:
+> Note:
+>     On a certain Intel Core i7 processor, a fresh build takes about 125
+>     minutes on a single core, and about 30 minutes using all 8 hyperthreads.
+>     Once built, however, it takes about 8 minutes on a single core and 2
+>     minutes using 8 hyperthreads to rebuild using the cached dependencies.
+
+After cross-compiling has finished, you should find the comiled qTox in a
+`workspace/i686/qtox` or `workspace/x86_64/qtox` directory, depending on the
+architecture.
+
+You will also find `workspace/dep-cache` directory, where all the
+cross-compiled qTox dependencies will be cached for the future builds. You can
+remove any directory inside the `dep-cache`, which will result in the
+`build.sh` re-compiling the removed dependency only.
+
+The `workspace` direcory structure for reference:
 
 ```
 workspace
 ├── i686
-│   ├── dep-cache
-│   │   ├── libffmpeg
-│   │   ├── libfilteraudio
-│   │   ├── libopenal
-│   │   ├── libopenssl
-│   │   ├── libopus
-│   │   ├── libqrencode
-│   │   ├── libqt5
-│   │   ├── libsodium
-│   │   ├── libsqlcipher
-│   │   ├── libtoxcore
-│   │   └── libvpx
-│   └── qtox
-│       ├── debug
-│       └── release
+│   ├── dep-cache
+│   │   ├── libexif
+│   │   ├── libffmpeg
+│   │   ├── libfilteraudio
+│   │   ├── libopenal
+│   │   ├── libopenssl
+│   │   ├── libopus
+│   │   ├── libqrencode
+│   │   ├── libqt5
+│   │   ├── libsodium
+│   │   ├── libsqlcipher
+│   │   ├── libtoxcore
+│   │   ├── libvpx
+│   │   ├── mingw-w64-debug-scripts
+│   │   ├── nsis
+│   │   └── nsis_shellexecuteasuser
+│   └── qtox
+│       ├── debug
+│       └── release
 └── x86_64
     ├── dep-cache
-    │   ├── libffmpeg
-    │   ├── libfilteraudio
-    │   ├── libopenal
-    │   ├── libopenssl
-    │   ├── libopus
-    │   ├── libqrencode
-    │   ├── libqt5
-    │   ├── libsodium
-    │   ├── libsqlcipher
-    │   ├── libtoxcore
-    │   └── libvpx
+    │   ├── libexif
+    │   ├── libffmpeg
+    │   ├── libfilteraudio
+    │   ├── libopenal
+    │   ├── libopenssl
+    │   ├── libopus
+    │   ├── libqrencode
+    │   ├── libqt5
+    │   ├── libsodium
+    │   ├── libsqlcipher
+    │   ├── libtoxcore
+    │   ├── libvpx
+    │   ├── mingw-w64-debug-scripts
+    │   ├── nsis
+    │   └── nsis_shellexecuteasuser
     └── qtox
         ├── debug
         └── release
 ```
-
-The `dep-cache` directory is where all cross-compiled qTox dependencies will be
-cached for the future runs. You can remove any directory inside `deps`, which
-will result in the `build.sh` re-compiling the missing dependency.
-
-The `qtox` directory, split into `debug` and `release`, is where the
-cross-compiled qTox will be stored.

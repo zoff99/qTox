@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2013 by Maxim Biro <nurupo.contributions@gmail.com>
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -25,8 +25,8 @@
 #include <QObject>
 #include <atomic>
 #include <memory>
+#include <tox/tox.h> // for TOX_VERSION_IS_API_COMPATIBLE macro
 #include <tox/toxav.h>
-
 
 class Friend;
 class Group;
@@ -56,12 +56,12 @@ public:
     bool isCallActive(const Group* g) const;
     bool isCallVideoEnabled(const Friend* f) const;
     bool sendCallAudio(uint32_t friendNum, const int16_t* pcm, size_t samples, uint8_t chans,
-                       uint32_t rate);
+                       uint32_t rate) const;
     void sendCallVideo(uint32_t friendNum, std::shared_ptr<VideoFrame> frame);
     bool sendGroupCallAudio(int groupNum, const int16_t* pcm, size_t samples, uint8_t chans,
-                            uint32_t rate);
+                            uint32_t rate) const;
 
-    VideoSource* getVideoSourceFromCall(int callNumber);
+    VideoSource* getVideoSourceFromCall(int callNumber) const;
     void invalidateCallSources();
     void sendNoVideo();
 
@@ -77,10 +77,16 @@ public:
     bool isCallOutputMuted(const Friend* f) const;
     void toggleMuteCallInput(const Friend* f);
     void toggleMuteCallOutput(const Friend* f);
-
+#if TOX_VERSION_IS_API_COMPATIBLE(0, 2, 0)
+    static void groupCallCallback(void* tox, uint32_t group, uint32_t peer, const int16_t* data,
+                                  unsigned samples, uint8_t channels, uint32_t sample_rate,
+                                  void* core);
+#else
     static void groupCallCallback(void* tox, int group, int peer, const int16_t* data, unsigned samples,
                                   uint8_t channels, unsigned sample_rate, void* core);
+#endif
     static void invalidateGroupCallPeerSource(int group, int peer);
+    static void invalidateGroupCallSources(int group);
 
 public slots:
     bool startCall(uint32_t friendNum, bool video);
@@ -100,6 +106,8 @@ private slots:
     static void stateCallback(ToxAV*, uint32_t friendNum, uint32_t state, void* self);
     static void bitrateCallback(ToxAV* toxAV, uint32_t friendNum, uint32_t arate, uint32_t vrate,
                                 void* self);
+    static void audioBitrateCallback(ToxAV* toxAV, uint32_t friendNum, uint32_t rate, void* self);
+    static void videoBitrateCallback(ToxAV* toxAV, uint32_t friendNum, uint32_t rate, void* self);
     void killTimerFromThread();
 
 private:
@@ -112,7 +120,7 @@ private:
                                    int32_t ystride, int32_t ustride, int32_t vstride, void* self);
 
 private:
-    static constexpr uint32_t VIDEO_DEFAULT_BITRATE = 500; // 4000; // also ok: 8000; // works good: 2500;
+    static constexpr uint32_t VIDEO_DEFAULT_BITRATE = 2500;
 
 private:
     ToxAV* toxav;

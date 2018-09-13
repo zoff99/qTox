@@ -1,5 +1,5 @@
 /*
-    Copyright © 2015-2016 by The qTox Project Contributors
+    Copyright © 2015-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -78,10 +78,11 @@ public:
                        const QDateTime& time, bool isSent, QString dispName,
                        const std::function<void(int64_t)>& insertIdCallback = {});
 
-    QList<HistMessage> getChatHistory(const QString& friendPk, const QDateTime& from,
+    QList<HistMessage> getChatHistoryFromDate(const QString& friendPk, const QDateTime& from,
                                       const QDateTime& to);
-
+    QList<HistMessage> getChatHistoryDefaultNum(const QString& friendPk);
     QList<DateMessages> getChatHistoryCounts(const ToxPk& friendPk, const QDate& from, const QDate& to);
+    QDateTime getDateWhereFindPhrase(const QString& friendPk, const QDateTime& from, QString phrase);
 
     void markAsSent(qint64 messageId);
 
@@ -92,6 +93,8 @@ protected:
                               QString dispName, std::function<void(int64_t)> insertIdCallback = {});
 
 private:
+    QList<HistMessage> getChatHistory(const QString& friendPk, const QDateTime& from,
+                                      const QDateTime& to, int numMessages);
     std::shared_ptr<RawDatabase> db;
     QHash<QString, int64_t> peers;
 };

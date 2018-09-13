@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# additional flags for apt-get, used for CI
+readonly APT_FLAGS=$1
+readonly WITHOUT_SQLCIPHER=$2
+
 set -eu -o pipefail
 
 apt_install() {
@@ -14,7 +18,6 @@ apt_install() {
         libavdevice-dev
         libexif-dev
         libgdk-pixbuf2.0-dev
-        libglib2.0-dev
         libgtk2.0-dev
         libopenal-dev
         libopus-dev
@@ -22,7 +25,6 @@ apt_install() {
         libqt5opengl5-dev
         libqt5svg5-dev
         libsodium-dev
-        libsqlcipher-dev
         libtool
         libvpx-dev
         libxss-dev
@@ -32,7 +34,11 @@ apt_install() {
         qttools5-dev-tools
     )
 
-    sudo apt-get install "${apt_packages[@]}"
+    if [ "$WITHOUT_SQLCIPHER" != "True" ]; then
+        apt_packages+=("libsqlcipher-dev")
+    fi
+
+    sudo apt-get install $APT_FLAGS "${apt_packages[@]}"
 }
 
 pacman_install() {
@@ -112,6 +118,7 @@ zypper_install() {
         libavcodec-devel
         libavdevice-devel
         libopus-devel
+        libexif-devel
         libQt5Concurrent-devel
         libqt5-linguist
         libqt5-linguist-devel

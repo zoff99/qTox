@@ -24,11 +24,11 @@
 #include "maskablepixmapwidget.h"
 
 #include "src/core/core.h"
-#include "src/model/friend.h"
-#include "src/model/about/aboutfriend.h"
 #include "src/friendlist.h"
+#include "src/model/about/aboutfriend.h"
+#include "src/model/chatroom/friendchatroom.h"
+#include "src/model/friend.h"
 #include "src/model/group.h"
-#include "src/grouplist.h"
 #include "src/persistence/settings.h"
 #include "src/widget/about/aboutfriendform.h"
 #include "src/widget/form/chatform.h"
@@ -38,7 +38,6 @@
 
 #include <QApplication>
 #include <QBitmap>
-#include <QCollator>
 #include <QContextMenuEvent>
 #include <QDebug>
 #include <QDrag>
@@ -56,18 +55,22 @@
  * For example, used on friend list.
  * When you click should open the chat with friend. Widget has a context menu.
  */
-
-FriendWidget::FriendWidget(const Friend* f, bool compact)
+FriendWidget::FriendWidget(std::shared_ptr<FriendChatroom> chatroom, bool compact)
     : GenericChatroomWidget(compact)
-    , frnd{f}
+    , chatroom{chatroom}
     , isDefaultAvatar{true}
 {
     avatar->setPixmap(QPixmap(":/img/contact.svg"));
-    statusPic.setPixmap(QPixmap(":/img/status/dot_offline.svg"));
+    statusPic.setPixmap(QPixmap(":/img/status/offline.svg"));
     statusPic.setMargin(3);
-    nameLabel->setText(f->getDisplayedName());
-    nameLabel->setTextFormat(Qt::PlainText);
-    connect(nameLabel, &CroppingLabel::editFinished, this, &FriendWidget::setAlias);
+
+    auto frnd = chatroom->getFriend();
+    nameLabel->setText(frnd->getDisplayedName());
+    // update alias when edited
+    connect(nameLabel, &CroppingLabel::editFinished, frnd, &Friend::setAlias);
+    // update on changes of the displayed name
+    connect(frnd, &Friend::displayedNameChanged, nameLabel, &CroppingLabel::setText);
+    connect(chatroom.get(), &FriendChatroom::activeChanged, this, &FriendWidget::setActive);
     statusMessageLabel->setTextFormat(Qt::PlainText);
 }
 
@@ -98,218 +101,238 @@ void FriendWidget::onContextMenuCalled(QContextMenuEvent* event)
     installEventFilter(this); // Disable leave event.
 
     QMenu menu;
-    QAction* openChatWindow = nullptr;
-    QAction* removeChatWindow = nullptr;
 
-    const uint32_t friendId = frnd->getId();
-    const ContentDialog* contentDialog = ContentDialog::getFriendDialog(friendId);
+    const auto frnd = chatroom->getFriend();
+    const auto friendId = frnd->getId();
+    const auto contentDialog = ContentDialog::getFriendDialog(friendId);
 
+    // TODO: move to model
     if (!contentDialog || contentDialog->chatroomWidgetCount() > 1) {
-        openChatWindow = menu.addAction(tr("Open chat in new window"));
+        const auto openChatWindow = menu.addAction(tr("Open chat in new window"));
+        connect(openChatWindow, &QAction::triggered, [=]() { emit newWindowOpened(this); });
     }
 
+    // TODO: move to model
     if (contentDialog && contentDialog->hasFriendWidget(friendId, this)) {
-        removeChatWindow = menu.addAction(tr("Remove chat from this window"));
+        const auto removeChatWindow = menu.addAction(tr("Remove chat from this window"));
+        connect(removeChatWindow, &QAction::triggered, this, &FriendWidget::removeChatWindow);
     }
 
     menu.addSeparator();
-    QMenu* inviteMenu = menu.addMenu(tr("Invite to group",
-                                        "Menu to invite a friend to a groupchat"));
-    inviteMenu->setEnabled(frnd->getStatus() != Status::Offline);
-    const QAction* newGroupAction = inviteMenu->addAction(tr("To new group"));
+    QMenu* inviteMenu =
+        menu.addMenu(tr("Invite to group", "Menu to invite a friend to a groupchat"));
+    inviteMenu->setEnabled(chatroom->canBeInvited());
+    const auto newGroupAction = inviteMenu->addAction(tr("To new group"));
+    connect(newGroupAction, &QAction::triggered, chatroom.get(), &FriendChatroom::inviteToNewGroup);
     inviteMenu->addSeparator();
-    QMap<const QAction*, const Group*> groupActions;
 
-    for (const Group* group : GroupList::getAllGroups()) {
-        const int maxNameLen = 30;
-        QString name = group->getName();
-        if (name.length() > maxNameLen) {
-            name = name.left(maxNameLen).trimmed() + "..";
-        }
-        const QAction* groupAction = inviteMenu->addAction(tr("Invite to group '%1'").arg(name));
-        groupActions[groupAction] = group;
+    for (const auto group : chatroom->getGroups()) {
+        const auto groupAction = inviteMenu->addAction(tr("Invite to group '%1'").arg(group.name));
+        connect(groupAction, &QAction::triggered, [=]() {
+            chatroom->inviteFriend(group.group);
+        });
     }
 
-    const Settings& s = Settings::getInstance();
-    const int circleId = s.getFriendCircleID(frnd->getPublicKey());
-    CircleWidget* circleWidget = CircleWidget::getFromID(circleId);
-    QWidget* w = circleWidget ? circleWidget : static_cast<QWidget*>(this);
-    FriendListWidget* friendList = qobject_cast<FriendListWidget*>(w->parentWidget());
+    const auto circleId = chatroom->getCircleId();
+    auto circleMenu =
+        menu.addMenu(tr("Move to circle...", "Menu to move a friend into a different circle"));
 
-    QMenu* circleMenu = menu.addMenu(tr("Move to circle...",
-                                        "Menu to move a friend into a different circle"));
+    const auto pk = frnd->getPublicKey();
+    const auto newCircleAction = circleMenu->addAction(tr("To new circle"));
+    connect(newCircleAction, &QAction::triggered, this, &FriendWidget::moveToNewCircle);
 
-    const QAction* newCircleAction = circleMenu->addAction(tr("To new circle"));
-
-    QAction* removeCircleAction = nullptr;
     if (circleId != -1) {
-        const QString circleName = s.getCircleName(circleId);
-        removeCircleAction = circleMenu->addAction(tr("Remove from circle '%1'").arg(circleName));
+        const auto circleName = chatroom->getCircleName();
+        const auto removeCircleAction =
+            circleMenu->addAction(tr("Remove from circle '%1'").arg(circleName));
+        connect(removeCircleAction, &QAction::triggered, this, &FriendWidget::removeFromCircle);
     }
 
     circleMenu->addSeparator();
 
-    QList<QAction*> circleActionList;
-    QMap<QAction*, int> circleActions;
-
-    for (int i = 0; i < s.getCircleCount(); ++i) {
-        if (i == circleId) {
-            continue;
-        }
-
-        const QString name = s.getCircleName(i);
-        QAction* action = new QAction(tr("Move  to circle \"%1\"").arg(name), circleMenu);
-        circleActionList.push_back(action);
-        circleActions[circleActionList.back()] = i;
+    for (const auto circle : chatroom->getOtherCircles()) {
+        QAction* action = new QAction(tr("Move  to circle \"%1\"").arg(circle.name), circleMenu);
+        connect(action, &QAction::triggered, [=]() { moveToCircle(circle.circleId); });
+        circleMenu->addAction(action);
     }
 
-    std::sort(circleActionList.begin(), circleActionList.end(),
-              [](const QAction* lhs, const QAction* rhs) -> bool {
-                  QCollator collator;
-                  collator.setNumericMode(true);
-                  return collator.compare(lhs->text(), rhs->text()) < 0;
-              });
-
-    circleMenu->addActions(circleActionList);
-
-    const QAction* setAlias = menu.addAction(tr("Set alias..."));
+    const auto setAlias = menu.addAction(tr("Set alias..."));
+    connect(setAlias, &QAction::triggered, nameLabel, &CroppingLabel::editBegin);
 
     menu.addSeparator();
-    QAction* autoAccept = menu.addAction(tr("Auto accept files from this friend",
-                                            "context menu entry"));
-    const ToxPk id = frnd->getPublicKey();
-    QString dir = s.getAutoAcceptDir(id);
+    auto autoAccept =
+        menu.addAction(tr("Auto accept files from this friend", "context menu entry"));
     autoAccept->setCheckable(true);
-    autoAccept->setChecked(!dir.isEmpty());
+    autoAccept->setChecked(!chatroom->autoAcceptEnabled());
+    connect(autoAccept, &QAction::triggered, this, &FriendWidget::changeAutoAccept);
     menu.addSeparator();
 
-    QAction* removeFriendAction = nullptr;
-
+    // TODO: move to model
     if (!contentDialog || !contentDialog->hasFriendWidget(friendId, this)) {
-        removeFriendAction = menu.addAction(tr("Remove friend",
-                                               "Menu to remove the friend from our friendlist"));
+        const auto removeAction =
+            menu.addAction(tr("Remove friend", "Menu to remove the friend from our friendlist"));
+        connect(removeAction, &QAction::triggered, this, [=]() { emit removeFriend(friendId); },
+                Qt::QueuedConnection);
     }
 
     menu.addSeparator();
-    const QAction* aboutWindow = menu.addAction(tr("Show details"));
+    const auto aboutWindow = menu.addAction(tr("Show details"));
+    connect(aboutWindow, &QAction::triggered, this, &FriendWidget::showDetails);
 
-    const QPoint pos = event->globalPos();
-    QAction* selectedItem = menu.exec(pos);
+    const auto pos = event->globalPos();
+    menu.exec(pos);
 
     removeEventFilter(this);
 
     if (!active) {
         setBackgroundRole(QPalette::Window);
     }
+}
 
-    if (!selectedItem) {
-        return;
+void FriendWidget::removeChatWindow()
+{
+    const auto frnd = chatroom->getFriend();
+    const auto friendId = frnd->getId();
+    ContentDialog* contentDialog = ContentDialog::getFriendDialog(friendId);
+    contentDialog->removeFriend(friendId);
+}
+
+namespace {
+
+std::tuple<CircleWidget*, FriendListWidget*> getCircleAndFriendList(const Friend* frnd, FriendWidget* fw)
+{
+    const auto pk = frnd->getPublicKey();
+    const auto circleId = Settings::getInstance().getFriendCircleID(pk);
+    auto circleWidget = CircleWidget::getFromID(circleId);
+    auto w = circleWidget ? static_cast<QWidget*>(circleWidget) : static_cast<QWidget*>(fw);
+    auto friendList = qobject_cast<FriendListWidget*>(w->parentWidget());
+    return std::make_tuple(circleWidget, friendList);
+}
+
+} // namespace
+
+void FriendWidget::moveToNewCircle()
+{
+    const auto frnd = chatroom->getFriend();
+    CircleWidget* circleWidget;
+    FriendListWidget* friendList;
+    std::tie(circleWidget, friendList) = getCircleAndFriendList(frnd, this);
+
+    if (circleWidget != nullptr) {
+        circleWidget->updateStatus();
     }
 
-    if (selectedItem == setAlias) {
-        nameLabel->editBegin();
-    } else if (selectedItem == removeFriendAction) {
-        emit removeFriend(friendId);
-    } else if (selectedItem == openChatWindow) {
-        emit newWindowOpened(this);
-    } else if (selectedItem == removeChatWindow) {
-        ContentDialog* contentDialog = ContentDialog::getFriendDialog(friendId);
-        contentDialog->removeFriend(friendId);
-    } else if (selectedItem == autoAccept) {
-        if (!autoAccept->isChecked()) {
-            qDebug() << "not checked";
-            autoAccept->setChecked(false);
-            Settings::getInstance().setAutoAcceptDir(id, "");
-        } else if (autoAccept->isChecked()) {
-            dir = QFileDialog::getExistingDirectory(
-                Q_NULLPTR, tr("Choose an auto accept directory", "popup title"), dir);
-
-            autoAccept->setChecked(true);
-            qDebug() << "Setting auto accept dir for" << friendId << "to" << dir;
-            Settings::getInstance().setAutoAcceptDir(id, dir);
-        }
-    } else if (selectedItem == aboutWindow) {
-        const Friend* const f = FriendList::findFriend(friendId);
-        const QPointer<IAboutFriend> about = new AboutFriend(f);
-        AboutFriendForm* aboutUser = new AboutFriendForm(about, Widget::getInstance());
-        aboutUser->show();
-    } else if (selectedItem == newGroupAction) {
-        const int groupId = Core::getInstance()->createGroup();
-        Core::getInstance()->groupInviteFriend(friendId, groupId);
-    } else if (selectedItem == newCircleAction) {
-        if (circleWidget != nullptr) {
-            circleWidget->updateStatus();
-        }
-
-        if (friendList != nullptr) {
-            friendList->addCircleWidget(this);
-        } else {
-            Settings::getInstance().setFriendCircleID(id, Settings::getInstance().addCircle());
-        }
-    } else if (groupActions.contains(selectedItem)) {
-        const Group* group = groupActions[selectedItem];
-        Core::getInstance()->groupInviteFriend(friendId, group->getId());
-    } else if (removeCircleAction != nullptr && selectedItem == removeCircleAction) {
-        if (friendList) {
-            friendList->moveWidget(this, frnd->getStatus(), true);
-        } else {
-            Settings::getInstance().setFriendCircleID(id, -1);
-        }
-
-        if (circleWidget) {
-            circleWidget->updateStatus();
-            Widget::getInstance()->searchCircle(circleWidget);
-        }
-    } else if (circleActions.contains(selectedItem)) {
-        CircleWidget* circle = CircleWidget::getFromID(circleActions[selectedItem]);
-
-        if (circle) {
-            circle->addFriendWidget(this, frnd->getStatus());
-            circle->setExpanded(true);
-            Widget::getInstance()->searchCircle(circle);
-            Settings::getInstance().savePersonal();
-        } else {
-            Settings::getInstance().setFriendCircleID(id, circleActions[selectedItem]);
-        }
-
-        if (circleWidget) {
-            circleWidget->updateStatus();
-            Widget::getInstance()->searchCircle(circleWidget);
-        }
+    if (friendList != nullptr) {
+        friendList->addCircleWidget(this);
+    } else {
+        const auto pk = frnd->getPublicKey();
+        auto& s = Settings::getInstance();
+        auto circleId = s.addCircle();
+        s.setFriendCircleID(pk, circleId);
     }
+}
+
+void FriendWidget::removeFromCircle()
+{
+    const auto frnd = chatroom->getFriend();
+    CircleWidget* circleWidget;
+    FriendListWidget* friendList;
+    std::tie(circleWidget, friendList) = getCircleAndFriendList(frnd, this);
+
+    if (friendList != nullptr) {
+        friendList->moveWidget(this, frnd->getStatus(), true);
+    } else {
+        const auto pk = frnd->getPublicKey();
+        auto& s = Settings::getInstance();
+        s.setFriendCircleID(pk, -1);
+    }
+
+    if (circleWidget != nullptr) {
+        circleWidget->updateStatus();
+        Widget::getInstance()->searchCircle(circleWidget);
+    }
+}
+
+void FriendWidget::moveToCircle(int newCircleId)
+{
+    const auto frnd = chatroom->getFriend();
+    const auto pk = frnd->getPublicKey();
+    const auto oldCircleId = Settings::getInstance().getFriendCircleID(pk);
+    auto& s = Settings::getInstance();
+    auto oldCircleWidget = CircleWidget::getFromID(oldCircleId);
+    auto newCircleWidget = CircleWidget::getFromID(newCircleId);
+
+    if (newCircleWidget) {
+        newCircleWidget->addFriendWidget(this, frnd->getStatus());
+        newCircleWidget->setExpanded(true);
+        Widget::getInstance()->searchCircle(newCircleWidget);
+        s.savePersonal();
+    } else {
+        s.setFriendCircleID(pk, newCircleId);
+    }
+
+    if (oldCircleWidget) {
+        oldCircleWidget->updateStatus();
+        Widget::getInstance()->searchCircle(oldCircleWidget);
+    }
+}
+
+void FriendWidget::changeAutoAccept(bool enable)
+{
+    if (enable) {
+        const auto oldDir = chatroom->getAutoAcceptDir();
+        const auto newDir = QFileDialog::getExistingDirectory(
+            Q_NULLPTR, tr("Choose an auto accept directory", "popup title"), oldDir);
+        chatroom->setAutoAcceptDir(newDir);
+    } else {
+        chatroom->disableAutoAccept();
+    }
+}
+void FriendWidget::showDetails()
+{
+    const auto frnd = chatroom->getFriend();
+    const auto iabout = new AboutFriend(frnd, &Settings::getInstance());
+    std::unique_ptr<IAboutFriend> about = std::unique_ptr<IAboutFriend>(iabout);
+    const auto aboutUser = new AboutFriendForm(std::move(about), Widget::getInstance());
+    aboutUser->show();
 }
 
 void FriendWidget::setAsActiveChatroom()
 {
     setActive(true);
-
-    if (isDefaultAvatar) {
-        avatar->setPixmap(QPixmap(":img/contact_dark.svg"));
-    }
 }
 
 void FriendWidget::setAsInactiveChatroom()
 {
     setActive(false);
+}
 
+void FriendWidget::setActive(bool active)
+{
+    GenericChatroomWidget::setActive(active);
     if (isDefaultAvatar) {
-        avatar->setPixmap(QPixmap(":img/contact.svg"));
+        const auto uri = active ? QStringLiteral(":img/contact_dark.svg")
+                                : QStringLiteral(":img/contact.svg");
+        avatar->setPixmap(QPixmap{uri});
     }
 }
 
 void FriendWidget::updateStatusLight()
 {
+    // clang-format off
     static const QString statuses[] = {
-        ":img/status/dot_online.svg",
-        ":img/status/dot_online_notification.svg",
-        ":img/status/dot_away.svg",
-        ":img/status/dot_away_notification.svg",
-        ":img/status/dot_busy.svg",
-        ":img/status/dot_busy_notification.svg",
-        ":img/status/dot_offline.svg",
-        ":img/status/dot_offline_notification.svg",
+        ":img/status/online.svg",
+        ":img/status/online_notification.svg",
+        ":img/status/away.svg",
+        ":img/status/away_notification.svg",
+        ":img/status/busy.svg",
+        ":img/status/busy_notification.svg",
+        ":img/status/offline.svg",
+        ":img/status/offline_notification.svg",
     };
+    // clang-format on
 
+    const auto frnd = chatroom->getFriend();
     const bool event = frnd->getEventFlag();
     const int index = static_cast<int>(frnd->getStatus()) * 2 + event;
     statusPic.setPixmap(QPixmap(statuses[index]));
@@ -325,11 +348,12 @@ void FriendWidget::updateStatusLight()
         Widget::getInstance()->updateFriendActivity(frnd);
     }
 
-    statusPic.setMargin(event ? 0 : 3);
+    statusPic.setMargin(event ? 1 : 3);
 }
 
 QString FriendWidget::getStatusString() const
 {
+    const auto frnd = chatroom->getFriend();
     const int status = static_cast<int>(frnd->getStatus());
     const bool event = frnd->getEventFlag();
 
@@ -345,11 +369,12 @@ QString FriendWidget::getStatusString() const
 
 const Friend* FriendWidget::getFriend() const
 {
-    return frnd;
+    return chatroom->getFriend();
 }
 
 void FriendWidget::search(const QString& searchString, bool hide)
 {
+    const auto frnd = chatroom->getFriend();
     searchName(searchString, hide);
     const Settings& s = Settings::getInstance();
     const uint32_t circleId = s.getFriendCircleID(frnd->getPublicKey());
@@ -359,24 +384,15 @@ void FriendWidget::search(const QString& searchString, bool hide)
     }
 }
 
-void FriendWidget::setChatForm(ContentLayout* contentLayout)
-{
-    ChatForm* form = frnd->getChatForm();
-    if (form) {
-        form->show(contentLayout);
-    }
-}
-
 void FriendWidget::resetEventFlags()
 {
-    // Hack to avoid edit const Friend. TODO: Repalce on emit
-    Friend* f = FriendList::findFriend(frnd->getId());
-    f->setEventFlag(false);
+    chatroom->resetEventFlags();
 }
 
-void FriendWidget::onAvatarChange(uint32_t friendId, const QPixmap& pic)
+void FriendWidget::onAvatarChange(const ToxPk& friendPk, const QPixmap& pic)
 {
-    if (friendId != frnd->getId()) {
+    const auto frnd = chatroom->getFriend();
+    if (friendPk != frnd->getPublicKey()) {
         return;
     }
 
@@ -384,9 +400,10 @@ void FriendWidget::onAvatarChange(uint32_t friendId, const QPixmap& pic)
     avatar->setPixmap(pic);
 }
 
-void FriendWidget::onAvatarRemoved(uint32_t friendId)
+void FriendWidget::onAvatarRemoved(const ToxPk& friendPk)
 {
-    if (friendId != frnd->getId()) {
+    const auto frnd = chatroom->getFriend();
+    if (friendPk != frnd->getPublicKey()) {
         return;
     }
 
@@ -421,12 +438,4 @@ void FriendWidget::mouseMoveEvent(QMouseEvent* ev)
         drag->setPixmap(avatar->getPixmap());
         drag->exec(Qt::CopyAction | Qt::MoveAction);
     }
-}
-
-void FriendWidget::setAlias(const QString& _alias)
-{
-    QString alias = _alias.left(tox_max_name_length());
-    // Hack to avoid edit const Friend. TODO: Repalce on emit
-    Friend* f = FriendList::findFriend(frnd->getId());
-    f->setAlias(alias);
 }

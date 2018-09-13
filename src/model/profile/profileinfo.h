@@ -1,5 +1,5 @@
 /*
-    Copyright © 2017 by The qTox Project Contributors
+    Copyright © 2017-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -40,7 +40,7 @@ public:
     QString getProfileName() const override;
     RenameResult renameProfile(const QString& name) override;
     SaveResult exportProfile(const QString& path) const override;
-    QVector<QString> removeProfile() override;
+    QStringList removeProfile() override;
     void logout() override;
 
     void copyQr(const QImage& image) const override;

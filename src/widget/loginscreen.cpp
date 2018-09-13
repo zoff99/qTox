@@ -1,5 +1,5 @@
 /*
-    Copyright © 2015 by The qTox Project Contributors
+    Copyright © 2015-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -20,7 +20,6 @@
 
 #include "loginscreen.h"
 #include "ui_loginscreen.h"
-#include "src/nexus.h"
 #include "src/persistence/profile.h"
 #include "src/persistence/profilelocker.h"
 #include "src/persistence/settings.h"
@@ -29,11 +28,12 @@
 #include "src/widget/tool/profileimporter.h"
 #include "src/widget/translator.h"
 #include <QDebug>
+#include <QDialog>
 #include <QMessageBox>
 #include <QToolButton>
 
-LoginScreen::LoginScreen(QWidget* parent)
-    : QWidget(parent)
+LoginScreen::LoginScreen(QString initialProfile, QWidget* parent)
+    : QDialog(parent)
     , ui(new Ui::LoginScreen)
     , quitShortcut{QKeySequence(Qt::CTRL + Qt::Key_Q), this}
 {
@@ -59,7 +59,7 @@ LoginScreen::LoginScreen(QWidget* parent)
     connect(ui->autoLoginCB, &QCheckBox::stateChanged, this, &LoginScreen::onAutoLoginToggled);
     connect(ui->importButton, &QPushButton::clicked, this, &LoginScreen::onImportProfile);
 
-    reset();
+    reset(initialProfile);
     this->setStyleSheet(Style::getStylesheet(":/ui/loginScreen/loginScreen.css"));
 
     retranslateUi();
@@ -75,7 +75,7 @@ LoginScreen::~LoginScreen()
 /**
  * @brief Resets the UI, clears all fields.
  */
-void LoginScreen::reset()
+void LoginScreen::reset(QString initialProfile)
 {
     ui->newUsername->clear();
     ui->newPass->clear();
@@ -84,12 +84,15 @@ void LoginScreen::reset()
     ui->loginUsernames->clear();
 
     Profile::scanProfiles();
-    QString lastUsed = Settings::getInstance().getCurrentProfile();
-    QVector<QString> profiles = Profile::getProfiles();
+    if (initialProfile.isEmpty()) {
+        initialProfile = Settings::getInstance().getCurrentProfile();
+    }
+    QStringList profiles = Profile::getProfiles();
     for (QString profile : profiles) {
         ui->loginUsernames->addItem(profile);
-        if (profile == lastUsed)
+        if (profile == initialProfile) {
             ui->loginUsernames->setCurrentIndex(ui->loginUsernames->count() - 1);
+        }
     }
 
     if (profiles.isEmpty()) {
@@ -105,6 +108,11 @@ void LoginScreen::reset()
     ui->autoLoginCB->blockSignals(false);
 }
 
+Profile *LoginScreen::getProfile() const
+{
+    return profile;
+}
+
 bool LoginScreen::event(QEvent* event)
 {
     switch (event->type()) {
@@ -117,7 +125,6 @@ bool LoginScreen::event(QEvent* event)
     default:
         break;
     }
-
 
     return QWidget::event(event);
 }
@@ -167,19 +174,16 @@ void LoginScreen::onCreateNewProfile()
         return;
     }
 
-    Profile* profile = Profile::createProfile(name, pass);
+    profile = Profile::createProfile(name, pass);
     if (!profile) {
         // Unknown error
         QMessageBox::critical(this, tr("Couldn't create a new profile"),
                               tr("Unknown error: Couldn't create a new profile.\nIf you "
                                  "encountered this error, please report it."));
+        done(-1);
         return;
     }
-
-    Nexus& nexus = Nexus::getInstance();
-
-    nexus.setProfile(profile);
-    nexus.showMainGUI();
+    done(0);
 }
 
 void LoginScreen::onLoginUsernameSelected(const QString& name)
@@ -223,7 +227,7 @@ void LoginScreen::onLogin()
         return;
     }
 
-    Profile* profile = Profile::loadProfile(name, pass);
+    profile = Profile::loadProfile(name, pass);
     if (!profile) {
         if (!ProfileLocker::isLockable(name)) {
             QMessageBox::critical(this, tr("Couldn't load this profile"),
@@ -236,11 +240,7 @@ void LoginScreen::onLogin()
             return;
         }
     }
-
-    Nexus& nexus = Nexus::getInstance();
-
-    nexus.setProfile(profile);
-    nexus.showMainGUI();
+    done(0);
 }
 
 void LoginScreen::onPasswordEdited()

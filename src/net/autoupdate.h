@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -27,14 +27,6 @@
 #include <atomic>
 #include <functional>
 #include <sodium.h>
-
-#ifdef Q_OS_WIN
-#define AUTOUPDATE_ENABLED 1
-#elif defined(Q_OS_OSX)
-#define AUTOUPDATE_ENABLED 1
-#else
-#define AUTOUPDATE_ENABLED 0
-#endif
 
 class AutoUpdater
 {

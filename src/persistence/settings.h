@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2013 by Maxim Biro <nurupo.contributions@gmail.com>
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -25,6 +25,7 @@
 #include "src/core/icoresettings.h"
 #include "src/core/toxencrypt.h"
 #include "src/core/toxfile.h"
+#include "src/persistence/ifriendsettings.h"
 #include "src/video/ivideosettings.h"
 
 #include <QDate>
@@ -36,14 +37,14 @@
 #include <QObject>
 #include <QPixmap>
 
-class ToxPk;
 class Profile;
 
 namespace Db {
 enum class syncType;
 }
 
-class Settings : public QObject, public ICoreSettings, public IAudioSettings, public IVideoSettings
+class Settings : public QObject, public ICoreSettings, public IFriendSettings, 
+    public IAudioSettings, public IVideoSettings
 {
     Q_OBJECT
 
@@ -90,6 +91,8 @@ class Settings : public QObject, public ICoreSettings, public IAudioSettings, pu
     Q_PROPERTY(QString dateFormat READ getDateFormat WRITE setDateFormat NOTIFY dateFormatChanged FINAL)
     Q_PROPERTY(bool statusChangeNotificationEnabled READ getStatusChangeNotificationEnabled WRITE
                    setStatusChangeNotificationEnabled NOTIFY statusChangeNotificationEnabledChanged FINAL)
+    Q_PROPERTY(bool spellCheckingEnabled READ getSpellCheckingEnabled WRITE
+                   setSpellCheckingEnabled NOTIFY spellCheckingEnabledChanged FINAL)
 
     // Privacy
     Q_PROPERTY(bool typingNotification READ getTypingNotification WRITE setTypingNotification NOTIFY
@@ -117,7 +120,7 @@ class Settings : public QObject, public ICoreSettings, public IAudioSettings, pu
     Q_PROPERTY(QRect camVideoRes READ getCamVideoRes WRITE setCamVideoRes NOTIFY camVideoResChanged FINAL)
     Q_PROPERTY(QRect screenRegion READ getScreenRegion WRITE setScreenRegion NOTIFY screenRegionChanged FINAL)
     Q_PROPERTY(bool screenGrabbed READ getScreenGrabbed WRITE setScreenGrabbed NOTIFY screenGrabbedChanged FINAL)
-    Q_PROPERTY(quint16 camVideoFPS READ getCamVideoFPS WRITE setCamVideoFPS NOTIFY camVideoFPSChanged FINAL)
+    Q_PROPERTY(float camVideoFPS READ getCamVideoFPS WRITE setCamVideoFPS NOTIFY camVideoFPSChanged FINAL)
 
 public:
     enum class StyleType
@@ -126,14 +129,6 @@ public:
         WITH_CHARS = 1,
         WITHOUT_CHARS = 2
     };
-    enum class AutoAcceptCall
-    {
-        None = 0x00,
-        Audio = 0x01,
-        Video = 0x02,
-        AV = Audio | Video
-    };
-    Q_DECLARE_FLAGS(AutoAcceptCallFlags, AutoAcceptCall)
 
 public:
     static Settings& getInstance();
@@ -173,6 +168,7 @@ signals:
     void closeToTrayChanged(bool enabled);
     void lightTrayIconChanged(bool enabled);
     void minimizeToTrayChanged(bool enabled);
+    void notifyChanged(bool enabled);
     void showWindowChanged(bool enabled);
     void makeToxPortableChanged(bool enabled);
     void busySoundChanged(bool enabled);
@@ -190,12 +186,6 @@ signals:
     void globalAutoAcceptDirChanged(const QString& path);
     void checkUpdatesChanged(bool enabled);
     void widgetDataChanged(const QString& key);
-
-    // Friend
-    void autoAcceptCallChanged(const ToxPk& id, AutoAcceptCallFlags accept);
-    void autoGroupInviteChanged(const ToxPk& id, bool accept);
-    void autoAcceptDirChanged(const ToxPk& id, const QString& dir);
-    void contactNoteChanged(const ToxPk& id, const QString& note);
 
     // GUI
     void autoLoginChanged(bool enabled);
@@ -224,6 +214,7 @@ signals:
     void timestampFormatChanged(const QString& format);
     void dateFormatChanged(const QString& format);
     void statusChangeNotificationEnabledChanged(bool enabled);
+    void spellCheckingEnabledChanged(bool enabled);
     void fauxOfflineMessagingChanged(bool enabled);
 
     // Privacy
@@ -294,6 +285,9 @@ public:
     bool getForceTCP() const override;
     void setForceTCP(bool enabled) override;
 
+    bool getEnableLanDiscovery() const override;
+    void setEnableLanDiscovery(bool enabled) override;
+
     QString getProxyAddr() const override;
     void setProxyAddr(const QString& address) override;
 
@@ -307,6 +301,7 @@ public:
 
     SIGNAL_IMPL(Settings, enableIPv6Changed, bool enabled)
     SIGNAL_IMPL(Settings, forceTCPChanged, bool enabled)
+    SIGNAL_IMPL(Settings, enableLanDiscoveryChanged, bool enabled)
     SIGNAL_IMPL(Settings, proxyTypeChanged, ICoreSettings::ProxyType type)
     SIGNAL_IMPL(Settings, proxyAddressChanged, const QString& address)
     SIGNAL_IMPL(Settings, proxyPortChanged, quint16 port)
@@ -323,6 +318,9 @@ public:
 
     bool getCheckUpdates() const;
     void setCheckUpdates(bool newValue);
+
+    bool getNotify() const;
+    void setNotify(bool newValue);
 
     bool getShowWindow() const;
     void setShowWindow(bool newValue);
@@ -358,6 +356,8 @@ public:
     void setAudioThreshold(qreal percent) override;
 
     int getOutVolume() const override;
+    int getOutVolumeMin() const override { return 0; }
+    int getOutVolumeMax() const override { return 100; }
     void setOutVolume(int volume) override;
 
     int getAudioBitrate() const override;
@@ -394,8 +394,8 @@ public:
     QRect getCamVideoRes() const override;
     void setCamVideoRes(QRect newValue) override;
 
-    unsigned short getCamVideoFPS() const override;
-    void setCamVideoFPS(unsigned short newValue) override;
+    float getCamVideoFPS() const override;
+    void setCamVideoFPS(float newValue) override;
 
     SIGNAL_IMPL(Settings, videoDevChanged, const QString& device)
     SIGNAL_IMPL(Settings, screenRegionChanged, const QRect& region)
@@ -421,20 +421,20 @@ public:
     int getEmojiFontPointSize() const;
     void setEmojiFontPointSize(int value);
 
-    QString getContactNote(const ToxPk& id) const;
-    void setContactNote(const ToxPk& id, const QString& note);
+    QString getContactNote(const ToxPk& id) const override;
+    void setContactNote(const ToxPk& id, const QString& note) override;
 
-    QString getAutoAcceptDir(const ToxPk& id) const;
-    void setAutoAcceptDir(const ToxPk& id, const QString& dir);
+    QString getAutoAcceptDir(const ToxPk& id) const override;
+    void setAutoAcceptDir(const ToxPk& id, const QString& dir) override;
 
-    AutoAcceptCallFlags getAutoAcceptCall(const ToxPk& id) const;
-    void setAutoAcceptCall(const ToxPk& id, AutoAcceptCallFlags accept);
+    AutoAcceptCallFlags getAutoAcceptCall(const ToxPk& id) const override;
+    void setAutoAcceptCall(const ToxPk& id, AutoAcceptCallFlags accept) override;
 
     QString getGlobalAutoAcceptDir() const;
     void setGlobalAutoAcceptDir(const QString& dir);
 
-    bool getAutoGroupInvite(const ToxPk& id) const;
-    void setAutoGroupInvite(const ToxPk& id, bool accept);
+    bool getAutoGroupInvite(const ToxPk& id) const override;
+    void setAutoGroupInvite(const ToxPk& id, bool accept) override;
 
     // ChatView
     const QFont& getChatMessageFont() const;
@@ -451,6 +451,9 @@ public:
 
     bool getStatusChangeNotificationEnabled() const;
     void setStatusChangeNotificationEnabled(bool newValue);
+
+    bool getSpellCheckingEnabled() const;
+    void setSpellCheckingEnabled(bool newValue);
 
     // Privacy
     bool getTypingNotification() const;
@@ -480,16 +483,23 @@ public:
     QString getFriendAddress(const QString& publicKey) const;
     void updateFriendAddress(const QString& newAddr);
 
-    QString getFriendAlias(const ToxPk& id) const;
-    void setFriendAlias(const ToxPk& id, const QString& alias);
+    QString getFriendAlias(const ToxPk& id) const override;
+    void setFriendAlias(const ToxPk& id, const QString& alias) override;
 
-    int getFriendCircleID(const ToxPk& id) const;
-    void setFriendCircleID(const ToxPk& id, int circleID);
+    int getFriendCircleID(const ToxPk& id) const override;
+    void setFriendCircleID(const ToxPk& id, int circleID) override;
 
-    QDate getFriendActivity(const ToxPk& id) const;
-    void setFriendActivity(const ToxPk& id, const QDate& date);
+    QDate getFriendActivity(const ToxPk& id) const override;
+    void setFriendActivity(const ToxPk& id, const QDate& date) override;
 
-    void removeFriendSettings(const ToxPk& id);
+    void saveFriendSettings(const ToxPk& id) override;
+    void removeFriendSettings(const ToxPk& id) override;
+
+    SIGNAL_IMPL(Settings, autoAcceptCallChanged,
+                const ToxPk& id, IFriendSettings::AutoAcceptCallFlags accept)
+    SIGNAL_IMPL(Settings, autoGroupInviteChanged, const ToxPk& id, bool accept)
+    SIGNAL_IMPL(Settings, autoAcceptDirChanged, const ToxPk& id, const QString& dir)
+    SIGNAL_IMPL(Settings, contactNoteChanged, const ToxPk& id, const QString& note)
 
     bool getFauxOfflineMessaging() const;
     void setFauxOfflineMessaging(bool value);
@@ -582,6 +592,7 @@ private:
     bool lightTrayIcon;
     bool useEmoticons;
     bool checkUpdates;
+    bool notify;
     bool showWindow;
     bool showInFront;
     bool notifySound;
@@ -589,6 +600,7 @@ private:
     bool groupAlwaysNotify;
 
     bool forceTCP;
+    bool enableLanDiscovery;
 
     ICoreSettings::ProxyType proxyType;
     QString proxyAddr;
@@ -635,6 +647,7 @@ private:
     QString timestampFormat;
     QString dateFormat;
     bool statusChangeNotificationEnabled;
+    bool spellCheckingEnabled;
 
     // Privacy
     bool typingNotification;
@@ -658,7 +671,7 @@ private:
     QRect camVideoRes;
     QRect screenRegion;
     bool screenGrabbed;
-    unsigned short camVideoFPS;
+    float camVideoFPS;
 
     struct friendProp
     {
@@ -690,5 +703,4 @@ private:
     static QThread* settingsThread;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Settings::AutoAcceptCallFlags)
 #endif // SETTINGS_HPP

@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -314,6 +314,9 @@ void ProfileForm::onAvatarClicked()
     const QString path = QFileDialog::getOpenFileName(Q_NULLPTR, tr("Choose a profile picture"),
                                                 QDir::homePath(), filter, nullptr);
 
+    if (path.isEmpty()) {
+        return;
+    }
     const IProfileInfo::SetAvatarResult result = profileInfo->setAvatar(path);
     if (result == IProfileInfo::SetAvatarResult::OK) {
         return;
@@ -345,10 +348,13 @@ void ProfileForm::onExportClicked()
 {
     const QString current = profileInfo->getProfileName() + Core::TOX_EXT;
     //:save dialog title
-    const QString path = QFileDialog::getSaveFileName(Q_NULLPTR, tr("Export profile"),
-                                                      QDir::home().filePath(current),
+    const QString path = QFileDialog::getSaveFileName(Q_NULLPTR, tr("Export profile"), current,
                                                       //: save dialog filter
-                                                      tr("Tox save file (*.tox)"), nullptr);
+                                                      tr("Tox save file (*.tox)"));
+    if (path.isEmpty()) {
+        return;
+    }
+
     const IProfileInfo::SaveResult result = profileInfo->exportProfile(path);
     if (result == IProfileInfo::SaveResult::OK) {
         return;
@@ -367,8 +373,7 @@ void ProfileForm::onDeleteClicked()
         return;
     }
 
-    // TODO: Use QStringList
-    const QVector<QString> manualDeleteFiles = profileInfo->removeProfile();
+    const QStringList manualDeleteFiles = profileInfo->removeProfile();
     if (manualDeleteFiles.empty()) {
         return;
     }
@@ -410,8 +415,11 @@ void ProfileForm::onSaveQrClicked()
 {
     const QString current = profileInfo->getProfileName() + ".png";
     const QString path = QFileDialog::getSaveFileName(
-                Q_NULLPTR, tr("Save", "save qr image"), QDir::home().filePath(current),
-                tr("Save QrCode (*.png)", "save dialog filter"), nullptr);
+                Q_NULLPTR, tr("Save", "save qr image"), current,
+                tr("Save QrCode (*.png)", "save dialog filter"));
+    if (path.isEmpty()) {
+        return;
+    }
 
     const IProfileInfo::SaveResult result = profileInfo->saveQr(*qr->getImage(), path);
     if (result == IProfileInfo::SaveResult::OK) {

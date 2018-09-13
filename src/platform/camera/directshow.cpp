@@ -1,6 +1,6 @@
 /*
     Copyright (c) 2010 Ramiro Polla
-    Copyright © 2015 by The qTox Project Contributors
+    Copyright © 2015-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -213,8 +213,6 @@ QVector<VideoMode> DirectShow::getDeviceModes(QString devName)
         {
             IAMStreamConfig* config = nullptr;
             VIDEO_STREAM_CONFIG_CAPS* vcaps = nullptr;
-            VIDEOINFOHEADER* pVih = NULL;
-
             int size, n;
             if (pin->QueryInterface(IID_IAMStreamConfig, (void**)&config) != S_OK)
                 goto next;
@@ -236,18 +234,9 @@ QVector<VideoMode> DirectShow::getDeviceModes(QString devName)
 
                 mode.width = vcaps->MaxOutputSize.cx;
                 mode.height = vcaps->MaxOutputSize.cy;
-                // TODO: make a user setting for this in the GUI
-                // HINT: x-FPS-x
-                mode.FPS = 25; // 20 fps // 1e7 / vcaps->MinFrameInterval;
+                mode.FPS = 1e7 / vcaps->MinFrameInterval;
                 if (!modes.contains(mode))
                     modes.append(std::move(mode));
-
-                // Zoff - actually set the wanted framerate ---------
-                // TODO: fix me. it does not compile now
-                pVih = reinterpret_cast<VIDEOINFOHEADER*>(type->pbFormat);
-                pVih->AvgTimePerFrame = (1e7 / mode.FPS);
-                config->SetFormat(type);
-                // Zoff - actually set the wanted framerate ---------
 
             nextformat:
                 if (type->pbFormat)

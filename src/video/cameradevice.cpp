@@ -1,5 +1,5 @@
 /*
-    Copyright © 2015 by The qTox Project Contributors
+    Copyright © 2015-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -153,10 +153,11 @@ CameraDevice* CameraDevice::open(QString devName, VideoMode mode)
         return nullptr;
     }
 
-    // HINT: x-FPS-x
-    int FPS = 25; // TODO: make a user setting in the GUI for this
-    if (mode.FPS) {
+    float FPS = 5;
+    if (mode.FPS > 0.0f) {
         FPS = mode.FPS;
+    } else {
+        qWarning() << "VideoMode could be invalid!";
     }
 
     const std::string videoSize = QStringLiteral("%1x%2").arg(mode.width).arg(mode.height).toStdString();
@@ -201,14 +202,7 @@ CameraDevice* CameraDevice::open(QString devName, VideoMode mode)
 
         const std::string offsetX = QString().setNum(mode.x).toStdString();
         const std::string offsetY = QString().setNum(mode.y).toStdString();
-
-		qWarning() << "framerate " << framerate.c_str();
-        // av_dict_set(&options, "framerate", framerate.c_str(), 0);
-        
-        // zoff ------
-        av_dict_set(&options,"framerate","8",0);
-        // zoff ------
-        
+        av_dict_set(&options, "framerate", framerate.c_str(), 0);
         av_dict_set(&options, "offset_x", offsetX.c_str(), 0);
         av_dict_set(&options, "offset_y", offsetY.c_str(), 0);
         av_dict_set(&options, "video_size", videoSize.c_str(), 0);

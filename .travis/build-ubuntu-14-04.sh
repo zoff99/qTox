@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#    Copyright © 2015-2017 by The qTox Project Contributors
+#    Copyright © 2015-2018 by The qTox Project Contributors
 #
 #    This program is libre software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ sudo apt-get install -y --force-yes \
     libgdk-pixbuf2.0-dev \
     libglib2.0-dev \
     libgtk2.0-dev \
+    libkdeui5 \
     libopenal-dev \
     libopus-dev \
     libqrencode-dev \
@@ -131,7 +132,7 @@ sudo checkinstall --install --pkgname libsodium --pkgversion 1.0.8 --nodoc -y
 sudo ldconfig
 cd ..
 # toxcore
-git clone --branch v0.1.0 --depth=1 https://github.com/toktok/c-toxcore.git toxcore
+git clone --branch v0.2.2 --depth=1 https://github.com/toktok/c-toxcore.git toxcore
 cd toxcore
 autoreconf -if
 CC="ccache $CC" CXX="ccache $CXX" ./configure
@@ -170,7 +171,8 @@ build_qtox() {
     cmake -H. -B"$BUILDDIR" \
         -DSMILEYS=DISABLED \
         -DENABLE_STATUSNOTIFIER=False \
-        -DENABLE_GTK_SYSTRAY=False
+        -DENABLE_GTK_SYSTRAY=False \
+        -DSPELL_CHECK=OFF
 
     bdir
 

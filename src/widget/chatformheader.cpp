@@ -1,5 +1,5 @@
 /*
-    Copyright © 2017 by The qTox Project Contributors
+    Copyright © 2017-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -156,6 +156,8 @@ ChatFormHeader::ChatFormHeader(QWidget* parent)
     Translator::registerHandler(std::bind(&ChatFormHeader::retranslateUi, this), this);
 }
 
+ChatFormHeader::~ChatFormHeader() = default;
+
 void ChatFormHeader::setName(const QString& newName)
 {
     nameLabel->setText(newName);
@@ -199,13 +201,18 @@ void ChatFormHeader::showOutgoingCall(bool video)
     updateButtonsView();
 }
 
-void ChatFormHeader::showCallConfirm(bool video)
+void ChatFormHeader::createCallConfirm(bool video)
 {
     QWidget* btn = video ? videoButton : callButton;
     callConfirm = std::unique_ptr<CallConfirmWidget>(new CallConfirmWidget(btn));
-    callConfirm->show();
     connect(callConfirm.get(), &CallConfirmWidget::accepted, this, &ChatFormHeader::callAccepted);
     connect(callConfirm.get(), &CallConfirmWidget::rejected, this, &ChatFormHeader::callRejected);
+}
+
+void ChatFormHeader::showCallConfirm()
+{
+    if (callConfirm && !callConfirm->isVisible())
+        callConfirm->show();
 }
 
 void ChatFormHeader::removeCallConfirm()

@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -60,18 +60,13 @@ Nexus::Nexus(QObject* parent)
     : QObject(parent)
     , profile{nullptr}
     , widget{nullptr}
-    , loginScreen{nullptr}
     , running{true}
-    , quitOnLastWindowClosed{true}
-{
-}
+{}
 
 Nexus::~Nexus()
 {
     delete widget;
     widget = nullptr;
-    delete loginScreen;
-    loginScreen = nullptr;
     delete profile;
     profile = nullptr;
     Settings::getInstance().saveGlobal();
@@ -109,17 +104,10 @@ void Nexus::start()
     qRegisterMetaType<ToxId>("ToxId");
     qRegisterMetaType<GroupInvite>("GroupInvite");
 
-    loginScreen = new LoginScreen();
-
-    // We need this LastWindowClosed dance because the LoginScreen may be shown
-    // and closed in a processEvents() loop before the start of the real
-    // exec() event loop, meaning we wouldn't receive the onLastWindowClosed,
-    // and so we wouldn't have a chance to tell the processEvents() loop to quit.
     qApp->setQuitOnLastWindowClosed(false);
-    connect(qApp, &QApplication::lastWindowClosed, this, &Nexus::onLastWindowClosed);
-    connect(loginScreen, &LoginScreen::closed, this, &Nexus::onLastWindowClosed);
 
 #ifdef Q_OS_MAC
+    // TODO: still needed?
     globalMenuBar = new QMenuBar(0);
     dockMenu = new QMenu(globalMenuBar);
 
@@ -150,15 +138,9 @@ void Nexus::start()
     windowMapper = new QSignalMapper(this);
     connect(windowMapper, SIGNAL(mapped(QObject*)), this, SLOT(onOpenWindow(QObject*)));
 
-    connect(loginScreen, &LoginScreen::windowStateChanged, this, &Nexus::onWindowStateChanged);
-
     retranslateUi();
 #endif
-
-    if (profile)
-        showMainGUI();
-    else
-        showLogin();
+    showMainGUI();
 }
 
 /**
@@ -172,19 +154,23 @@ void Nexus::showLogin()
     delete profile;
     profile = nullptr;
 
-    loginScreen->reset();
-    loginScreen->move(QApplication::desktop()->screen()->rect().center()
-                      - loginScreen->rect().center());
-    loginScreen->show();
-    quitOnLastWindowClosed = true;
+    LoginScreen loginScreen;
+    loginScreen.exec();
+
+    profile = loginScreen.getProfile();
+
+    if (profile) {
+        Nexus::getInstance().setProfile(profile);
+        Settings::getInstance().setCurrentProfile(profile->getName());
+        showMainGUI();
+    } else {
+        quit();
+    }
 }
 
 void Nexus::showMainGUI()
 {
     assert(profile);
-
-    quitOnLastWindowClosed = false;
-    loginScreen->close();
 
     // Create GUI
     widget = Widget::getInstance();
@@ -207,9 +193,9 @@ void Nexus::showMainGUI()
 
     connect(core, &Core::connected, widget, &Widget::onConnected);
     connect(core, &Core::disconnected, widget, &Widget::onDisconnected);
-    connect(core, &Core::failedToStart, widget, &Widget::onFailedToStartCore,
+    connect(profile, &Profile::failedToStart, widget, &Widget::onFailedToStartCore,
             Qt::BlockingQueuedConnection);
-    connect(core, &Core::badProxy, widget, &Widget::onBadProxyCore, Qt::BlockingQueuedConnection);
+    connect(profile, &Profile::badProxy, widget, &Widget::onBadProxyCore, Qt::BlockingQueuedConnection);
     connect(core, &Core::statusSet, widget, &Widget::onStatusSet);
     connect(core, &Core::usernameSet, widget, &Widget::setUsername);
     connect(core, &Core::statusMessageSet, widget, &Widget::setStatusMessage);
@@ -222,7 +208,10 @@ void Nexus::showMainGUI()
     connect(core, &Core::friendMessageReceived, widget, &Widget::onFriendMessageReceived);
     connect(core, &Core::groupInviteReceived, widget, &Widget::onGroupInviteReceived);
     connect(core, &Core::groupMessageReceived, widget, &Widget::onGroupMessageReceived);
-    connect(core, &Core::groupNamelistChanged, widget, &Widget::onGroupNamelistChanged);
+    connect(core, &Core::groupNamelistChanged, widget,
+            &Widget::onGroupNamelistChangedOld); // TODO(sudden6): toxcore < 0.2.0, remove
+    connect(core, &Core::groupPeerlistChanged, widget, &Widget::onGroupPeerlistChanged);
+    connect(core, &Core::groupPeerNameChanged, widget, &Widget::onGroupPeerNameChanged);
     connect(core, &Core::groupTitleChanged, widget, &Widget::onGroupTitleChanged);
     connect(core, &Core::groupPeerAudioPlaying, widget, &Widget::onGroupPeerAudioPlaying);
     connect(core, &Core::emptyGroupCreated, widget, &Widget::onEmptyGroupCreated);
@@ -235,6 +224,8 @@ void Nexus::showMainGUI()
     connect(widget, &Widget::friendRequestAccepted, core, &Core::acceptFriendRequest);
 
     profile->startCore();
+
+    GUI::setEnabled(true);
 }
 
 /**
@@ -336,12 +327,6 @@ bool Nexus::tryRemoveFile(const QString& filepath)
     bool writable = tmp.open(QIODevice::WriteOnly);
     tmp.remove();
     return writable;
-}
-
-void Nexus::onLastWindowClosed()
-{
-    if (quitOnLastWindowClosed)
-        quit();
 }
 
 #ifdef Q_OS_MAC

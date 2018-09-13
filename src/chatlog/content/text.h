@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -36,6 +36,8 @@ public:
     virtual ~Text();
 
     void setText(const QString& txt);
+    void selectText(const QString& txt, const int index);
+    void deselectText();
 
     virtual void setWidth(qreal width) final;
 

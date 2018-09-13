@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2017 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -35,11 +35,13 @@
 class ChatFormHeader;
 class ChatLog;
 class ChatTextEdit;
+class Contact;
 class ContentLayout;
 class CroppingLabel;
 class FlyoutOverlayWidget;
 class GenericNetCamView;
 class MaskablePixmapWidget;
+class SearchForm;
 class Widget;
 
 class QLabel;
@@ -52,11 +54,17 @@ namespace Ui {
 class MainWindow;
 }
 
+#ifdef SPELL_CHECKING
+namespace Sonnet {
+class SpellCheckDecorator;
+}
+#endif
+
 class GenericChatForm : public QWidget
 {
     Q_OBJECT
 public:
-    explicit GenericChatForm(QWidget* parent = nullptr);
+    explicit GenericChatForm(const Contact* contact, QWidget* parent = nullptr);
     ~GenericChatForm() override;
 
     void setName(const QString& newName);
@@ -102,6 +110,13 @@ protected slots:
     void onSplitterMoved(int pos, int index);
     void quoteSelectedText();
     void copyLink();
+    void searchFormShow();
+    void onSearchTriggered();
+
+    void searchInBegin(const QString& phrase);
+    virtual void onSearchUp(const QString& phrase) = 0;
+    virtual void onSearchDown(const QString& phrase) = 0;
+    void onContinueSearch();
 
 private:
     void retranslateUi();
@@ -123,6 +138,9 @@ protected:
     virtual bool event(QEvent*) final override;
     virtual void resizeEvent(QResizeEvent* event) final override;
     virtual bool eventFilter(QObject* object, QEvent* event) final override;
+    void disableSearchText();
+    bool searchInText(const QString& phrase, bool searchUp);
+    int indexForSearchInLine(const QString& txt, const QString& phrase, bool searchUp);
 
 protected:
     bool audioInputFlag;
@@ -133,12 +151,12 @@ protected:
     QAction* clearAction;
     QAction* quoteAction;
     QAction* copyLinkAction;
+    QAction* searchAction;
 
     ToxPk previousId;
 
     QDateTime prevMsgDateTime;
     QDateTime earliestMessage;
-    QDateTime historyBaselineDate = QDateTime::currentDateTime();
 
     QMenu menu;
 
@@ -151,11 +169,18 @@ protected:
 
     ChatFormHeader* headWidget;
 
+    SearchForm *searchForm;
     ChatLog* chatWidget;
     ChatTextEdit* msgEdit;
+#ifdef SPELL_CHECKING
+    Sonnet::SpellCheckDecorator* decorator{nullptr};
+#endif
     FlyoutOverlayWidget* fileFlyout;
     GenericNetCamView* netcam;
     Widget* parent;
+
+    QPoint searchPoint;
+    bool searchAfterLoadHistory;
 };
 
 #endif // GENERICCHATFORM_H

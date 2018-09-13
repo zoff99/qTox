@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -39,23 +39,10 @@ Friend::Friend(uint32_t friendId, const ToxPk& friendPk, const QString& userAlia
     }
 }
 
-Friend::~Friend()
-{
-    delete chatForm;
-}
-
 /**
- * @brief Loads the friend's chat history if enabled
+ * @brief Friend::setName sets a new username for the friend
+ * @param _name new username, sets the public key if _name is empty
  */
-void Friend::loadHistory()
-{
-    if (Nexus::getProfile()->isHistoryEnabled()) {
-        chatForm->loadHistory(QDateTime::currentDateTime().addDays(-7), true);
-    }
-
-    emit loadChatHistory();
-}
-
 void Friend::setName(const QString& _name)
 {
     QString name = _name;
@@ -63,17 +50,41 @@ void Friend::setName(const QString& _name)
         name = friendPk.toString();
     }
 
+    // save old displayed name to be able to compare for changes
+    const auto oldDisplayed = getDisplayedName();
+    if (userName == userAlias) {
+        userAlias.clear(); // Because userAlias was set on name change before (issue #5013)
+                           // we clear alias if equal to old name so that name change is visible.
+                           // TODO: We should not modify alias on setName.
+    }
     if (userName != name) {
         userName = name;
         emit nameChanged(friendId, name);
     }
-}
 
+    const auto newDisplayed = getDisplayedName();
+    if (oldDisplayed != newDisplayed) {
+        emit displayedNameChanged(newDisplayed);
+    }
+}
+/**
+ * @brief Friend::setAlias sets the alias for the friend
+ * @param alias new alias, removes it if set to an empty string
+ */
 void Friend::setAlias(const QString& alias)
 {
-    if (userAlias != alias) {
-        userAlias = alias;
-        emit aliasChanged(friendId, alias);
+    if (userAlias == alias) {
+        return;
+    }
+    emit aliasChanged(friendId, alias);
+
+    // save old displayed name to be able to compare for changes
+    const auto oldDisplayed = getDisplayedName();
+    userAlias = alias;
+
+    const auto newDisplayed = getDisplayedName();
+    if (oldDisplayed != newDisplayed) {
+        emit displayedNameChanged(newDisplayed);
     }
 }
 
@@ -90,6 +101,12 @@ QString Friend::getStatusMessage() const
     return statusMessage;
 }
 
+/**
+ * @brief Friend::getDisplayedName Gets the name that should be displayed for a user
+ * @return a QString containing either alias, username or public key
+ * @note This function and corresponding signal should be preferred over getting
+ *       the name or alias directly.
+ */
 QString Friend::getDisplayedName() const
 {
     if (userAlias.isEmpty()) {
@@ -135,14 +152,4 @@ void Friend::setStatus(Status s)
 Status Friend::getStatus() const
 {
     return friendStatus;
-}
-
-ChatForm* Friend::getChatForm() const
-{
-    return chatForm;
-}
-
-void Friend::setChatForm(ChatForm* form)
-{
-    chatForm = form;
 }

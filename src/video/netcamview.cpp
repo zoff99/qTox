@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -20,8 +20,8 @@
 #include "netcamview.h"
 #include "camerasource.h"
 #include "src/core/core.h"
-#include "src/model/friend.h"
 #include "src/friendlist.h"
+#include "src/model/friend.h"
 #include "src/nexus.h"
 #include "src/persistence/profile.h"
 #include "src/persistence/settings.h"
@@ -40,7 +40,6 @@ NetCamView::NetCamView(int friendId, QWidget* parent)
     const ToxPk pk = FriendList::findFriend(friendId)->getPublicKey();
     videoSurface = new VideoSurface(Nexus::getProfile()->loadAvatar(pk), this);
     videoSurface->setMinimumHeight(256);
-    videoSurface->setContentsMargins(6, 6, 6, 6);
 
     verLayout->insertWidget(0, videoSurface, 1);
 
@@ -76,7 +75,7 @@ NetCamView::NetCamView(int friendId, QWidget* parent)
     connections += connect(Nexus::getProfile(), &Profile::selfAvatarChanged,
                            [this](const QPixmap& pixmap) { selfVideoSurface->setAvatar(pixmap); });
 
-    connections += connect(Core::getInstance(), &Core::friendAvatarChanged,
+    connections += connect(Core::getInstance(), &Core::friendAvatarChangedDeprecated,
                            [this](int FriendId, const QPixmap& pixmap) {
                                if (this->friendId == FriendId)
                                    videoSurface->setAvatar(pixmap);
@@ -144,4 +143,13 @@ void NetCamView::updateFrameSize(QSize size)
         selfFrame->setMaximumWidth(selfFrame->maximumHeight() * selfVideoSurface->getRatio());
     else
         selfFrame->setMaximumHeight(selfFrame->maximumWidth() / selfVideoSurface->getRatio());
+}
+
+void NetCamView::toggleVideoPreview()
+{
+    if (selfFrame->isHidden()) {
+        selfFrame->show();
+    } else {
+        selfFrame->hide();
+    }
 }

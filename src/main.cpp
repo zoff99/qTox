@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -140,7 +140,6 @@ void logMessageHandler(QtMsgType type, const QMessageLogContext& ctxt, const QSt
 
 int main(int argc, char* argv[])
 {
-
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
@@ -148,19 +147,23 @@ int main(int argc, char* argv[])
 
     qInstallMessageHandler(logMessageHandler);
 
+    // initialize random number generator
+    qsrand(time(nullptr));
+
     std::unique_ptr<QApplication> a(new QApplication(argc, argv));
 
 #if defined(Q_OS_UNIX)
     // PosixSignalNotifier is used only for terminating signals,
     // so it's connected directly to quit() without any filtering.
-    QObject::connect(&PosixSignalNotifier::globalInstance(),
-                     &PosixSignalNotifier::activated,
-                     a.get(),
-                     &QApplication::quit);
+    QObject::connect(&PosixSignalNotifier::globalInstance(), &PosixSignalNotifier::activated,
+                     a.get(), &QApplication::quit);
     PosixSignalNotifier::watchCommonTerminatingSignals();
 #endif
 
     a->setApplicationName("qTox");
+#if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
+    a->setDesktopFileName("io.github.qtox.qTox");
+#endif
     a->setOrganizationName("Tox");
     a->setApplicationVersion("\nGit commit: " + QString(GIT_VERSION));
 
@@ -185,16 +188,19 @@ int main(int argc, char* argv[])
 
     // Process arguments
     QCommandLineParser parser;
-    parser.setApplicationDescription("qTox, version: " + QString(GIT_VERSION) + "\nBuilt: "
-                                     + __TIME__ + " " + __DATE__);
+    parser.setApplicationDescription("qTox, version: " + QString(GIT_VERSION));
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addPositionalArgument("uri", QObject::tr("Tox URI to parse"));
     parser.addOption(
-        QCommandLineOption(QStringList() << "p" << "profile", QObject::tr("Starts new instance and loads specified profile."),
+        QCommandLineOption(QStringList() << "p"
+                                         << "profile",
+                           QObject::tr("Starts new instance and loads specified profile."),
                            QObject::tr("profile")));
     parser.addOption(
-        QCommandLineOption(QStringList() << "l" << "login", QObject::tr("Starts new instance and opens the login screen.")));
+        QCommandLineOption(QStringList() << "l"
+                                         << "login",
+                           QObject::tr("Starts new instance and opens the login screen.")));
     parser.process(*a);
 
     uint32_t profileId = Settings::getInstance().getCurrentProfileId();
@@ -253,12 +259,11 @@ int main(int argc, char* argv[])
     QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath());
     a->addLibraryPath("platforms");
 
-    qDebug() << "built on: " << __TIME__ << __DATE__ << "(" << TIMESTAMP << ")";
     qDebug() << "commit: " << GIT_VERSION;
 
 
 // Check whether we have an update waiting to be installed
-#if AUTOUPDATE_ENABLED
+#ifdef AUTOUPDATE_ENABLED
     if (AutoUpdater::isLocalUpdateReady())
         AutoUpdater::installLocalUpdate(); ///< NORETURN
 #endif
@@ -278,7 +283,7 @@ int main(int argc, char* argv[])
         profileName = parser.value("p");
         if (!Profile::exists(profileName)) {
             qWarning() << "-p profile" << profileName + ".tox"
-                        << "doesn't exist, opening login screen";
+                       << "doesn't exist, opening login screen";
             doIpc = false;
             autoLogin = false;
         } else {
@@ -314,8 +319,10 @@ int main(int argc, char* argv[])
         // If someone else processed it, we're done here, no need to actually start qTox
         if (ipc.waitUntilAccepted(event, 2)) {
             if (eventType == "activate") {
-                qDebug() << "Another qTox instance is already running. If you want to start a second "
-                        "instance, please open login screen (qtox -l) or start with a profile (qtox -p <profile name>).";
+                qDebug()
+                    << "Another qTox instance is already running. If you want to start a second "
+                       "instance, please open login screen (qtox -l) or start with a profile (qtox "
+                       "-p <profile name>).";
             } else {
                 qDebug() << "Event" << eventType << "was handled by other client.";
             }
@@ -323,17 +330,26 @@ int main(int argc, char* argv[])
         }
     }
 
+    Profile* profile = nullptr;
+
     // Autologin
-    if (autoLogin) {
-        if (Profile::exists(profileName)) {
-            if (!Profile::isEncrypted(profileName)) {
-                Profile* profile = Profile::loadProfile(profileName);
-                if (profile)
-                    Nexus::getInstance().setProfile(profile);
-            }
-            Settings::getInstance().setCurrentProfile(profileName);
+    if (autoLogin && Profile::exists(profileName) && !Profile::isEncrypted(profileName)) {
+        profile = Profile::loadProfile(profileName);
+    } else {
+        LoginScreen loginScreen{profileName};
+        loginScreen.exec();
+        profile = loginScreen.getProfile();
+        if (profile) {
+            profileName = profile->getName();
         }
     }
+
+    if (!profile) {
+        return EXIT_FAILURE;
+    }
+
+    Nexus::getInstance().setProfile(profile);
+    Settings::getInstance().setCurrentProfile(profileName);
 
     Nexus& nexus = Nexus::getInstance();
     nexus.start();

@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2017 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -21,31 +21,24 @@
 #define GROUP_H
 
 #include "contact.h"
+
+#include "src/core/toxpk.h"
+
 #include <QMap>
 #include <QObject>
 #include <QStringList>
-
-#define RETRY_PEER_INFO_INTERVAL 500
-
-class Friend;
-class GroupChatForm;
-class ToxPk;
 
 class Group : public Contact
 {
     Q_OBJECT
 public:
     Group(int groupId, const QString& name, bool isAvGroupchat, const QString& selfName);
-    ~Group() override;
 
     bool isAvGroupchat() const;
     uint32_t getId() const override;
     int getPeersCount() const;
     void regeneratePeerList();
-    QStringList getPeerList() const;
-    bool isSelfPeerNumber(int peernumber) const;
-
-    GroupChatForm* getChatForm();
+    const QMap<ToxPk, QString>& getPeerList() const;
 
     void setEventFlag(bool f) override;
     bool getEventFlag() const override;
@@ -55,29 +48,26 @@ public:
 
     void updatePeer(int peerId, QString newName);
     void setName(const QString& newTitle) override;
-    void onTitleChanged(const QString& author, const QString& newTitle);
+    void setTitle(const QString& author, const QString& newTitle);
     QString getName() const;
     QString getDisplayedName() const override;
 
+    const ToxPk resolvePeerId(int peerId) const;
     QString resolveToxId(const ToxPk& id) const;
     void setSelfName(const QString& name);
 
 signals:
     void titleChangedByUser(uint32_t groupId, const QString& title);
     void titleChanged(uint32_t groupId, const QString& author, const QString& title);
-    void userListChanged(uint32_t groupId, const QMap<QByteArray, QString>& toxids);
+    void userListChanged(uint32_t groupId, const QMap<ToxPk, QString>& toxpks);
 
 private:
     QString selfName;
     QString title;
-    GroupChatForm* chatForm;
-    QStringList peers;
-    QMap<QByteArray, QString> toxids;
+    QMap<ToxPk, QString> toxpks;
     bool hasNewMessages;
     bool userWasMentioned;
     int groupId;
-    int nPeers;
-    int selfPeerNum = -1;
     bool avGroupchat;
 };
 

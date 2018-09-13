@@ -1,5 +1,5 @@
 /*
-    Copyright © 2014-2015 by The qTox Project Contributors
+    Copyright © 2014-2018 by The qTox Project Contributors
 
     This file is part of qTox, a Qt-based graphical interface for Tox.
 
@@ -58,6 +58,7 @@ static QStringList locales = {
     "lt",
     "jbo",
     "hu",
+    "mk",
     "nl",
     "ja",
     "no_nb",
@@ -99,7 +100,16 @@ GeneralForm::GeneralForm(SettingsWidget* myParent)
 
     Settings& s = Settings::getInstance();
 
+#ifdef AUTOUPDATE_ENABLED
     bodyUI->checkUpdates->setVisible(AUTOUPDATE_ENABLED);
+#else
+    bodyUI->checkUpdates->setVisible(false);
+#endif
+
+#ifndef SPELL_CHECKING
+    bodyUI->cbSpellChecking->setVisible(false);
+#endif
+
     bodyUI->checkUpdates->setChecked(s.getCheckUpdates());
 
     for (int i = 0; i < locales.size(); ++i) {
@@ -121,6 +131,7 @@ GeneralForm::GeneralForm(SettingsWidget* myParent)
 
     bodyUI->cbAutorun->setChecked(s.getAutorun());
 
+    bodyUI->cbSpellChecking->setChecked(s.getSpellCheckingEnabled());
     bodyUI->lightTrayIcon->setChecked(s.getLightTrayIcon());
     bool showSystemTray = s.getShowSystemTray();
 
@@ -131,10 +142,6 @@ GeneralForm::GeneralForm(SettingsWidget* myParent)
     bodyUI->minimizeToTray->setEnabled(showSystemTray);
     bodyUI->closeToTray->setChecked(s.getCloseToTray());
     bodyUI->closeToTray->setEnabled(showSystemTray);
-
-    bodyUI->notifySound->setChecked(s.getNotifySound());
-    bodyUI->busySound->setChecked(s.getBusySound());
-    bodyUI->busySound->setEnabled(s.getNotifySound());
 
     bodyUI->statusChanges->setChecked(s.getStatusChangeNotificationEnabled());
     bodyUI->cbFauxOfflineMessaging->setChecked(s.getFauxOfflineMessaging());
@@ -171,6 +178,11 @@ void GeneralForm::on_cbAutorun_stateChanged()
     Settings::getInstance().setAutorun(bodyUI->cbAutorun->isChecked());
 }
 
+void GeneralForm::on_cbSpellChecking_stateChanged()
+{
+    Settings::getInstance().setSpellCheckingEnabled(bodyUI->cbSpellChecking->isChecked());
+}
+
 void GeneralForm::on_showSystemTray_stateChanged()
 {
     Settings::getInstance().setShowSystemTray(bodyUI->showSystemTray->isChecked());
@@ -196,18 +208,6 @@ void GeneralForm::on_lightTrayIcon_stateChanged()
 void GeneralForm::on_minimizeToTray_stateChanged()
 {
     Settings::getInstance().setMinimizeToTray(bodyUI->minimizeToTray->isChecked());
-}
-
-void GeneralForm::on_notifySound_stateChanged()
-{
-    bool notify = bodyUI->notifySound->isChecked();
-    Settings::getInstance().setNotifySound(notify);
-    bodyUI->busySound->setEnabled(notify);
-}
-
-void GeneralForm::on_busySound_stateChanged()
-{
-    Settings::getInstance().setBusySound(bodyUI->busySound->isChecked());
 }
 
 void GeneralForm::on_statusChanges_stateChanged()
