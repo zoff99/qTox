@@ -41,8 +41,8 @@ set -euo pipefail
 
 # ---------- CONFIG ----------
 # TOXCORE_GIT_REPO="https://github.com/TokTok/c-toxcore" # original repo
-TOXCORE_GIT_REPO="https://github.com/zoff99/c-toxcore_team"
-TOXCORE_VERSION="zoff99/toxcore_v1.0.10__toxav_h264_001"
+TOXCORE_GIT_REPO="https://github.com/Zoxcore/c-toxcore"
+TOXCORE_VERSION="v0.99.0"
 # ---------- CONFIG ----------
 
 # Common directory paths
@@ -246,7 +246,7 @@ then
   fi
 
   ./Configure $CONFIGURE_OPTIONS
-  make
+  make -j12
   make install
   echo -n $OPENSSL_VERSION > $OPENSSL_PREFIX_DIR/done
 
@@ -353,7 +353,7 @@ then
     -qt-pcre \
     -opengl desktop $CONFIGURE_EXTRA
 
-  make
+  make -j12
   make install
   echo -n $QT_VERSION > $QT_PREFIX_DIR/done
 
@@ -510,7 +510,7 @@ FFMPEG_HASH="1131d37890ed3dcbc3970452b200a56ceb36b73eaa51d1c23c770c90f928537f"
               --enable-decoder=h264 \
               --enable-decoder=mjpeg \
               --enable-memalign-hack
-  make
+  make -j12
   make install
   echo -n $FFMPEG_VERSION > $FFMPEG_PREFIX_DIR/done
 
@@ -566,7 +566,7 @@ then
     -DDSOUND_LIBRARY=/usr/$ARCH-w64-mingw32/lib/libdsound.a \
     ..
 
-  make
+  make -j12
   make install
   echo -n $OPENAL_VERSION > $OPENAL_PREFIX_DIR/done
 
@@ -732,7 +732,7 @@ then
                                --disable-sdltest \
                                --without-tools \
                                --without-debug
-  make
+  make -j12
   make install
   echo -n $QRENCODE_VERSION > $QRENCODE_PREFIX_DIR/done
 
@@ -765,7 +765,7 @@ then
                                --enable-static \
                                --disable-docs \
                                --disable-nls
-  make
+  make -j12
   make install
   echo -n $EXIF_VERSION > $EXIF_PREFIX_DIR/done
 
@@ -798,7 +798,7 @@ then
                                --enable-static \
                                --disable-extra-programs \
                                --disable-doc
-  make
+  make -j12
   make install
   echo -n $OPUS_VERSION > $OPUS_PREFIX_DIR/done
 
@@ -830,7 +830,7 @@ then
               --disable-shared \
               --enable-static \
               --with-pic
-  make
+  make -j12
   make install
   echo -n $SODIUM_VERSION > $SODIUM_PREFIX_DIR/done
 
@@ -881,7 +881,7 @@ then
                                          --enable-temporal-denoising \
                                          --enable-vp9-temporal-denoising
 
-  make
+  make -j12
   make install
   echo -n $VPX_VERSION > $VPX_PREFIX_DIR/done
 
@@ -922,7 +922,7 @@ cd nasm-*
 
 bash autogen.sh
 ./configure
-make -j8
+make -j12
 make install
 nasm -v
 
@@ -947,7 +947,7 @@ git checkout stable
     --disable-opencl --disable-shared \
     --enable-static --disable-avs --disable-cli
 
-make -j8
+make -j12
 make install
 
 cd ..
@@ -957,38 +957,43 @@ cd ..
 # =============================
 # =============================
 
-LIBAV_PREFIX_DIR="$DEP_DIR/libav"
-rm -rf "$LIBAV_PREFIX_DIR"
-mkdir -p "$LIBAV_PREFIX_DIR"
 
+if [ 1 == 2 ]; then
 
-git clone https://github.com/libav/libav
+    LIBAV_PREFIX_DIR="$DEP_DIR/libav"
+    rm -rf "$LIBAV_PREFIX_DIR"
+    mkdir -p "$LIBAV_PREFIX_DIR"
 
-cd libav
-git checkout v12.3
+    git clone https://github.com/libav/libav
 
-CROSS=x86_64-w64-mingw32-  ./configure \
-          --arch=x86_64 \
-          --target-os=mingw32 \
-          --cross-prefix=x86_64-w64-mingw32- \
-          --enable-cross-compile \
-          --prefix="$LIBAV_PREFIX_DIR" \
-          --disable-devices --disable-programs \
-          --disable-doc --disable-avdevice --disable-avformat \
-          --disable-swscale \
-          --disable-avfilter --disable-network --disable-everything \
-          --disable-bzlib \
-          --disable-libxcb-shm \
-          --disable-libxcb-xfixes \
-          --enable-parser=h264 \
-          --enable-runtime-cpudetect \
-          --enable-gpl --enable-decoder=h264
+    cd libav
+    git checkout v12.3
 
-make -j8
-make install
+    CROSS=x86_64-w64-mingw32-  ./configure \
+              --arch=x86_64 \
+              --target-os=mingw32 \
+              --cross-prefix=x86_64-w64-mingw32- \
+              --enable-cross-compile \
+              --prefix="$LIBAV_PREFIX_DIR" \
+              --disable-devices --disable-programs \
+              --disable-doc --disable-avdevice --disable-avformat \
+              --disable-swscale \
+              --disable-avfilter --disable-network --disable-everything \
+              --disable-bzlib \
+              --disable-libxcb-shm \
+              --disable-libxcb-xfixes \
+              --enable-parser=h264 \
+              --enable-runtime-cpudetect \
+              --enable-gpl --enable-decoder=h264
 
-cd ..
+    make -j12
+    make install
 
+    cd ..
+else
+    mkdir -p /tmp/xx
+    LIBAV_PREFIX_DIR="/tmp/xx"
+fi
 
 # =============================
 # =============================
@@ -1016,19 +1021,19 @@ TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
   mkdir -p build
   cd build
 
-  export PKG_CONFIG_PATH="$OPUS_PREFIX_DIR/lib/pkgconfig:$SODIUM_PREFIX_DIR/lib/pkgconfig:$VPX_PREFIX_DIR/lib/pkgconfig:$LIBAV_PREFIX_DIR/lib/pkgconfig:$X264_PREFIX_DIR/lib/pkgconfig"
+  export PKG_CONFIG_PATH="$OPUS_PREFIX_DIR/lib/pkgconfig:$SODIUM_PREFIX_DIR/lib/pkgconfig:$VPX_PREFIX_DIR/lib/pkgconfig:$FFMPEG_PREFIX_DIR/lib/pkgconfig:$LIBAV_PREFIX_DIR/lib/pkgconfig:$X264_PREFIX_DIR/lib/pkgconfig"
   export PKG_CONFIG_LIBDIR="/usr/$ARCH-w64-mingw32"
 
-  export LIBSODIUM_CFLAGS="-I$SODIUM_PREFIX_DIR/include/"
-  export LIBSODIUM_LIBS="-L$SODIUM_PREFIX_DIR/lib "
+  export LIBSODIUM_CFLAGS="-I$SODIUM_PREFIX_DIR/include/ -I$FFMPEG_PREFIX_DIR/include/"
+  export LIBSODIUM_LIBS="-L$SODIUM_PREFIX_DIR/lib -L$FFMPEG_PREFIX_DIR/lib"
   export CFLAGS=" -g -O3 -fomit-frame-pointer -I/usr/share/mingw-w64/include/ "
   export CXXFLAGS=" -g -O3 -fomit-frame-pointer -I/usr/share/mingw-w64/include/ "
-  CROSS=x86_64-w64-mingw32- ../configure --prefix="$TOXCORE_PREFIX_DIR" --enable-logging \
+  CROSS=x86_64-w64-mingw32- ../configure --prefix="$TOXCORE_PREFIX_DIR" \
   --disable-soname-versions --host="x86_64-w64-mingw32" \
   --with-sysroot="/usr/$ARCH-w64-mingw32/" --disable-testing \
   --disable-rt --disable-shared
  
-  make VERBOSE=1 V=1 -j8
+  make VERBOSE=1 V=1 -j12 || exit 1
   make install
   echo -n $TOXCORE_VERSION > $TOXCORE_PREFIX_DIR/done
 
@@ -1060,11 +1065,17 @@ TOXCORE_PREFIX_DIR="$DEP_DIR/libtoxcore"
   rm -rf ./c-toxcore*
 
 
-rm -Rf $DEP_DIR/libav/
-mv -v $DEP_DIR/libffmpeg $DEP_DIR/libav
-ln -s $DEP_DIR/libav $DEP_DIR/libffmpeg
 
-ls -ald $DEP_DIR/libav $DEP_DIR/libffmpeg
+###################################################
+# rm -Rf $DEP_DIR/libav/
+# mv -v $DEP_DIR/libffmpeg $DEP_DIR/libav
+# ln -s $DEP_DIR/libav $DEP_DIR/libffmpeg
+
+# ls -ald $DEP_DIR/libav $DEP_DIR/libffmpeg
+###################################################
+
+
+
 
 # mingw-w64-debug-scripts
 
@@ -1190,7 +1201,7 @@ set -u
 
 # cat /build/qtox/build/CMakeFiles/CMakeOutput.log
 
-make VERBOSE=1 V=1 -j2
+make VERBOSE=1 V=1 -j12
 
 cp qtox.exe $QTOX_PREFIX_DIR
 cp $QT_PREFIX_DIR/bin/Qt5Core.dll \
