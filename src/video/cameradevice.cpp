@@ -153,7 +153,7 @@ CameraDevice* CameraDevice::open(QString devName, VideoMode mode)
         return nullptr;
     }
 
-    float FPS = 5;
+    float FPS = 25;
     if (mode.FPS > 0.0f) {
         FPS = mode.FPS;
     } else {
@@ -199,6 +199,11 @@ CameraDevice* CameraDevice::open(QString devName, VideoMode mode)
 #endif
 #ifdef Q_OS_WIN
     else if (devName.startsWith("gdigrab#")) {
+
+        // -- windows screen grab --
+        FPS = 25;
+        const std::string framerate = QString{}.setNum(FPS).toStdString();
+        // -- windows screen grab --
 
         const std::string offsetX = QString().setNum(mode.x).toStdString();
         const std::string offsetY = QString().setNum(mode.y).toStdString();

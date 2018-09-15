@@ -509,6 +509,7 @@ FFMPEG_HASH="1131d37890ed3dcbc3970452b200a56ceb36b73eaa51d1c23c770c90f928537f"
               --enable-parser=mjpeg \
               --enable-decoder=h264 \
               --enable-decoder=mjpeg \
+              --enable-asm \
               --enable-memalign-hack
   make -j12
   make install
