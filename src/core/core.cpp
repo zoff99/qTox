@@ -403,8 +403,8 @@ void Core::process()
         tolerance = 3 * CORE_DISCONNECT_TOLERANCE;
     }
 
-    unsigned sleeptime =
-        qMin(tox_iteration_interval(tox.get()), getCoreFile()->corefileIterationInterval());
+    // unsigned sleeptime = qMin(tox_iteration_interval(tox.get()), getCoreFile()->corefileIterationInterval());
+    unsigned sleeptime = 4; // sleep 4ms // Zoff.
     toxTimer->start(sleeptime);
 }
 
@@ -1053,9 +1053,9 @@ void Core::loadGroups()
             }
         }
         if (getGroupAvEnabled(groupNumber)) {
-            if (toxav_groupchat_enable_av(tox.get(), groupNumber, CoreAV::groupCallCallback, this)) {
-                qCritical() << "Failed to enable audio on loaded group" << groupNumber;
-            }
+            //if (toxav_groupchat_enable_av(tox.get(), groupNumber, CoreAV::groupCallCallback, this)) {
+            //    qCritical() << "Failed to enable audio on loaded group" << groupNumber;
+            //}
         }
         emit emptyGroupCreated(groupNumber, persistentId, name);
     }

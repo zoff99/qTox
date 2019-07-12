@@ -153,7 +153,7 @@ CameraDevice* CameraDevice::open(QString devName, VideoMode mode)
         return nullptr;
     }
 
-    float FPS = 5;
+    float FPS = 30; // Zoff // TODO: make this configurable by the user in the settings UI
     if (mode.FPS > 0.0f) {
         FPS = mode.FPS;
     } else {

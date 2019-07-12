@@ -186,7 +186,8 @@ void CoreAV::start()
 void CoreAV::process()
 {
     toxav_iterate(toxav.get());
-    iterateTimer->start(toxav_iteration_interval(toxav.get()));
+    // iterateTimer->start(toxav_iteration_interval(toxav.get()));
+    iterateTimer->start(4); // sleep 4ms // Zoff.
 }
 
 /**
@@ -435,8 +436,40 @@ void CoreAV::sendCallVideo(uint32_t callId, std::shared_ptr<VideoFrame> vframe)
         toxav_video_set_bit_rate(toxav.get(), callId, VIDEO_DEFAULT_BITRATE, nullptr);
         call.setNullVideoBitrate(false);
     }
+    
+    QSize size_scaled = QSize(vframe->getSourceDimensions().width(), vframe->getSourceDimensions().height());
 
-    ToxYUVFrame frame = vframe->toToxYUVFrame();
+    if ((vframe->getSourceDimensions().width() > 1920) || (vframe->getSourceDimensions().height() > 1080))
+    {
+        // resize into bounding box 1920x1080 if video is larger than that box (e.g. 4K video frame)
+
+        float scale_w = (float)(vframe->getSourceDimensions().width()) / 1920.0f;
+        float scale_h = (float)(vframe->getSourceDimensions().height()) / 1080.0f;
+        
+        float scale = scale_w;
+        if (scale_h > scale_w)
+        {
+            scale = scale_h;
+        }
+
+        uint32_t new_width = (uint32_t)((float)(vframe->getSourceDimensions().width()) / scale);
+        uint32_t new_height = (uint32_t)((float)(vframe->getSourceDimensions().height()) / scale);
+
+        if (new_width > 1920)
+        {
+            new_width = 1920;
+        }
+
+        if (new_height > 1080)
+        {
+            new_height = 1080;
+        }
+
+        size_scaled.setHeight(new_height);
+        size_scaled.setWidth(new_width);
+    }
+
+    ToxYUVFrame frame = vframe->toToxYUVFrame(size_scaled);
 
     if (!frame) {
         return;
